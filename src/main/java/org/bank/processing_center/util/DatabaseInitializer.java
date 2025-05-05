@@ -1,5 +1,6 @@
 package org.bank.processing_center.util;
 
+import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.jdbc.*;
 
 import java.io.BufferedReader;

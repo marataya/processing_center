@@ -1,4 +1,4 @@
-package org.bank.processing_center.dao.jdbc;
+package org.bank.processing_center.configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

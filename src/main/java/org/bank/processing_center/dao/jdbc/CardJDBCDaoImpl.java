@@ -1,5 +1,6 @@
 package org.bank.processing_center.dao.jdbc;
 
+import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.base.Dao;
 import org.bank.processing_center.model.Card;
 
