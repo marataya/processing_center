@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Card;
 
 import java.sql.*;
@@ -21,20 +21,21 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
 
     @Override
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS card (" +
-                "id BIGINT PRIMARY KEY," +
-                "card_number VARCHAR(30)," +
-                "expiration_date DATE," +
-                "holder_name VARCHAR(50)," +
-                "card_status_id BIGINT," +
-                "payment_system_id BIGINT," +
-                "account_id BIGINT," +
-                "received_from_issuing_bank TIMESTAMP," +
-                "sent_to_issuing_bank TIMESTAMP," +
-                "FOREIGN KEY (card_status_id) REFERENCES card_status(id)," +
-                "FOREIGN KEY (payment_system_id) REFERENCES payment_system(id)," +
-                "FOREIGN KEY (account_id) REFERENCES account(id)" +
-                ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS card (\
+                id BIGINT PRIMARY KEY,\
+                card_number VARCHAR(30),\
+                expiration_date DATE,\
+                holder_name VARCHAR(50),\
+                card_status_id BIGINT,\
+                payment_system_id BIGINT,\
+                account_id BIGINT,\
+                received_from_issuing_bank TIMESTAMP,\
+                sent_to_issuing_bank TIMESTAMP,\
+                FOREIGN KEY (card_status_id) REFERENCES card_status(id),\
+                FOREIGN KEY (payment_system_id) REFERENCES payment_system(id),\
+                FOREIGN KEY (account_id) REFERENCES account(id)\
+                )""";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Card создана (или уже существовала).");
@@ -45,7 +46,7 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS card";
+        String sql = "DROP TABLE IF EXISTS card CASCADE";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Card удалена (если существовала).");

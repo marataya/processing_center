@@ -1,6 +1,6 @@
 package org.bank.processing_center.service;
 
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.PaymentSystem;
 
 import java.util.List;

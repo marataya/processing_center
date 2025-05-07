@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Currency;
 
 import java.sql.*;
@@ -19,12 +19,13 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
     @Override
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS currency (" +
-                "id BIGINT PRIMARY KEY," +
-                "currency_digital_code VARCHAR(3)," +
-                "currency_letter_code VARCHAR(3)," +
-                "currency_name VARCHAR(255)" +
-                ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS currency (\
+                id BIGINT PRIMARY KEY,\
+                currency_digital_code VARCHAR(3),\
+                currency_letter_code VARCHAR(3),\
+                currency_name VARCHAR(255)\
+                )""";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Currency создана (или уже существовала).");
@@ -35,7 +36,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS currency";
+        String sql = "DROP TABLE IF EXISTS currency CASCADE";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Currency удалена (если существовала).");

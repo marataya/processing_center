@@ -27,7 +27,7 @@ public class CardStatusController {
             cardStatusService.createTable();
             view.showMessage("Таблица статусов карт создана успешно.");
         } catch (Exception e) {
-            view.showError("Ошибка при создании таблицы статусов карт: " + e.getMessage());
+            view.showError("Ошибка при создании таблицы card_status: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class CardStatusController {
             cardStatusService.save(cardStatus);
             view.showMessage("Статус карты добавлен: " + cardStatus);
         } catch (Exception e) {
-            view.showError("Ошибка при добавлении статуса карты: " + e.getMessage());
+            view.showError("Ошибка при добавлении card_status: " + e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class CardStatusController {
             view.showCardStatusList(statuses);
             return statuses;
         } catch (Exception e) {
-            view.showError("Ошибка при получении списка статусов карт: " + e.getMessage());
+            view.showError("Ошибка при получении списка card_status: " + e.getMessage());
             return List.of();
         }
     }
@@ -64,7 +64,7 @@ public class CardStatusController {
     public void clearCardStatusTable() {
         try {
             cardStatusService.clearTable();
-            view.showMessage("Таблица статусов карт очищена.");
+            view.showMessage("Таблица card_status очищена.");
         } catch (Exception e) {
             view.showError("Ошибка при очистке таблицы статусов карт: " + e.getMessage());
         }
@@ -78,7 +78,7 @@ public class CardStatusController {
             cardStatusService.dropTable();
             view.showMessage("Таблица статусов карт удалена.");
         } catch (Exception e) {
-            view.showError("Ошибка при удалении таблицы статусов карт: " + e.getMessage());
+            view.showError("Ошибка при удалении таблицы card_status: " + e.getMessage());
         }
     }
 }

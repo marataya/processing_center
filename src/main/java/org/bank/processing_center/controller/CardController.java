@@ -26,9 +26,9 @@ public class CardController {
     public void createCardTable() {
         try {
             cardService.createTable();
-            view.showMessage("Таблица карт создана успешно.");
+            view.showMessage("Таблица card создана успешно.");
         } catch (Exception e) {
-            view.showError("Ошибка при создании таблицы карт: " + e.getMessage());
+            view.showError("Ошибка при создании таблицы card: " + e.getMessage());
         }
     }
 
@@ -41,7 +41,7 @@ public class CardController {
             cardService.save(card);
             view.showMessage("Карта добавлена: " + card);
         } catch (Exception e) {
-            view.showError("Ошибка при добавлении карты: " + e.getMessage());
+            view.showError("Ошибка при добавлении карты в card: " + e.getMessage());
         }
     }
 
@@ -54,7 +54,7 @@ public class CardController {
             view.showCardList(cards);
             return cards;
         } catch (Exception e) {
-            view.showError("Ошибка при получении списка карт: " + e.getMessage());
+            view.showError("Ошибка при получении списка из card: " + e.getMessage());
             return List.of();
         }
     }
@@ -68,7 +68,7 @@ public class CardController {
             cardService.update(card);
             view.showMessage("Карта обновлена: " + card);
         } catch (Exception e) {
-            view.showError("Ошибка при обновлении карты: " + e.getMessage());
+            view.showError("Ошибка при обновлении card: " + e.getMessage());
         }
     }
 
@@ -89,7 +89,7 @@ public class CardController {
                 return null;
             }
         } catch (Exception e) {
-            view.showError("Ошибка при поиске карты: " + e.getMessage());
+            view.showError("Ошибка при поиске карты в card: " + e.getMessage());
             return null;
         }
     }
@@ -102,7 +102,7 @@ public class CardController {
             cardService.clearTable();
             view.showMessage("Таблица карт очищена.");
         } catch (Exception e) {
-            view.showError("Ошибка при очистке таблицы карт: " + e.getMessage());
+            view.showError("Ошибка при очистке таблицы card: " + e.getMessage());
         }
     }
 
@@ -112,9 +112,9 @@ public class CardController {
     public void dropCardTable() {
         try {
             cardService.dropTable();
-            view.showMessage("Таблица карт удалена.");
+            view.showMessage("Таблица card удалена.");
         } catch (Exception e) {
-            view.showError("Ошибка при удалении таблицы карт: " + e.getMessage());
+            view.showError("Ошибка при удалении таблицы card: " + e.getMessage());
         }
     }
 }

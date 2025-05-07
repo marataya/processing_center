@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Account;
 
 import java.sql.*;
@@ -19,15 +19,16 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
 
     @Override
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS account (" +
-                "id BIGINT PRIMARY KEY," +
-                "account_number VARCHAR(50)," +
-                "balance DOUBLE PRECISION," +
-                "currency_id BIGINT," +
-                "issuing_bank_id BIGINT," +
-                "FOREIGN KEY (currency_id) REFERENCES currency(id)," +
-                "FOREIGN KEY (issuing_bank_id) REFERENCES issuing_bank(id)" +
-                ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS account (\
+                id BIGINT PRIMARY KEY,\
+                account_number VARCHAR(50),\
+                balance DOUBLE PRECISION,\
+                currency_id BIGINT,\
+                issuing_bank_id BIGINT,\
+                FOREIGN KEY (currency_id) REFERENCES currency(id),\
+                FOREIGN KEY (issuing_bank_id) REFERENCES issuing_bank(id)\
+                )""";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Account создана (или уже существовала).");
@@ -38,7 +39,7 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS account";
+        String sql = "DROP TABLE IF EXISTS account CASCADE";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Account удалена (если существовала).");

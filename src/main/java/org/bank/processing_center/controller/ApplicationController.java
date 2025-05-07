@@ -1,5 +1,6 @@
 package org.bank.processing_center.controller;
 
+import org.bank.processing_center.controller.factory.ControllerFactory;
 import org.bank.processing_center.model.Account;
 import org.bank.processing_center.model.Card;
 import org.bank.processing_center.model.CardStatus;
@@ -52,7 +53,7 @@ public class ApplicationController {
             clearTables();
 
             // Step 6: Drop tables
-//            dropTables();
+            dropTables();
 
             view.showMessage("Приложение завершило работу успешно.");
         } catch (Exception e) {

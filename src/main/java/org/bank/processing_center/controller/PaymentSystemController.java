@@ -27,7 +27,7 @@ public class PaymentSystemController {
             paymentSystemService.createTable();
             view.showMessage("Таблица платежных систем создана успешно.");
         } catch (Exception e) {
-            view.showError("Ошибка при создании таблицы платежных систем: " + e.getMessage());
+            view.showError("Ошибка при создании таблицы payment_system: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class PaymentSystemController {
             paymentSystemService.save(paymentSystem);
             view.showMessage("Платежная система добавлена: " + paymentSystem);
         } catch (Exception e) {
-            view.showError("Ошибка при добавлении платежной системы: " + e.getMessage());
+            view.showError("Ошибка при добавлении payment_system: " + e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class PaymentSystemController {
             view.showPaymentSystemList(systems);
             return systems;
         } catch (Exception e) {
-            view.showError("Ошибка при получении списка платежных систем: " + e.getMessage());
+            view.showError("Ошибка при получении списка payment_system: " + e.getMessage());
             return List.of();
         }
     }
@@ -64,9 +64,9 @@ public class PaymentSystemController {
     public void clearPaymentSystemTable() {
         try {
             paymentSystemService.clearTable();
-            view.showMessage("Таблица платежных систем очищена.");
+            view.showMessage("Таблица payment_system очищена.");
         } catch (Exception e) {
-            view.showError("Ошибка при очистке таблицы платежных систем: " + e.getMessage());
+            view.showError("Ошибка при очистке таблицы payment_system: " + e.getMessage());
         }
     }
 
@@ -76,9 +76,9 @@ public class PaymentSystemController {
     public void dropPaymentSystemTable() {
         try {
             paymentSystemService.dropTable();
-            view.showMessage("Таблица платежных систем удалена.");
+            view.showMessage("Таблица payment_system удалена.");
         } catch (Exception e) {
-            view.showError("Ошибка при удалении таблицы платежных систем: " + e.getMessage());
+            view.showError("Ошибка при удалении таблицы payment_system: " + e.getMessage());
         }
     }
 }

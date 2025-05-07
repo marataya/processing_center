@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.PaymentSystem;
 
 import java.sql.*;
@@ -19,10 +19,11 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
 
     @Override
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS payment_system (" +
-                "id BIGINT PRIMARY KEY," +
-                "payment_system_name VARCHAR(50)" +
-                ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS payment_system (\
+                id BIGINT PRIMARY KEY,\
+                payment_system_name VARCHAR(50)\
+                )""";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица PaymentSystem создана (или уже существовала).");
@@ -33,7 +34,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS payment_system";
+        String sql = "DROP TABLE IF EXISTS payment_system CASCADE";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица PaymentSystem удалена (если существовала).");

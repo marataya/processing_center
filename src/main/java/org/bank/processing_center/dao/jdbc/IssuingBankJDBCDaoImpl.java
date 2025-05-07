@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.base.Dao;
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.IssuingBank;
 
 import java.sql.*;
@@ -19,12 +19,13 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
 
     @Override
     public void createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS issuing_bank (" +
-                "id BIGINT PRIMARY KEY," +
-                "bic VARCHAR(9)," +
-                "bin VARCHAR(5)," +
-                "abbreviated_name VARCHAR(255)" +
-                ")";
+        String sql = """
+                CREATE TABLE IF NOT EXISTS issuing_bank (\
+                id BIGINT PRIMARY KEY,\
+                bic VARCHAR(9),\
+                bin VARCHAR(5),\
+                abbreviated_name VARCHAR(255)\
+                )""";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица IssuingBank создана (или уже существовала).");
@@ -35,7 +36,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS issuing_bank";
+        String sql = "DROP TABLE IF EXISTS issuing_bank CASCADE";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица IssuingBank удалена (если существовала).");

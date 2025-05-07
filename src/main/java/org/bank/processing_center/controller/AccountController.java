@@ -25,9 +25,9 @@ public class AccountController {
     public void createAccountTable() {
         try {
             accountService.createTable();
-            view.showMessage("Таблица счетов создана успешно.");
+            view.showMessage("Таблица account создана успешно.");
         } catch (Exception e) {
-            view.showError("Ошибка при создании таблицы счетов: " + e.getMessage());
+            view.showError("Ошибка при создании таблицы account: " + e.getMessage());
         }
     }
 
@@ -53,7 +53,7 @@ public class AccountController {
             view.showAccountList(accounts);
             return accounts;
         } catch (Exception e) {
-            view.showError("Ошибка при получении списка счетов: " + e.getMessage());
+            view.showError("Ошибка при получении списка account: " + e.getMessage());
             return List.of();
         }
     }
@@ -67,7 +67,7 @@ public class AccountController {
             accountService.update(account);
             view.showMessage("Счет обновлен: " + account);
         } catch (Exception e) {
-            view.showError("Ошибка при обновлении счета: " + e.getMessage());
+            view.showError("Ошибка при обновлении счета в account: " + e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class AccountController {
             accountService.clearTable();
             view.showMessage("Таблица счетов очищена.");
         } catch (Exception e) {
-            view.showError("Ошибка при очистке таблицы счетов: " + e.getMessage());
+            view.showError("Ошибка при очистке таблицы account: " + e.getMessage());
         }
     }
 
@@ -89,9 +89,9 @@ public class AccountController {
     public void dropAccountTable() {
         try {
             accountService.dropTable();
-            view.showMessage("Таблица счетов удалена.");
+            view.showMessage("Таблица account удалена.");
         } catch (Exception e) {
-            view.showError("Ошибка при удалении таблицы счетов: " + e.getMessage());
+            view.showError("Ошибка при удалении таблицы account: " + e.getMessage());
         }
     }
 }

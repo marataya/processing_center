@@ -1,4 +1,4 @@
-package org.bank.processing_center.dao.base;
+package org.bank.processing_center.dao;
 
 import java.util.List;
 import java.util.Optional;
