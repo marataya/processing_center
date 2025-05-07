@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
 
-    private final Connection connection;
-
-    public IssuingBankJDBCDaoImpl() {
-        this.connection = JDBCConfig.getConnection();
-    }
-
     @Override
     public void createTable() {
         String sql = """
@@ -26,7 +20,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
                 bin VARCHAR(5),\
                 abbreviated_name VARCHAR(255)\
                 )""";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица IssuingBank создана (или уже существовала).");
         } catch (SQLException e) {
@@ -37,7 +31,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public void dropTable() {
         String sql = "DROP TABLE IF EXISTS issuing_bank CASCADE";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица IssuingBank удалена (если существовала).");
         } catch (SQLException e) {
@@ -48,7 +42,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public void clearTable() {
         String sql = "DELETE FROM issuing_bank";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица IssuingBank очищена.");
         } catch (SQLException e) {
@@ -59,7 +53,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public void save(IssuingBank issuingBank) {
         String sql = "INSERT INTO issuing_bank (id, bic, bin, abbreviated_name) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, issuingBank.getId());
             preparedStatement.setString(2, issuingBank.getBic());
             preparedStatement.setString(3, issuingBank.getBin());
@@ -74,7 +68,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM issuing_bank WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("IssuingBank с id " + id + " удален.");
@@ -87,7 +81,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     public List<IssuingBank> findAll() {
         List<IssuingBank> issuingBanks = new ArrayList<>();
         String sql = "SELECT id, bic, bin, abbreviated_name FROM issuing_bank";
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 IssuingBank issuingBank = new IssuingBank(
@@ -107,7 +101,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public Optional<IssuingBank> findById(Long id) {
         String sql = "SELECT id, bic, bin, abbreviated_name FROM issuing_bank WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -128,7 +122,7 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     @Override
     public void update(IssuingBank issuingBank) {
         String sql = "UPDATE issuing_bank SET bic = ?, bin = ?, abbreviated_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, issuingBank.getBic());
             preparedStatement.setString(2, issuingBank.getBin());
             preparedStatement.setString(3, issuingBank.getAbbreviatedName());

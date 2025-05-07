@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
 
-    private final Connection connection;
-
-    public CardStatusJDBCDaoImpl() {
-        this.connection = JDBCConfig.getConnection();
-    }
-
     @Override
     public void createTable() {
         String sql = """
@@ -24,7 +18,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
                 id BIGINT PRIMARY KEY,\
                 card_status_name VARCHAR(255)\
                 )""";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица CardStatus создана (или уже существовала).");
         } catch (SQLException e) {
@@ -35,7 +29,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public void dropTable() {
         String sql = "DROP TABLE IF EXISTS card_status CASCADE";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица CardStatus удалена (если существовала).");
         } catch (SQLException e) {
@@ -46,7 +40,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public void clearTable() {
         String sql = "DELETE FROM card_status";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица CardStatus очищена.");
         } catch (SQLException e) {
@@ -57,7 +51,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public void save(CardStatus cardStatus) {
         String sql = "INSERT INTO card_status (id, card_status_name) VALUES (?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, cardStatus.getId());
             preparedStatement.setString(2, cardStatus.getCardStatusName());
             preparedStatement.executeUpdate();
@@ -70,7 +64,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM card_status WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("CardStatus с id " + id + " удален.");
@@ -83,7 +77,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     public List<CardStatus> findAll() {
         List<CardStatus> cardStatuses = new ArrayList<>();
         String sql = "SELECT id, card_status_name FROM card_status";
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 CardStatus cardStatus = new CardStatus(
@@ -101,7 +95,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public Optional<CardStatus> findById(Long id) {
         String sql = "SELECT id, card_status_name FROM card_status WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -120,7 +114,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     @Override
     public void update(CardStatus cardStatus) {
         String sql = "UPDATE card_status SET card_status_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, cardStatus.getCardStatusName());
             preparedStatement.setLong(2, cardStatus.getId());
             preparedStatement.executeUpdate();

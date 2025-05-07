@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
-    private final Connection connection;
-
-    public CurrencyJDBCDaoImpl() {
-        this.connection = JDBCConfig.getConnection();
-    }
-
     @Override
     public void createTable() {
         String sql = """
@@ -26,7 +20,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
                 currency_letter_code VARCHAR(3),\
                 currency_name VARCHAR(255)\
                 )""";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Currency создана (или уже существовала).");
         } catch (SQLException e) {
@@ -37,7 +31,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public void dropTable() {
         String sql = "DROP TABLE IF EXISTS currency CASCADE";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Currency удалена (если существовала).");
         } catch (SQLException e) {
@@ -48,7 +42,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public void clearTable() {
         String sql = "DELETE FROM currency";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Currency очищена.");
         } catch (SQLException e) {
@@ -59,7 +53,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public void save(Currency currency) {
         String sql = "INSERT INTO currency (id, currency_digital_code, currency_letter_code, currency_name) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, currency.getId());
             preparedStatement.setString(2, currency.getCurrencyDigitalCode());
             preparedStatement.setString(3, currency.getCurrencyLetterCode());
@@ -74,7 +68,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM currency WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("Currency с id " + id + " удалена.");
@@ -87,7 +81,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     public List<Currency> findAll() {
         List<Currency> currencies = new ArrayList<>();
         String sql = "SELECT id, currency_digital_code, currency_letter_code, currency_name FROM currency";
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 Currency currency = new Currency(
@@ -107,7 +101,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public Optional<Currency> findById(Long id) {
         String sql = "SELECT id, currency_digital_code, currency_letter_code, currency_name FROM currency WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -128,7 +122,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     @Override
     public void update(Currency currency) {
         String sql = "UPDATE currency SET currency_digital_code = ?, currency_letter_code = ?, currency_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, currency.getCurrencyDigitalCode());
             preparedStatement.setString(2, currency.getCurrencyLetterCode());
             preparedStatement.setString(3, currency.getCurrencyName());

@@ -11,12 +11,6 @@ import java.util.Optional;
 
 public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
 
-    private final Connection connection;
-
-    public PaymentSystemJDBCDaoImpl() {
-        this.connection = JDBCConfig.getConnection();
-    }
-
     @Override
     public void createTable() {
         String sql = """
@@ -24,7 +18,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
                 id BIGINT PRIMARY KEY,\
                 payment_system_name VARCHAR(50)\
                 )""";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица PaymentSystem создана (или уже существовала).");
         } catch (SQLException e) {
@@ -35,7 +29,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public void dropTable() {
         String sql = "DROP TABLE IF EXISTS payment_system CASCADE";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица PaymentSystem удалена (если существовала).");
         } catch (SQLException e) {
@@ -46,7 +40,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public void clearTable() {
         String sql = "DELETE FROM payment_system";
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица PaymentSystem очищена.");
         } catch (SQLException e) {
@@ -57,7 +51,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public void save(PaymentSystem paymentSystem) {
         String sql = "INSERT INTO payment_system (id, payment_system_name) VALUES (?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, paymentSystem.getId());
             preparedStatement.setString(2, paymentSystem.getPaymentSystemName());
             preparedStatement.executeUpdate();
@@ -70,7 +64,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM payment_system WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("PaymentSystem с id " + id + " удалена.");
@@ -83,7 +77,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     public List<PaymentSystem> findAll() {
         List<PaymentSystem> paymentSystems = new ArrayList<>();
         String sql = "SELECT id, payment_system_name FROM payment_system";
-        try (Statement statement = connection.createStatement();
+        try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 PaymentSystem paymentSystem = new PaymentSystem(
@@ -101,7 +95,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public Optional<PaymentSystem> findById(Long id) {
         String sql = "SELECT id, payment_system_name FROM payment_system WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -120,7 +114,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     @Override
     public void update(PaymentSystem paymentSystem) {
         String sql = "UPDATE payment_system SET payment_system_name = ? WHERE id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, paymentSystem.getPaymentSystemName());
             preparedStatement.setLong(2, paymentSystem.getId());
             preparedStatement.executeUpdate();
