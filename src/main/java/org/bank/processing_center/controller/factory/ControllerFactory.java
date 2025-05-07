@@ -41,9 +41,7 @@ public class ControllerFactory {
         return instance;
     }
 
-    public CardController getCardController() {
-        return cardController;
-    }
+    public CardController getCardController() { return cardController; }
 
     public AccountController getAccountController() {
         return accountController;

@@ -1,5 +1,6 @@
 package org.bank.processing_center.service.factory;
 
+import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.dao.jdbc.AccountJDBCDaoImpl;
 import org.bank.processing_center.dao.jdbc.CardJDBCDaoImpl;
 import org.bank.processing_center.dao.jdbc.CardStatusJDBCDaoImpl;
@@ -22,6 +23,8 @@ public class ServiceFactory {
     private final AccountService accountService;
 
     private ServiceFactory() {
+
+        DaoFactory daoFactory = DaoFactory.getInstance();
         // Create JDBC DAO instances
         CardJDBCDaoImpl cardDao = new CardJDBCDaoImpl();
         CardStatusJDBCDaoImpl cardStatusDao = new CardStatusJDBCDaoImpl();
@@ -31,10 +34,10 @@ public class ServiceFactory {
         // TODO: Implement Hibernate DAO instances and update the service instances accordingly
 
         // Create service instances
-        cardService = new CardService(cardDao);
-        cardStatusService = new CardStatusService(cardStatusDao);
-        paymentSystemService = new PaymentSystemService(paymentSystemDao);
-        accountService = new AccountService(accountDao);
+        cardService = new CardService(daoFactory.getCardDao());
+        cardStatusService = new CardStatusService(daoFactory.getCardStatusDao());
+        paymentSystemService = new PaymentSystemService(daoFactory.getPaymentSystemDao());
+        accountService = new AccountService(daoFactory.getAccountDao());
     }
 
     public static synchronized ServiceFactory getInstance() {
