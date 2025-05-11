@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.CardStatus;
 
 import java.util.List;
@@ -10,8 +11,8 @@ public class CardStatusService implements Service<CardStatus, Long> {
 
     private final Dao<CardStatus, Long> cardStatusDao;
 
-    public CardStatusService(Dao<CardStatus, Long> cardStatusDao) {
-        this.cardStatusDao = cardStatusDao;
+    public CardStatusService(String daoType) {
+        this.cardStatusDao = DaoFactory.getDao(CardStatus.class, daoType);
     }
 
     @Override

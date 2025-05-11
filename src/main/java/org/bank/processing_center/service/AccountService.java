@@ -2,6 +2,7 @@ package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Account;
+import org.bank.processing_center.dao.factory.DaoFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +11,8 @@ public class AccountService implements Service<Account, Long> {
 
     private final Dao<Account, Long> accountDao;
 
-    public AccountService(Dao<Account, Long> accountDao) {
-        this.accountDao = accountDao;
+    public AccountService(String daoType) {
+        this.accountDao = DaoFactory.getDao(Account.class, daoType);
     }
 
     @Override

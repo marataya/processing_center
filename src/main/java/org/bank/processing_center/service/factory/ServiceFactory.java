@@ -3,12 +3,7 @@ package org.bank.processing_center.service.factory;
 import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.dao.jdbc.AccountJDBCDaoImpl;
 import org.bank.processing_center.dao.jdbc.CardJDBCDaoImpl;
-import org.bank.processing_center.dao.jdbc.CardStatusJDBCDaoImpl;
-import org.bank.processing_center.dao.jdbc.PaymentSystemJDBCDaoImpl;
-import org.bank.processing_center.service.AccountService;
-import org.bank.processing_center.service.CardService;
-import org.bank.processing_center.service.CardStatusService;
-import org.bank.processing_center.service.PaymentSystemService;
+import org.bank.processing_center.service.*;
 
 /**
  * Factory for creating service instances
@@ -22,25 +17,20 @@ public class ServiceFactory {
     private final PaymentSystemService paymentSystemService;
     private final AccountService accountService;
 
-    private ServiceFactory() {
+    private ServiceFactory(String daoType) {
 
-        DaoFactory daoFactory = DaoFactory.getInstance();
-        // Create JDBC DAO instances
-        CardJDBCDaoImpl cardDao = new CardJDBCDaoImpl();
-        CardStatusJDBCDaoImpl cardStatusDao = new CardStatusJDBCDaoImpl();
-        PaymentSystemJDBCDaoImpl paymentSystemDao = new PaymentSystemJDBCDaoImpl();
-        AccountJDBCDaoImpl accountDao = new AccountJDBCDaoImpl();
-
-        // TODO: Implement Hibernate DAO instances and update the service instances accordingly
+        // Pass the daoType to the Service constructors
+        cardService = new CardService(daoType);
+        cardStatusService = new CardStatusService(daoType);
+        paymentSystemService = new PaymentSystemService(daoType);
+        accountService = new AccountService(daoType);
 
         // Create service instances
-        cardService = new CardService(daoFactory.getCardDao());
-        cardStatusService = new CardStatusService(daoFactory.getCardStatusDao());
-        paymentSystemService = new PaymentSystemService(daoFactory.getPaymentSystemDao());
-        accountService = new AccountService(daoFactory.getAccountDao());
+
     }
 
-    public static synchronized ServiceFactory getInstance() {
+    public static synchronized ServiceFactory getInstance(String daoType) {
+        // Consider how you want to handle multiple instances with different daoTypes if needed
         if (instance == null) {
             instance = new ServiceFactory();
         }
