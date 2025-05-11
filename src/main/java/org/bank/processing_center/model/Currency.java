@@ -1,13 +1,24 @@
 package org.bank.processing_center.model;
 
-public class Currency {
-    private Long id;
-    private String currencyDigitalCode;
-    private String currencyLetterCode;
-    private String currencyName;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-    public Currency() {
-    }
+@Entity
+@Table(name = "currencies")
+public class Currency {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "currency_digital_code")
+    private String currencyDigitalCode;
+    @Column(name = "currency_letter_code")
+    private String currencyLetterCode;
+    @Column(name = "currency_name")
+    private String currencyName;
 
     public Currency(Long id, String currencyDigitalCode, String currencyLetterCode, String currencyName) {
         this.id = id;

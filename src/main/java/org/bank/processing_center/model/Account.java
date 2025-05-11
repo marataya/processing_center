@@ -1,10 +1,20 @@
 package org.bank.processing_center.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "accounts")
 public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "account_number")
     private String accountNumber;
+    @Column
     private Double balance;
+    @Column(name = "currency_id")
     private Long currencyId;
+    @Column(name = "issuing_bank_id")
     private Long issuingBankId;
 
     public Account() {

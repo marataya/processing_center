@@ -1,11 +1,19 @@
 package org.bank.processing_center.model;
 
-public class IssuingBank {
-    private Long id;
-    private String bic;
-    private String bin;
-    private String abbreviatedName;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "issuing_banks")
+public class IssuingBank {
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+ @Column
+    private String bic;
+ @Column
+    private String bin;
+ @Column
+    private String abbreviatedName;
     public IssuingBank() {
     }
 

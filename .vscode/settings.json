@@ -1,0 +1,17 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Main",
+      "database": "processing_center_db",
+      "username": "user",
+      "password": "pass"
+    }
+  ],
+  "IDX.aI.enableInlineCompletion": true,
+  "IDX.aI.enableCodebaseIndexing": true,
+  "java.configuration.updateBuildConfiguration": "automatic"
+}

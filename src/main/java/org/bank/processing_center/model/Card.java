@@ -1,10 +1,12 @@
 package org.bank.processing_center.model;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "cards")
 public class Card {
-    private Long id;
     private String cardNumber;
     private LocalDate expirationDate;
     private String holderName;
@@ -14,10 +16,20 @@ public class Card {
     private Timestamp receivedFromIssuingBank;
     private Timestamp sentToIssuingBank;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     public Card() {
     }
 
-    public Card(Long id, String cardNumber, LocalDate expirationDate, String holderName,
+    public Card(
+        Long id,
+        String cardNumber,
+        LocalDate expirationDate,
+        String holderName,
+        Long cardStatusId,
+        Long paymentSystemId,
                 Long cardStatusId, Long paymentSystemId, Long accountId,
                 Timestamp receivedFromIssuingBank, Timestamp sentToIssuingBank) {
         this.id = id;

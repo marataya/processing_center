@@ -80,6 +80,12 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         }
     }
 
+    /**
+     * Deletes a Card entity from the database by its unique identifier.
+     *
+     * @param id The unique identifier of the Card to be deleted
+     * @throws SQLException If a database access error occurs during card deletion
+     */
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM card WHERE id = ?";
@@ -92,6 +98,12 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         }
     }
 
+    /**
+     * Retrieves all Card entities from the database.
+     *
+     * @return A list of all Card objects stored in the card table
+     * @throws SQLException If a database access error occurs during card retrieval
+     */
     @Override
     public List<Card> findAll() {
         List<Card> cards = new ArrayList<>();
@@ -118,6 +130,13 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         return cards;
     }
 
+    /**
+         * Retrieves a Card entity from the database by its unique identifier.
+         *
+         * @param id The unique identifier of the Card to be retrieved
+         * @return An Optional containing the Card if found, or an empty Optional if no Card matches the given id
+         * @throws SQLException If a database access error occurs during card retrieval
+         */
     @Override
     public Optional<Card> findById(Long id) {
         String sql = "SELECT id, card_number, expiration_date, holder_name, card_status_id, payment_system_id, account_id, received_from_issuing_bank, sent_to_issuing_bank FROM card WHERE id = ?";
