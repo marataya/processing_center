@@ -3,38 +3,31 @@ package org.bank.processing_center.dao.hibernate;
 import java.util.List;
 import java.util.Optional;
 
-import org.bank.processing_center.model.Account;
+import org.bank.processing_center.model.Terminal;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-// Implement Dao interface
-public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
 
-    private final  SessionFactory sessionFactory;
+public class TerminalHibernateDaoImpl implements HibernateDao<Terminal, Long> {
 
-    public AccountHibernateDaoImpl(SessionFactory sessionFactory) {
+    public TerminalHibernateDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+
+    private final SessionFactory sessionFactory;
     @Override
-    public Optional<Account> findById(Long id) {
+    public List<Terminal> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.get(Account.class, id));
-        }
-    }
-    
-    @Override
-    public List<Account> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("from Account", Account.class).list();
+            return session.createQuery("FROM Terminal", Terminal.class).list();
         }
     }
 
     @Override
-    public void save(Account account) {
+    public void save(Terminal terminal) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.save(account);
+            session.save(terminal);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -45,11 +38,11 @@ public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
     }
 
     @Override
-    public void update(Account account) {
+    public void update(Terminal terminal) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.update(account);
+            session.update(terminal);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -61,17 +54,15 @@ public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
 
     @Override
     public void delete(Long id) {
-        Transaction transaction = null; // Declare outside try-with-resources
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            Account account = session.get(Account.class, id);
-            if (account != null) {
-                session.delete(account);
+            Terminal terminal = session.get(Terminal.class, id);
+            if (terminal != null) {
+                session.delete(terminal);
+                transaction.commit();
             }
-            transaction.commit(); // Commit here if deletion is successful
         } catch (Exception e) {
-            // Rollback in case of exception
-
             if (transaction != null) {
                 transaction.rollback();
             }
@@ -80,22 +71,43 @@ public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
     }
 
     @Override
+    public Optional<Terminal> findById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return Optional.ofNullable(session.get(Terminal.class, id));
+        }
+    }
+
+    @Override
     public void createTable() {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.createNativeQuery("CREATE TABLE account (id BIGINT PRIMARY KEY, account_number VARCHAR(50), balance DECIMAL(19, 2), currency_id BIGINT, issuing_bank_id BIGINT, FOREIGN KEY (currency_id) REFERENCES currency(id), FOREIGN KEY (issuing_bank_id) REFERENCES issuing_bank(id))").executeUpdate();
+            session.createNativeQuery("CREATE TABLE terminal (\n" +
+                                       "                          id BIGINT PRIMARY KEY,\n" +
+                                       "                          merchant_id BIGINT,\n" +
+                                       "                          FOREIGN KEY (merchant_id) REFERENCES merchant(id)\n" +
+                                       ")").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         }
     }
 
     @Override
     public void dropTable() {
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            session.createNativeQuery("DROP TABLE IF EXISTS account").executeUpdate();
+            transaction = session.beginTransaction();
+            session.createNativeQuery("DROP TABLE IF EXISTS terminal").executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
         }
     }
 
@@ -104,13 +116,13 @@ public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.createNativeQuery("DELETE FROM account").executeUpdate();
+            session.createNativeQuery("DELETE FROM terminal").executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
             e.printStackTrace();
         }
     }
+
     @Override
     public SessionFactory getSessionFactory() {
         return sessionFactory;
