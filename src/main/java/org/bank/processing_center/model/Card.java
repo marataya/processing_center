@@ -1,132 +1,57 @@
 package org.bank.processing_center.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import jakarta.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cards")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Card {
-    private String cardNumber;
-    private LocalDate expirationDate;
-    private String holderName;
-    private Long cardStatusId;
-    private Long paymentSystemId;
-    private Long accountId;
-    private Timestamp receivedFromIssuingBank;
-    private Timestamp sentToIssuingBank;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "card_id", nullable = false, unique = true)
+    private Long id; //id (bigint): Уникальный идентификатор карты.
 
-    public Card() {
-    }
+    @Column(name = "card_number", nullable = false, length = 50)
+    private String cardNumber;
+    
+    @Column(name = "expiration_date", nullable = false)
+    private LocalDate expirationDate;
+    
+    @Column(name = "holder_name", nullable = false, length = 50)
+    private String holderName;
+    
+    @ManyToOne
+    @JoinColumn(name = "card_status_id")
+    private CardStatus cardStatus;
+    
+    @ManyToOne
+    @JoinColumn(name = "payment_system_id")
+    private PaymentSystem paymentSystem;
+    
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+    
+    @Column(name = "received_from_issuing_bank", nullable = false)
+    private LocalDateTime receivedFromIssuingBank;
+    
+    @Column(name = "sent_to_issuing_bank", nullable = false)
+    private LocalDateTime sentToIssuingBank;
 
-    public Card(
-        Long id,
-        String cardNumber,
-        LocalDate expirationDate,
-        String holderName,
-        Long cardStatusId,
-        Long paymentSystemId,
-                Long cardStatusId, Long paymentSystemId, Long accountId,
-                Timestamp receivedFromIssuingBank, Timestamp sentToIssuingBank) {
-        this.id = id;
-        this.cardNumber = cardNumber;
-        this.expirationDate = expirationDate;
-        this.holderName = holderName;
-        this.cardStatusId = cardStatusId;
-        this.paymentSystemId = paymentSystemId;
-        this.accountId = accountId;
-        this.receivedFromIssuingBank = receivedFromIssuingBank;
-        this.sentToIssuingBank = sentToIssuingBank;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber;
-    }
-
-    public LocalDate getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public String getHolderName() {
-        return holderName;
-    }
-
-    public void setHolderName(String holderName) {
-        this.holderName = holderName;
-    }
-
-    public Long getCardStatusId() {
-        return cardStatusId;
-    }
-
-    public void setCardStatusId(Long cardStatusId) {
-        this.cardStatusId = cardStatusId;
-    }
-
-    public Long getPaymentSystemId() {
-        return paymentSystemId;
-    }
-
-    public void setPaymentSystemId(Long paymentSystemId) {
-        this.paymentSystemId = paymentSystemId;
-    }
-
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Timestamp getReceivedFromIssuingBank() {
-        return receivedFromIssuingBank;
-    }
-
-    public void setReceivedFromIssuingBank(Timestamp receivedFromIssuingBank) {
-        this.receivedFromIssuingBank = receivedFromIssuingBank;
-    }
-
-    public Timestamp getSentToIssuingBank() {
-        return sentToIssuingBank;
-    }
-
-    public void setSentToIssuingBank(Timestamp sentToIssuingBank) {
-        this.sentToIssuingBank = sentToIssuingBank;
-    }
-
-    @Override
-    public String toString() {
-        return "Card{" +
-                "id=" + id +
-                ", cardNumber='" + cardNumber + '\'' +
-                ", expirationDate=" + expirationDate +
-                ", holderName='" + holderName + '\'' +
-                ", cardStatusId=" + cardStatusId +
-                ", paymentSystemId=" + paymentSystemId +
-                ", accountId=" + accountId +
-                ", receivedFromIssuingBank=" + receivedFromIssuingBank +
-                ", sentToIssuingBank=" + sentToIssuingBank +
-                '}';
-    }
 }

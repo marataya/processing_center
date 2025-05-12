@@ -11,15 +11,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "payment_system")
-@Data
+@Table(name = "transaction_type")
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentSystem {
+@Data
+public class TransactionType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "payment_system_name", nullable = false, length = 50)
-    private String paymentSystemName;
+    @Column(name = "type_name")
+    private String typeName;
 }

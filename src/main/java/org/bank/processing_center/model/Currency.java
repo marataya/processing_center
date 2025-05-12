@@ -6,66 +6,29 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Data;
 
 @Entity
 @Table(name = "currencies")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "currency_digital_code")
-    private String currencyDigitalCode;
-    @Column(name = "currency_letter_code")
-    private String currencyLetterCode;
-    @Column(name = "currency_name")
-    private String currencyName;
+    private Long id;              //Уникальный идентификатор валюты.
 
-    public Currency(Long id, String currencyDigitalCode, String currencyLetterCode, String currencyName) {
-        this.id = id;
-        this.currencyDigitalCode = currencyDigitalCode;
-        this.currencyLetterCode = currencyLetterCode;
-        this.currencyName = currencyName;
-    }
+    @Column(name = "currency_digital_code", nullable = false, length = 3)
+    private String currencyDigitalCode; //Цифровой код валюты (например, 840 для USD).
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "currency_letter_code", nullable = false, length = 3)
+    private String currencyLetterCode;  //Буквенный код валюты (например, USD).
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "currency_digital_code_account", nullable = false, length = 3)
+    private String currencyDigitalCodeAccount;  //Буквенный код валюты (например, USD).
 
-    public String getCurrencyDigitalCode() {
-        return currencyDigitalCode;
-    }
-
-    public void setCurrencyDigitalCode(String currencyDigitalCode) {
-        this.currencyDigitalCode = currencyDigitalCode;
-    }
-
-    public String getCurrencyLetterCode() {
-        return currencyLetterCode;
-    }
-
-    public void setCurrencyLetterCode(String currencyLetterCode) {
-        this.currencyLetterCode = currencyLetterCode;
-    }
-
-    public String getCurrencyName() {
-        return currencyName;
-    }
-
-    public void setCurrencyName(String currencyName) {
-        this.currencyName = currencyName;
-    }
-
-    @Override
-    public String toString() {
-        return "Currency{" +
-                "id=" + id +
-                ", currencyDigitalCode='" + currencyDigitalCode + '\'' +
-                ", currencyLetterCode='" + currencyLetterCode + '\'' +
-                ", currencyName='" + currencyName + '\'' +
-                '}';
-    }
+    @Column(name = "currency_name", nullable = false, length = 255)
+    private String currencyName;        //Название валюты.
 }

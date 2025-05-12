@@ -1,81 +1,42 @@
 package org.bank.processing_center.model;
 
-import jakarta.persistence.*;
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "accounts")
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "account_number")
-    private String accountNumber;
-    @Column
-    private Double balance;
-    @Column(name = "currency_id")
-    private Long currencyId;
-    @Column(name = "issuing_bank_id")
-    private Long issuingBankId;
+    @Column(name = "id", nullable = false)
+    private Long id;             //Уникальный идентификатор счёта.
 
-    public Account() {
-    }
+    @Column(name = "account_number", nullable = false, length = 50)
+    private String accountNumber;      //Номер счёта.
 
-    public Account(Long id, String accountNumber, Double balance, Long currencyId, Long issuingBankId) {
-        this.id = id;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.currencyId = currencyId;
-        this.issuingBankId = issuingBankId;
-    }
+    @Column(name = "balance", nullable = false, precision = 19, scale = 4)
+    private BigDecimal balance;        //Баланс счёта.
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "currency_id")
+    private Currency currency;     //Ссылка на валюту.
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
-    public Long getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(Long currencyId) {
-        this.currencyId = currencyId;
-    }
-
-    public Long getIssuingBankId() {
-        return issuingBankId;
-    }
-
-    public void setIssuingBankId(Long issuingBankId) {
-        this.issuingBankId = issuingBankId;
-    }
-
-    @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", balance=" + balance +
-                ", currencyId=" + currencyId +
-                ", issuingBankId=" + issuingBankId +
-                '}';
-    }
+    @ManyToOne
+    @JoinColumn(name = "issuing_bank_id")
+    private IssuingBank issuingBank;  //Ссылка на банк-эмитент
 }
