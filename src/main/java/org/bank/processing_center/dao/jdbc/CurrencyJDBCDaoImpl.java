@@ -2,12 +2,15 @@ package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.mapper.CurrencyMapper;
 import org.bank.processing_center.model.Currency;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Optional.empty;
 
 public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
@@ -50,6 +53,8 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
         }
     }
 
+    private CurrencyMapper currencyMapper = new CurrencyMapper();
+
     @Override
     public void save(Currency currency) {
         String sql = "INSERT INTO currency (id, currency_digital_code, currency_letter_code, currency_name) VALUES (?, ?, ?, ?)";
@@ -84,12 +89,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Currency currency = new Currency(
-                        resultSet.getLong("id"),
-                        resultSet.getString("currency_digital_code"),
-                        resultSet.getString("currency_letter_code"),
-                        resultSet.getString("currency_name")
-                );
+                Currency currency = currencyMapper.mapResultSetToCurrency(resultSet);
                 currencies.add(currency);
             }
         } catch (SQLException e) {
@@ -105,12 +105,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Currency currency = new Currency(
-                        resultSet.getLong("id"),
-                        resultSet.getString("currency_digital_code"),
-                        resultSet.getString("currency_letter_code"),
-                        resultSet.getString("currency_name")
-                );
+                Currency currency = currencyMapper.mapResultSetToCurrency(resultSet);
                 return Optional.of(currency);
             }
         } catch (SQLException e) {

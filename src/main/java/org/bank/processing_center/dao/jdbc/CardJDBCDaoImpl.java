@@ -2,32 +2,35 @@ package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.mapper.CardMapper;
 import org.bank.processing_center.model.Card;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
-// Пример реализации Dao для сущности Card
+// JDBC implementation for Card entity DAO
 public class CardJDBCDaoImpl implements Dao<Card, Long> {
 
     @Override
     public void createTable() {
         String sql = """
-                CREATE TABLE IF NOT EXISTS card (\
-                id BIGINT PRIMARY KEY,\
-                card_number VARCHAR(30),\
-                expiration_date DATE,\
-                holder_name VARCHAR(50),\
-                card_status_id BIGINT,\
-                payment_system_id BIGINT,\
-                account_id BIGINT,\
-                received_from_issuing_bank TIMESTAMP,\
-                sent_to_issuing_bank TIMESTAMP,\
-                FOREIGN KEY (card_status_id) REFERENCES card_status(id),\
-                FOREIGN KEY (payment_system_id) REFERENCES payment_system(id),\
-                FOREIGN KEY (account_id) REFERENCES account(id)\
+                CREATE TABLE IF NOT EXISTS card (
+                id BIGINT PRIMARY KEY,
+                card_number VARCHAR(50),
+                expiration_date DATE,
+                holder_name VARCHAR(50),
+                card_status_id BIGINT,
+                payment_system_id BIGINT,
+                account_id BIGINT,
+                received_from_issuing_bank TIMESTAMP,
+                sent_to_issuing_bank TIMESTAMP,
+                FOREIGN KEY (card_status_id) REFERENCES card_status (id),
+                FOREIGN KEY (payment_system_id) REFERENCES payment_system (id),
+                FOREIGN KEY (account_id) REFERENCES account (id)
                 )""";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
@@ -59,6 +62,8 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         }
     }
 
+    private CardMapper cardMapper = new CardMapper();
+
     @Override
     public void save(Card card) {
         String sql = "INSERT INTO card (id, card_number, expiration_date, holder_name, card_status_id, payment_system_id, account_id, received_from_issuing_bank, sent_to_issuing_bank) " +
@@ -68,11 +73,37 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             preparedStatement.setString(2, card.getCardNumber());
             preparedStatement.setDate(3, Date.valueOf(card.getExpirationDate()));
             preparedStatement.setString(4, card.getHolderName());
-            preparedStatement.setLong(5, card.getCardStatusId());
-            preparedStatement.setLong(6, card.getPaymentSystemId());
-            preparedStatement.setLong(7, card.getAccountId());
-            preparedStatement.setTimestamp(8, card.getReceivedFromIssuingBank());
-            preparedStatement.setTimestamp(9, card.getSentToIssuingBank());
+
+            if (card.getCardStatus() != null) {
+                preparedStatement.setLong(5, card.getCardStatus().getId());
+            } else {
+                preparedStatement.setNull(5, Types.BIGINT);
+            }
+
+            if (card.getPaymentSystem() != null) {
+                preparedStatement.setLong(6, card.getPaymentSystem().getId());
+            } else {
+                preparedStatement.setNull(6, Types.BIGINT);
+            }
+
+            if (card.getAccount() != null) {
+                preparedStatement.setLong(7, card.getAccount().getId());
+            } else {
+                preparedStatement.setNull(7, Types.BIGINT);
+            }
+
+            if (card.getReceivedFromIssuingBank() != null) {
+                preparedStatement.setTimestamp(8, Timestamp.valueOf(card.getReceivedFromIssuingBank()));
+            } else {
+                preparedStatement.setNull(8, Types.TIMESTAMP);
+            }
+
+            if (card.getSentToIssuingBank() != null) {
+                preparedStatement.setTimestamp(9, Timestamp.valueOf(card.getSentToIssuingBank()));
+            } else {
+                preparedStatement.setNull(9, Types.TIMESTAMP);
+            }
+
             preparedStatement.executeUpdate();
             System.out.println("Card добавлена: " + card);
         } catch (SQLException e) {
@@ -80,12 +111,6 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         }
     }
 
-    /**
-     * Deletes a Card entity from the database by its unique identifier.
-     *
-     * @param id The unique identifier of the Card to be deleted
-     * @throws SQLException If a database access error occurs during card deletion
-     */
     @Override
     public void delete(Long id) {
         String sql = "DELETE FROM card WHERE id = ?";
@@ -98,12 +123,6 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         }
     }
 
-    /**
-     * Retrieves all Card entities from the database.
-     *
-     * @return A list of all Card objects stored in the card table
-     * @throws SQLException If a database access error occurs during card retrieval
-     */
     @Override
     public List<Card> findAll() {
         List<Card> cards = new ArrayList<>();
@@ -111,18 +130,7 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Card card = new Card(
-                        resultSet.getLong("id"),
-                        resultSet.getString("card_number"),
-                        resultSet.getDate("expiration_date").toLocalDate(),
-                        resultSet.getString("holder_name"),
-                        resultSet.getLong("card_status_id"),
-                        resultSet.getLong("payment_system_id"),
-                        resultSet.getLong("account_id"),
-                        resultSet.getTimestamp("received_from_issuing_bank"),
-                        resultSet.getTimestamp("sent_to_issuing_bank")
-                );
-                cards.add(card);
+                cards.add(cardMapper.mapResultSetToCard(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении всех Card: " + e.getMessage());
@@ -130,13 +138,6 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
         return cards;
     }
 
-    /**
-         * Retrieves a Card entity from the database by its unique identifier.
-         *
-         * @param id The unique identifier of the Card to be retrieved
-         * @return An Optional containing the Card if found, or an empty Optional if no Card matches the given id
-         * @throws SQLException If a database access error occurs during card retrieval
-         */
     @Override
     public Optional<Card> findById(Long id) {
         String sql = "SELECT id, card_number, expiration_date, holder_name, card_status_id, payment_system_id, account_id, received_from_issuing_bank, sent_to_issuing_bank FROM card WHERE id = ?";
@@ -144,18 +145,7 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Card card = new Card(
-                        resultSet.getLong("id"),
-                        resultSet.getString("card_number"),
-                        resultSet.getDate("expiration_date").toLocalDate(),
-                        resultSet.getString("holder_name"),
-                        resultSet.getLong("card_status_id"),
-                        resultSet.getLong("payment_system_id"),
-                        resultSet.getLong("account_id"),
-                        resultSet.getTimestamp("received_from_issuing_bank"),
-                        resultSet.getTimestamp("sent_to_issuing_bank")
-                );
-                return Optional.of(card);
+                return Optional.of(cardMapper.mapResultSetToCard(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Card по id: " + e.getMessage());
@@ -170,11 +160,37 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             preparedStatement.setString(1, card.getCardNumber());
             preparedStatement.setDate(2, Date.valueOf(card.getExpirationDate()));
             preparedStatement.setString(3, card.getHolderName());
-            preparedStatement.setLong(4, card.getCardStatusId());
-            preparedStatement.setLong(5, card.getPaymentSystemId());
-            preparedStatement.setLong(6, card.getAccountId());
-            preparedStatement.setTimestamp(7, card.getReceivedFromIssuingBank());
-            preparedStatement.setTimestamp(8, card.getSentToIssuingBank());
+
+            if (card.getCardStatus() != null) {
+                preparedStatement.setLong(4, card.getCardStatus().getId());
+            } else {
+                preparedStatement.setNull(4, Types.BIGINT);
+            }
+
+            if (card.getPaymentSystem() != null) {
+                preparedStatement.setLong(5, card.getPaymentSystem().getId());
+            } else {
+                preparedStatement.setNull(5, Types.BIGINT);
+            }
+
+            if (card.getAccount() != null) {
+                preparedStatement.setLong(6, card.getAccount().getId());
+            } else {
+                preparedStatement.setNull(6, Types.BIGINT);
+            }
+
+            if (card.getReceivedFromIssuingBank() != null) {
+                preparedStatement.setTimestamp(7, Timestamp.valueOf(card.getReceivedFromIssuingBank()));
+            } else {
+                preparedStatement.setNull(7, Types.TIMESTAMP);
+            }
+
+            if (card.getSentToIssuingBank() != null) {
+                preparedStatement.setTimestamp(8, Timestamp.valueOf(card.getSentToIssuingBank()));
+            } else {
+                preparedStatement.setNull(8, Types.TIMESTAMP);
+            }
+
             preparedStatement.setLong(9, card.getId());
             preparedStatement.executeUpdate();
             System.out.println("Card обновлена: " + card);

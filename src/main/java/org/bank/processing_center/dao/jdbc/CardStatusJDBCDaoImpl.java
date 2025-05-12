@@ -53,7 +53,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
         String sql = "INSERT INTO card_status (id, card_status_name) VALUES (?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, cardStatus.getId());
-            preparedStatement.setString(2, cardStatus.getCardStatusName());
+            preparedStatement.setString(2, cardStatus.getStatus_name());
             preparedStatement.executeUpdate();
             System.out.println("CardStatus добавлен: " + cardStatus);
         } catch (SQLException e) {
@@ -115,7 +115,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     public void update(CardStatus cardStatus) {
         String sql = "UPDATE card_status SET card_status_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setString(1, cardStatus.getCardStatusName());
+            preparedStatement.setString(1, cardStatus.getStatus_name());
             preparedStatement.setLong(2, cardStatus.getId());
             preparedStatement.executeUpdate();
             System.out.println("CardStatus обновлен: " + cardStatus);

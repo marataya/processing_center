@@ -1,13 +1,19 @@
 package org.bank.processing_center.dao.jdbc;
 
-import org.bank.processing_center.configuration.JDBCConfig;
-import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.model.Account;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.bank.processing_center.configuration.JDBCConfig;
+import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.mapper.AccountMapper;
+import org.bank.processing_center.model.Account;
+
 
 public class AccountJDBCDaoImpl implements Dao<Account, Long> {
 
@@ -30,6 +36,8 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
             System.err.println("Ошибка при создании таблицы Account: " + e.getMessage());
         }
     }
+
+ private AccountMapper accountMapper = new AccountMapper();
 
     @Override
     public void dropTable() {
@@ -59,9 +67,8 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, account.getId());
             preparedStatement.setString(2, account.getAccountNumber());
-            preparedStatement.setDouble(3, account.getBalance());
-            preparedStatement.setLong(4, account.getCurrencyId());
-            preparedStatement.setLong(5, account.getIssuingBankId());
+            preparedStatement.setBigDecimal(3, account.getBalance());
+            preparedStatement.setLong(4, account.getCurrency().getId());            preparedStatement.setLong(5, account.getIssuingBank().getId());
             preparedStatement.executeUpdate();
             System.out.println("Account добавлен: " + account);
         } catch (SQLException e) {
@@ -88,13 +95,7 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Account account = new Account(
-                        resultSet.getLong("id"),
-                        resultSet.getString("account_number"),
-                        resultSet.getDouble("balance"),
-                        resultSet.getLong("currency_id"),
-                        resultSet.getLong("issuing_bank_id")
-                );
+                Account account = accountMapper.mapResultSetToAccount(resultSet);
                 accounts.add(account);
             }
         } catch (SQLException e) {
@@ -110,13 +111,7 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Account account = new Account(
-                        resultSet.getLong("id"),
-                        resultSet.getString("account_number"),
-                        resultSet.getDouble("balance"),
-                        resultSet.getLong("currency_id"),
-                        resultSet.getLong("issuing_bank_id")
-                );
+                Account account = accountMapper.mapResultSetToAccount(resultSet);
                 return Optional.of(account);
             }
         } catch (SQLException e) {
@@ -130,9 +125,8 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
         String sql = "UPDATE account SET account_number = ?, balance = ?, currency_id = ?, issuing_bank_id = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, account.getAccountNumber());
-            preparedStatement.setDouble(2, account.getBalance());
-            preparedStatement.setLong(3, account.getCurrencyId());
-            preparedStatement.setLong(4, account.getIssuingBankId());
+            preparedStatement.setBigDecimal(2, account.getBalance());
+            preparedStatement.setLong(3, account.getCurrency().getId());            preparedStatement.setLong(4, account.getIssuingBank().getId());
             preparedStatement.setLong(5, account.getId());
             preparedStatement.executeUpdate();
             System.out.println("Account обновлен: " + account);
@@ -161,13 +155,7 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
             preparedStatement.setString(1, accountNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                Account account = new Account(
-                        resultSet.getLong("id"),
-                        resultSet.getString("account_number"),
-                        resultSet.getDouble("balance"),
-                        resultSet.getLong("currency_id"),
-                        resultSet.getLong("issuing_bank_id")
-                );
+                Account account = accountMapper.mapResultSetToAccount(resultSet);
                 return Optional.of(account);
             }
         } catch (SQLException e) {
@@ -183,13 +171,7 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
             preparedStatement.setLong(1, issuingBankId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Account account = new Account(
-                        resultSet.getLong("id"),
-                        resultSet.getString("account_number"),
-                        resultSet.getDouble("balance"),
-                        resultSet.getLong("currency_id"),
-                        resultSet.getLong("issuing_bank_id")
-                );
+                Account account = accountMapper.mapResultSetToAccount(resultSet);
                 accounts.add(account);
             }
         } catch (SQLException e) {
