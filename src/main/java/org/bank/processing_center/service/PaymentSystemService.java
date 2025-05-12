@@ -11,8 +11,9 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
     private final Dao<PaymentSystem, Long> paymentSystemDao;
 
- public PaymentSystemService(String daoType) {
- this.paymentSystemDao = DaoFactory.getDao(PaymentSystem.class, daoType);
+    public PaymentSystemService(String daoType) {
+        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
+        this.paymentSystemDao = daoFactory.getPaymentSystemDao();
     }
 
     @Override
@@ -57,6 +58,7 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
     /**
      * Finds a payment system by name
+     * 
      * @param name Payment system name to search for
      * @return Optional containing the payment system if found
      */
@@ -68,6 +70,7 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
     /**
      * Determines the payment system based on card number prefix
+     * 
      * @param cardNumber Card number
      * @return Payment system name or "Unknown" if not recognized
      */

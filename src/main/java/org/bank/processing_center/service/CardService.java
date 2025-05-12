@@ -12,7 +12,8 @@ public class CardService implements Service<Card, Long> {
     private final Dao<Card, Long> cardDao;
 
     public CardService(String daoType) {
-        this.cardDao = DaoFactory.getDao(Card.class, daoType);
+        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
+        this.cardDao = daoFactory.getCardDao();
     }
 
     @Override

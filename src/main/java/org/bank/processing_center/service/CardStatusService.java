@@ -12,7 +12,8 @@ public class CardStatusService implements Service<CardStatus, Long> {
     private final Dao<CardStatus, Long> cardStatusDao;
 
     public CardStatusService(String daoType) {
-        this.cardStatusDao = DaoFactory.getDao(CardStatus.class, daoType);
+        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
+        this.cardStatusDao = daoFactory.getCardStatusDao();
     }
 
     @Override
@@ -62,7 +63,21 @@ public class CardStatusService implements Service<CardStatus, Long> {
      */
     public Optional<CardStatus> findByName(String statusName) {
         return cardStatusDao.findAll().stream()
-                .filter(status -> status.getCardStatusName().equalsIgnoreCase(statusName))
+                .filter(status -> status.getStatus_name().equalsIgnoreCase(statusName))
                 .findFirst();
+    }
+
+    /**
+     * Finds a card status name by ID
+     * @param id ID of the card status to search for
+     * @return The card status name if found, null otherwise
+     */
+    public String getStatusNameById(Long id) {
+        Optional<CardStatus> cardStatusOpt = cardStatusDao.findById(id);
+        if (cardStatusOpt.isPresent()) {
+            CardStatus cardStatus = cardStatusOpt.get();
+            return cardStatus.getStatus_name();
+        }
+        return null;
     }
 }
