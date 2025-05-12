@@ -7,21 +7,32 @@ import org.bank.processing_center.configuration.HibernateConfig;
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.MerchantCategoryCode;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
 public class MerchantCategoryCodeHibernateDaoImpl implements Dao<MerchantCategoryCode, Long> {
+
+    private final SessionFactory sessionFactory;
+
+    public MerchantCategoryCodeHibernateDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void createTable() {
-        // In Hibernate, table creation is typically handled by the Hibernate configuration (e.g., hbm2ddl.auto)
+        // In Hibernate, table creation is typically handled by the Hibernate
+        // configuration (e.g., hbm2ddl.auto)
         // This method can be left empty or used for any manual schema setup if needed.
         System.out.println("Table creation managed by Hibernate.");
     }
 
     @Override
     public void dropTable() {
-        // In Hibernate, table dropping is typically handled by the Hibernate configuration (e.g., hbm2ddl.auto)
-        // This method can be left empty or used for any manual schema cleanup if needed.
+        // In Hibernate, table dropping is typically handled by the Hibernate
+        // configuration (e.g., hbm2ddl.auto)
+        // This method can be left empty or used for any manual schema cleanup if
+        // needed.
         System.out.println("Table dropping managed by Hibernate.");
     }
 

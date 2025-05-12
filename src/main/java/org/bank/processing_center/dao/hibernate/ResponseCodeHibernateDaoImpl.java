@@ -4,12 +4,19 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.ResponseCode;
 import org.bank.processing_center.configuration.HibernateConfig;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ResponseCodeHibernateDaoImpl implements Dao<ResponseCode, Long> {
+
+    private final SessionFactory sessionFactory;
+
+    public ResponseCodeHibernateDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void createTable() {

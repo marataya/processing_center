@@ -28,8 +28,8 @@ public class CardMapper {
         Long cardStatusId = resultSet.getLong("card_status_id");
         Long paymentSystemId = resultSet.getLong("payment_system_id");
         Long accountId = resultSet.getLong("account_id");
-        Timestamp receivedFromIssuingBankTimestamp = resultSet.getTimestamp("received_from_issuing_bank");
-        Timestamp sentToIssuingBankTimestamp = resultSet.getTimestamp("sent_to_issuing_bank");
+        Timestamp receivedFromIssuingBank = resultSet.getTimestamp("received_from_issuing_bank");
+        Timestamp sentToIssuingBank = resultSet.getTimestamp("sent_to_issuing_bank");
 
         // Fetch related objects using placeholder DAOs
         CardStatus cardStatus = cardStatusDao.findById(cardStatusId).orElse(null); // Handle null appropriately
@@ -37,9 +37,6 @@ public class CardMapper {
         Account account = accountDao.findById(accountId).orElse(null); // Handle null appropriately
 
         // Construct and return Card object
-        LocalDateTime receivedFromIssuingBank = receivedFromIssuingBankTimestamp != null ? receivedFromIssuingBankTimestamp.toLocalDateTime() : null;
-        LocalDateTime sentToIssuingBank = sentToIssuingBankTimestamp != null ? sentToIssuingBankTimestamp.toLocalDateTime() : null;
-
         return new Card(
                 id,
                 cardNumber,

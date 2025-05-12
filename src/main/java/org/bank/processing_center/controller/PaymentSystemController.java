@@ -4,16 +4,17 @@ import org.bank.processing_center.model.PaymentSystem;
 import org.bank.processing_center.service.PaymentSystemService;
 import org.bank.processing_center.view.ConsoleView;
 
-import java.util.List;
+import java.util.List;import java.util.Optional;
 
 /**
  * Controller for PaymentSystem-related operations
  */
-public class PaymentSystemController {
+public class PaymentSystemController implements Controller<PaymentSystem, Long> {
 
     private final PaymentSystemService paymentSystemService;
-    private final ConsoleView view;
 
+    private final ConsoleView view;
+    
     public PaymentSystemController(PaymentSystemService paymentSystemService, ConsoleView view) {
         this.paymentSystemService = paymentSystemService;
         this.view = view;
@@ -21,8 +22,8 @@ public class PaymentSystemController {
 
     /**
      * Creates the payment system table
-     */
-    public void createPaymentSystemTable() {
+     */    
+    public void createTable() {
         try {
             paymentSystemService.createTable();
             view.showMessage("Таблица платежных систем создана успешно.");
@@ -33,12 +34,13 @@ public class PaymentSystemController {
 
     /**
      * Adds a new payment system
-     * @param paymentSystem PaymentSystem to add
-     */
-    public void addPaymentSystem(PaymentSystem paymentSystem) {
+     * @param entity PaymentSystem to add
+     */    
+    @Override
+    public void addEntity(PaymentSystem entity) {
         try {
-            paymentSystemService.save(paymentSystem);
-            view.showMessage("Платежная система добавлена: " + paymentSystem);
+            paymentSystemService.save(entity);
+            view.showMessage("Платежная система добавлена: " + entity);
         } catch (Exception e) {
             view.showError("Ошибка при добавлении payment_system: " + e.getMessage());
         }
@@ -46,11 +48,12 @@ public class PaymentSystemController {
 
     /**
      * Retrieves and displays all payment systems
-     */
-    public List<PaymentSystem> getAllPaymentSystems() {
+     */    
+    @Override    
+    public List<PaymentSystem> getAllEntities() {
         try {
             List<PaymentSystem> systems = paymentSystemService.findAll();
-            view.showPaymentSystemList(systems);
+            view.showList(systems, "Payment Systems List:");
             return systems;
         } catch (Exception e) {
             view.showError("Ошибка при получении списка payment_system: " + e.getMessage());
@@ -60,8 +63,8 @@ public class PaymentSystemController {
 
     /**
      * Clears the payment system table
-     */
-    public void clearPaymentSystemTable() {
+     */    
+    public void clearTable() {
         try {
             paymentSystemService.clearTable();
             view.showMessage("Таблица payment_system очищена.");
@@ -71,14 +74,45 @@ public class PaymentSystemController {
     }
 
     /**
-     * Drops the payment system table
+     * Drops the payment system table 
      */
-    public void dropPaymentSystemTable() {
+    @Override
+    public void dropTable() {
         try {
             paymentSystemService.dropTable();
             view.showMessage("Таблица payment_system удалена.");
         } catch (Exception e) {
             view.showError("Ошибка при удалении таблицы payment_system: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes an entity by ID
+     * @param id PaymentSystem ID
+     */
+    @Override
+    public void deleteEntity(Long id) {
+        paymentSystemService.delete(id);
+    }
+
+    /**
+     * Finds an entity by ID
+     * @param id Entity ID
+     * @return Optional containing the entity if found
+     * @Override
+     */
+    @Override
+    public Optional<PaymentSystem> findById(Long id) {
+        return paymentSystemService.findById(id);
+    }
+
+    @Override
+    public void updateEntity(PaymentSystem entity) {
+        try {
+ paymentSystemService.update(entity);
+            view.showMessage("Payment System updated: " + entity);
+        } catch (Exception e) {
+            view.showError("Error updating payment system: " + e.getMessage());
         }
     }
 }

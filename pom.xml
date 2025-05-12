@@ -26,9 +26,25 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.hibernate.orm</groupId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+        </dependency>
+        <!-- Hibernate Core dependency -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.0.0.Final</version>
+            <version>5.4.4.Final</version>
+          </dependency>
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -63,6 +79,8 @@
             <version>2.0.16</version>
             <scope>runtime</scope>
         </dependency>
+    
+
     </dependencies>
 
 </project>

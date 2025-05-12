@@ -3,13 +3,13 @@ package org.bank.processing_center.controller;
 import org.bank.processing_center.model.Account;
 import org.bank.processing_center.service.AccountService;
 import org.bank.processing_center.view.ConsoleView;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for Account-related operations
  */
-public class AccountController {
+public class AccountController implements Controller<Account, Long> {
 
     private final AccountService accountService;
     private final ConsoleView view;
@@ -22,7 +22,8 @@ public class AccountController {
     /**
      * Creates the account table
      */
-    public void createAccountTable() {
+    @Override
+    public void createTable() {
         try {
             accountService.createTable();
             view.showMessage("Таблица account создана успешно.");
@@ -33,9 +34,11 @@ public class AccountController {
 
     /**
      * Adds a new account
+     * 
      * @param account Account to add
      */
-    public void addAccount(Account account) {
+    @Override
+    public void addEntity(Account account) {
         try {
             accountService.save(account);
             view.showMessage("Счет добавлен: " + account);
@@ -47,10 +50,10 @@ public class AccountController {
     /**
      * Retrieves and displays all accounts
      */
-    public List<Account> getAllAccounts() {
+    @Override
+    public List<Account> getAllEntities() {
         try {
             List<Account> accounts = accountService.findAll();
-            view.showAccountList(accounts);
             return accounts;
         } catch (Exception e) {
             view.showError("Ошибка при получении списка account: " + e.getMessage());
@@ -60,21 +63,24 @@ public class AccountController {
 
     /**
      * Updates an account
+     * 
      * @param account Account with updated information
      */
-    public void updateAccount(Account account) {
+    @Override
+    public void updateEntity(Account account) {
         try {
             accountService.update(account);
             view.showMessage("Счет обновлен: " + account);
         } catch (Exception e) {
-            view.showError("Ошибка при обновлении счета в account: " + e.getMessage());
+            view.showError("Error updating account: " + e.getMessage());
         }
     }
 
     /**
      * Clears the account table
      */
-    public void clearAccountTable() {
+    @Override
+    public void clearTable() {
         try {
             accountService.clearTable();
             view.showMessage("Таблица счетов очищена.");
@@ -86,7 +92,8 @@ public class AccountController {
     /**
      * Drops the account table
      */
-    public void dropAccountTable() {
+    @Override
+    public void dropTable() {
         try {
             accountService.dropTable();
             view.showMessage("Таблица account удалена.");
@@ -94,4 +101,32 @@ public class AccountController {
             view.showError("Ошибка при удалении таблицы account: " + e.getMessage());
         }
     }
+
+    /**
+     * Deletes an account by ID
+     * 
+     * @param id Account ID
+     */
+    @Override
+    public void deleteEntity(Long id) {
+        accountService.delete(id);
+    }
+
+    @Override
+    public Optional<Account> findById(Long id) {
+        try {
+            Optional<Account> account = accountService.findById(id);
+            if (account.isPresent()) {
+                view.showMessage(account.toString());
+                return account;
+            } else {
+                view.showMessage("Счет с ID " + id + " не найден.");
+                return null;
+            }
+        } catch (Exception e) {
+            view.showError("Ошибка при поиске счета в Account: " + e.getMessage());
+            return null;
+        }
+    }
+
 }

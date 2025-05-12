@@ -3,13 +3,13 @@ package org.bank.processing_center.controller;
 import org.bank.processing_center.model.CardStatus;
 import org.bank.processing_center.service.CardStatusService;
 import org.bank.processing_center.view.ConsoleView;
-
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Controller for CardStatus-related operations
  */
-public class CardStatusController {
+public class CardStatusController implements Controller<CardStatus, Long> {
 
     private final CardStatusService cardStatusService;
     private final ConsoleView view;
@@ -20,9 +20,10 @@ public class CardStatusController {
     }
 
     /**
-     * Creates the card status table
+     * Creates the entity table
      */
-    public void createCardStatusTable() {
+    @Override
+    public void createTable() {
         try {
             cardStatusService.createTable();
             view.showMessage("Таблица статусов карт создана успешно.");
@@ -32,10 +33,12 @@ public class CardStatusController {
     }
 
     /**
-     * Adds a new card status
-     * @param cardStatus CardStatus to add
+     * Adds a new entity
+     * 
+     * @param cardStatus Entity to add
      */
-    public void addCardStatus(CardStatus cardStatus) {
+    @Override
+    public void addEntity(CardStatus cardStatus) {
         try {
             cardStatusService.save(cardStatus);
             view.showMessage("Статус карты добавлен: " + cardStatus);
@@ -45,12 +48,13 @@ public class CardStatusController {
     }
 
     /**
-     * Retrieves and displays all card statuses
+     * Retrieves and displays all entities
      */
-    public List<CardStatus> getAllCardStatuses() {
+    @Override
+    public List<CardStatus> getAllEntities() {
         try {
             List<CardStatus> statuses = cardStatusService.findAll();
-            view.showCardStatusList(statuses);
+            view.showList(statuses, "Card Statuses List:");
             return statuses;
         } catch (Exception e) {
             view.showError("Ошибка при получении списка card_status: " + e.getMessage());
@@ -59,9 +63,10 @@ public class CardStatusController {
     }
 
     /**
-     * Clears the card status table
+     * Clears the entity table
      */
-    public void clearCardStatusTable() {
+    @Override
+    public void clearTable() {
         try {
             cardStatusService.clearTable();
             view.showMessage("Таблица card_status очищена.");
@@ -71,9 +76,10 @@ public class CardStatusController {
     }
 
     /**
-     * Drops the card status table
+     * Drops the entity table
      */
-    public void dropCardStatusTable() {
+    @Override
+    public void dropTable() {
         try {
             cardStatusService.dropTable();
             view.showMessage("Таблица статусов карт удалена.");
@@ -81,4 +87,47 @@ public class CardStatusController {
             view.showError("Ошибка при удалении таблицы card_status: " + e.getMessage());
         }
     }
+
+    /**
+     * Deletes an entity by ID
+     * 
+     * @param id Entity ID
+     */
+    @Override
+    public void deleteEntity(Long id) {
+        try {
+            cardStatusService.delete(id);
+            view.showMessage("Статус карты с ID " + id + " удален.");
+        } catch (Exception e) {
+            view.showError("Ошибка при удалении card_status с ID " + id + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * Finds an entity by ID
+     * 
+     * @param id Entity ID
+     * @return Optional containing the entity if found
+     */
+    @Override
+    public Optional<CardStatus> findById(Long id) {
+        try {
+            return cardStatusService.findById(id);
+        } catch (Exception e) {
+            view.showError("Ошибка при поиске card_status по ID " + id + ": " + e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Updates an existing entity
+     * 
+     * @param cardStatus Entity to update
+     */
+    @Override
+    public void updateEntity(CardStatus cardStatus) {
+        cardStatusService.update(cardStatus);
+        view.showMessage("Card Status updated: " + cardStatus);
+    }
+
 }

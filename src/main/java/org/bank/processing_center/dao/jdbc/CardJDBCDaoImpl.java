@@ -93,15 +93,15 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             }
 
             if (card.getReceivedFromIssuingBank() != null) {
-                preparedStatement.setTimestamp(8, Timestamp.valueOf(card.getReceivedFromIssuingBank()));
+                preparedStatement.setTimestamp(8, card.getReceivedFromIssuingBank());
             } else {
                 preparedStatement.setNull(8, Types.TIMESTAMP);
             }
 
             if (card.getSentToIssuingBank() != null) {
-                preparedStatement.setTimestamp(9, Timestamp.valueOf(card.getSentToIssuingBank()));
+                preparedStatement.setTimestamp(9, card.getSentToIssuingBank());
             } else {
-                preparedStatement.setNull(9, Types.TIMESTAMP);
+                preparedStatement.setNull(9, Types.TIMESTAMP); // Corrected type
             }
 
             preparedStatement.executeUpdate();
@@ -180,15 +180,15 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             }
 
             if (card.getReceivedFromIssuingBank() != null) {
-                preparedStatement.setTimestamp(7, Timestamp.valueOf(card.getReceivedFromIssuingBank()));
+                preparedStatement.setTimestamp(7, card.getReceivedFromIssuingBank());
             } else {
                 preparedStatement.setNull(7, Types.TIMESTAMP);
             }
 
             if (card.getSentToIssuingBank() != null) {
-                preparedStatement.setTimestamp(8, Timestamp.valueOf(card.getSentToIssuingBank()));
+                preparedStatement.setTimestamp(8, card.getSentToIssuingBank());
             } else {
-                preparedStatement.setNull(8, Types.TIMESTAMP);
+                preparedStatement.setNull(8, Types.TIMESTAMP); // Corrected type
             }
 
             preparedStatement.setLong(9, card.getId());

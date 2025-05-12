@@ -1,5 +1,6 @@
 package org.bank.processing_center.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -49,9 +50,9 @@ public class Card {
     private Account account;
     
     @Column(name = "received_from_issuing_bank", nullable = false)
-    private LocalDateTime receivedFromIssuingBank;
+    private Timestamp receivedFromIssuingBank;
     
     @Column(name = "sent_to_issuing_bank", nullable = false)
-    private LocalDateTime sentToIssuingBank;
+    private Timestamp sentToIssuingBank;
 
 }

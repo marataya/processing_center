@@ -10,7 +10,7 @@ import org.hibernate.Transaction;
 // Implement Dao interface
 public class AccountHibernateDaoImpl implements HibernateDao<Account, Long> {
 
-    private final  SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public AccountHibernateDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

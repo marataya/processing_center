@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Controller for Card-related operations
  */
-public class CardController {
+public class CardController implements Controller<Card, Long> {
 
     private final CardService cardService;
     private final ConsoleView view;
@@ -23,7 +23,8 @@ public class CardController {
     /**
      * Creates the card table
      */
-    public void createCardTable() {
+    @Override
+    public void createTable() {
         try {
             cardService.createTable();
             view.showMessage("Таблица card создана успешно.");
@@ -34,9 +35,11 @@ public class CardController {
 
     /**
      * Adds a new card
+     * 
      * @param card Card to add
      */
-    public void addCard(Card card) {
+    @Override
+    public void addEntity(Card card) {
         try {
             cardService.save(card);
             view.showMessage("Карта добавлена: " + card);
@@ -48,10 +51,11 @@ public class CardController {
     /**
      * Retrieves and displays all cards
      */
-    public List<Card> getAllCards() {
+    @Override
+    public List<Card> getAllEntities() {
         try {
             List<Card> cards = cardService.findAll();
-            view.showCardList(cards);
+            view.showList(cards, "Cards List:");
             return cards;
         } catch (Exception e) {
             view.showError("Ошибка при получении списка из card: " + e.getMessage());
@@ -61,28 +65,31 @@ public class CardController {
 
     /**
      * Updates a card
+     * 
      * @param card Card with updated information
      */
-    public void updateCard(Card card) {
+    @Override
+    public void updateEntity(Card card) {
         try {
             cardService.update(card);
-            view.showMessage("Карта обновлена: " + card);
+            view.showMessage("Card updated: " + card);
         } catch (Exception e) {
-            view.showError("Ошибка при обновлении card: " + e.getMessage());
+            view.showError("Error updating card: " + e.getMessage());
         }
     }
 
     /**
      * Finds a card by ID
-     * @param id Card ID
+     * 
+     * @param id Entity ID
      * @return The found card or null
      */
-    public Card findCardById(Long id) {
+    @Override
+    public Optional<Card> findById(Long id) {
         try {
-            Optional<Card> cardOpt = cardService.findById(id);
-            if (cardOpt.isPresent()) {
-                Card card = cardOpt.get();
-                view.showCardDetails(card);
+            Optional<Card> card = cardService.findById(id);
+            if (card.isPresent()) {
+                view.showMessage(card.toString());
                 return card;
             } else {
                 view.showMessage("Карта с ID " + id + " не найдена.");
@@ -97,7 +104,8 @@ public class CardController {
     /**
      * Clears the card table
      */
-    public void clearCardTable() {
+    @Override
+    public void clearTable() {
         try {
             cardService.clearTable();
             view.showMessage("Таблица карт очищена.");
@@ -109,12 +117,23 @@ public class CardController {
     /**
      * Drops the card table
      */
-    public void dropCardTable() {
+    @Override
+    public void dropTable() {
         try {
             cardService.dropTable();
             view.showMessage("Таблица card удалена.");
         } catch (Exception e) {
             view.showError("Ошибка при удалении таблицы card: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteEntity(Long id) {
+        try {
+            cardService.delete(id);
+            view.showMessage("Карта с ID " + id + " удалена.");
+        } catch (Exception e) {
+            view.showError("Ошибка при удалении карты с ID " + id + " из card: " + e.getMessage());
         }
     }
 }

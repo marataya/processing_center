@@ -8,6 +8,8 @@
     pkgs.zulu17
     pkgs.maven
     pkgs.gh
+    pkgs.openssh
+    pkgs.xclip
   ];
 
   # Sets environment variables in the workspace
@@ -30,7 +32,7 @@
       "k--kato.intellij-idea-keybindings"
       "vscjava.vscode-java-pack"
       "redhat.vscode-xml"
-      "sourcegraph.cody-ai"
+      "sourcegraph.sourcegraph"
     ];
 
     # Workspace lifecycle hooks

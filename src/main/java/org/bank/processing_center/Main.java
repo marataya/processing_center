@@ -16,7 +16,7 @@ public class Main {
 
         try {
             // Initialize application controller
-            ApplicationController appController = new ApplicationController();
+            ApplicationController appController = new ApplicationController("jdbc");
 
             // Run the application
             appController.run();
