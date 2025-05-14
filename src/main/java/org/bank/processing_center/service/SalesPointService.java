@@ -2,9 +2,9 @@ package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.dao.factory.DaoFactory;
+import org.bank.processing_center.model.SalesPoint;
 
 import java.util.List;
-import org.bank.processing_center.model.SalesPoint;
 
 public class SalesPointService implements Service<SalesPoint, Long> {
 

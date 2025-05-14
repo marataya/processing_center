@@ -1,15 +1,15 @@
 package org.bank.processing_center.mapper;
 
+import org.bank.processing_center.dao.jdbc.CurrencyJDBCDaoImpl;
+import org.bank.processing_center.dao.jdbc.IssuingBankJDBCDaoImpl;
 import org.bank.processing_center.model.Account;
 import org.bank.processing_center.model.Currency;
 import org.bank.processing_center.model.IssuingBank;
-import org.bank.processing_center.dao.jdbc.CurrencyJDBCDaoImpl; // Placeholder - replace with actual import
-import org.bank.processing_center.dao.jdbc.IssuingBankJDBCDaoImpl; // Placeholder - replace with actual import
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.math.BigDecimal;
-import java.util.Optional; // Import Optional
+import java.util.Optional;
 
 public class AccountMapper {
 

@@ -1,9 +1,10 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import java.util.List;
 import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.Terminal;
+
+import java.util.List;
 
 public class TerminalService implements Service<Terminal, Long> {
 

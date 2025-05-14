@@ -1,11 +1,11 @@
 package org.bank.processing_center.service;
 
-import java.util.Optional;
-import java.util.List;
-
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.AcquiringBank;
+
+import java.util.List;
+import java.util.Optional;
 
 public class AcquiringBankService implements Service<AcquiringBank, Long> {
 

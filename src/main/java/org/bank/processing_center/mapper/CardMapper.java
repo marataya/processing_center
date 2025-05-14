@@ -11,7 +11,6 @@ import org.bank.processing_center.model.PaymentSystem;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 public class CardMapper {

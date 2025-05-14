@@ -1,15 +1,12 @@
 package org.bank.processing_center.mapper;
 
 import org.bank.processing_center.dao.jdbc.*;
-import org.bank.processing_center.model.*;
+import org.bank.processing_center.model.Transaction;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class TransactionMapper {
 

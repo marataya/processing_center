@@ -2,9 +2,7 @@ package org.bank.processing_center.mapper;
 
 import org.bank.processing_center.dao.jdbc.AcquiringBankJDBCDaoImpl;
 import org.bank.processing_center.dao.jdbc.TerminalJDBCDaoImpl;
-import org.bank.processing_center.model.AcquiringBank;
 import org.bank.processing_center.model.SalesPoint;
-import org.bank.processing_center.model.Terminal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
