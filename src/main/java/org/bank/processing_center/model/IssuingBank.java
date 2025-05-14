@@ -2,8 +2,8 @@ package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "issuing_banks")
@@ -14,6 +14,7 @@ public class IssuingBank {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;              // Уникальный идентификатор банка-эмитента.
 
     @Column(name = "bic", nullable = false, length = 9)

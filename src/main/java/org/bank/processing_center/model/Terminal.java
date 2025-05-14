@@ -1,11 +1,14 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "terminal")
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Terminal {
     @Id

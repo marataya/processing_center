@@ -1,25 +1,19 @@
 package org.bank.processing_center.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
-import lombok.Data;
-
 @Entity
 @Table(name = "transaction")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Transaction {
 
     @Id
@@ -56,7 +50,7 @@ public class Transaction {
     @JoinColumn(name = "response_code_id")
     private ResponseCode responseCode;
 
-    @Column(name = "authorization_code")
+    @Column(name = "authorization_code", length=6)
     private String authorizationCode;
 
     @Column(name = "received_from_issuing_bank")
