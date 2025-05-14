@@ -1,11 +1,11 @@
 package org.bank.processing_center.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.bank.processing_center.model.Currency;
 import org.bank.processing_center.service.CurrencyService;
 import org.bank.processing_center.view.ConsoleView;
+
+import java.util.List;
+import java.util.Optional;
 
 public class CurrencyController implements Controller<Currency, Long> {
 
