@@ -111,10 +111,16 @@ public class DaoFactory {
 
     public static synchronized DaoFactory getInstance(String daoType, SessionFactory sessionFactory) {
         if ("jdbc".equalsIgnoreCase(daoType)) {
+            if (jdbcInstance == null) {
+                jdbcInstance = new DaoFactory("jdbc");
+            }
             return jdbcInstance;
         } else if ("hibernate".equalsIgnoreCase(daoType)) {
+            if (sessionFactory == null) { // Check if sessionFactory is provided for hibernate
+                throw new IllegalArgumentException("Hibernate DAO type requires a SessionFactory.");
+            }
             if (hibernateInstance == null) {
-                hibernateInstance = new DaoFactory("hibernate");
+                hibernateInstance = new DaoFactory("hibernate", sessionFactory); // Use the constructor with SessionFactory
             }
             return hibernateInstance;
         } else {

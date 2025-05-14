@@ -32,9 +32,9 @@
         </dependency>
         <!-- Hibernate Core dependency -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.4.4.Final</version>
+            <version>6.6.14.Final</version>
           </dependency>
         <dependency>
             <groupId>jakarta.transaction</groupId>

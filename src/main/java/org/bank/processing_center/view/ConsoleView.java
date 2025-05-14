@@ -14,7 +14,7 @@ public class ConsoleView {
     }
 
     public void showError(String errorMessage) {
-        System.err.println("ERROR: " + errorMessage);
+        System.err.println("Error: " + errorMessage);
     }
 
     public <T> void showList(List<T> items, String title) {

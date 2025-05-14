@@ -1,6 +1,6 @@
 package org.bank.processing_center.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
