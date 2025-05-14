@@ -18,7 +18,7 @@ public class HibernateConfig {
                 Properties settings = new Properties();
                 settings.put("hibernate.connection.driver_class", "org.postgresql.Driver");
                 settings.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/processing_center_db");
-                settings.put("hibernate.connection.username", "user");
+                settings.put("hibernate.connection.username", "postgres");
                 settings.put("hibernate.connection.password", "pass");
                 settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                 settings.put("hibernate.show_sql", "true");

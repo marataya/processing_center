@@ -1,18 +1,14 @@
 package org.bank.processing_center.dao.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.mapper.AccountMapper;
 import org.bank.processing_center.model.Account;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 public class AccountJDBCDaoImpl implements Dao<Account, Long> {

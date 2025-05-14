@@ -1,14 +1,13 @@
 package org.bank.processing_center.dao.hibernate;
 
-import java.util.List;
-import java.util.Optional;
-
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Card;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.bank.processing_center.configuration.HibernateConfig;
 import org.hibernate.Transaction;
-import org.bank.processing_center.dao.Dao;
+
+import java.util.List;
+import java.util.Optional;
 
 public class CardHibernateDaoImpl implements Dao<Card, Long> {
 

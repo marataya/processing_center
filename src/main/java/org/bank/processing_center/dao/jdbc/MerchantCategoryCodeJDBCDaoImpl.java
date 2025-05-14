@@ -11,64 +11,73 @@ import java.util.Optional;
 
 public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode, Long> {
 
+    // Define actual column names as they should be in your 'merchant_category_code' table
+    private static final String TABLE_NAME = "merchant_category_code";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_MCC_CODE = "mcc_code"; // For the 4-digit code like "5411"
+    private static final String COLUMN_MCC_DESCRIPTION = "mcc_description"; // For the descriptive text
+
     @Override
     public void createTable() {
-        String sql = """
-                CREATE TABLE IF NOT EXISTS merchant_category_code (
-                id BIGINT PRIMARY KEY,
-                mcc VARCHAR(255) UNIQUE NOT NULL,
-                description VARCHAR(255)
-                )""";
+        String sql = String.format("""
+                CREATE TABLE IF NOT EXISTS %s (
+                    %s BIGINT PRIMARY KEY,
+                    %s VARCHAR(4) UNIQUE NOT NULL,
+                    %s VARCHAR(255) NOT NULL
+                )""", TABLE_NAME, COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION);
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            System.out.println("Таблица merchant_category_code создана (или уже существовала).");
+            System.out.println("Таблица " + TABLE_NAME + " создана (или уже существовала).");
         } catch (SQLException e) {
-            System.err.println("Ошибка при создании таблицы merchant_category_code: " + e.getMessage());
+            System.err.println("Ошибка при создании таблицы " + TABLE_NAME + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS merchant_category_code CASCADE";
+        String sql = "DROP TABLE IF EXISTS " + TABLE_NAME + " CASCADE";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            System.out.println("Таблица merchant_category_code удалена (если существовала).");
+            System.out.println("Таблица " + TABLE_NAME + " удалена (если существовала).");
         } catch (SQLException e) {
-            System.err.println("Ошибка при удалении таблицы merchant_category_code: " + e.getMessage());
+            System.err.println("Ошибка при удалении таблицы " + TABLE_NAME + ": " + e.getMessage());
         }
     }
 
     @Override
     public void clearTable() {
-        String sql = "DELETE FROM merchant_category_code";
+        String sql = "DELETE FROM " + TABLE_NAME;
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            System.out.println("Таблица merchant_category_code очищена.");
+            System.out.println("Таблица " + TABLE_NAME + " очищена.");
         } catch (SQLException e) {
-            System.err.println("Ошибка при очистке таблицы merchant_category_code: " + e.getMessage());
+            System.err.println("Ошибка при очистке таблицы " + TABLE_NAME + ": " + e.getMessage());
         }
     }
 
     @Override
     public void save(MerchantCategoryCode mcc) {
-        String sql = "INSERT INTO merchant_category_code (id, mcc, mcc_name) VALUES (?, ?, ?)";
-        try (Connection connection = JDBCConfig.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        // Corrected INSERT statement to use COLUMN_MCC_DESCRIPTION instead of a non-existent "mcc_name"
+        String sql = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
+                TABLE_NAME, COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION);
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, mcc.getId());
-            preparedStatement.setString(2, mcc.getMcc());
-            preparedStatement.setString(3, mcc.getMccName());
+            preparedStatement.setString(2, mcc.getMcc()); // Assuming model field is 'code'
+            preparedStatement.setString(3, mcc.getMccName()); // Assuming model field is 'description'
             preparedStatement.executeUpdate();
             System.out.println("MerchantCategoryCode добавлен: " + mcc);
         } catch (SQLException e) {
+            // This is where your error "ERROR: column "mcc_name" of relation "merchant_category_code" does not exist" originates
             System.err.println("Ошибка при добавлении MerchantCategoryCode: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     public void delete(Long id) {
-        String sql = "DELETE FROM merchant_category_code WHERE id = ?";
-        try (Connection connection = JDBCConfig.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        String sql = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, COLUMN_ID);
+        try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("MerchantCategoryCode с id " + id + " удален.");
@@ -77,58 +86,65 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
         }
     }
 
+    private MerchantCategoryCode mapResultSetToMcc(ResultSet resultSet) throws SQLException {
+        MerchantCategoryCode mcc = new MerchantCategoryCode();
+        mcc.setId(resultSet.getLong(COLUMN_ID));
+        mcc.setMcc(resultSet.getString(COLUMN_MCC_CODE));
+        mcc.setMccName(resultSet.getString(COLUMN_MCC_DESCRIPTION));
+        return mcc;
+    }
+
     @Override
     public List<MerchantCategoryCode> findAll() {
         List<MerchantCategoryCode> mccs = new ArrayList<>();
-        String sql = "SELECT id, mcc, mcc_name FROM merchant_category_code";
+        String sql = String.format("SELECT %s, %s, %s FROM %s",
+                COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION, TABLE_NAME);
         try (Connection connection = JDBCConfig.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sql)) {
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                MerchantCategoryCode mcc = new MerchantCategoryCode();
-                mcc.setId(resultSet.getLong("id"));
-                mcc.setMcc(resultSet.getString("mcc"));
-                mcc.setMccName(resultSet.getString("mcc_name"));
-                mccs.add(mcc);
+                mccs.add(mapResultSetToMcc(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении всех MerchantCategoryCode: " + e.getMessage());
+            e.printStackTrace();
         }
         return mccs;
     }
 
     @Override
     public Optional<MerchantCategoryCode> findById(Long id) {
-        String sql = "SELECT id, mcc, mcc_name FROM merchant_category_code WHERE id = ?";
+        String sql = String.format("SELECT %s, %s, %s FROM %s WHERE %s = ?",
+                COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION, TABLE_NAME, COLUMN_ID);
         try (Connection connection = JDBCConfig.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                MerchantCategoryCode mcc = new MerchantCategoryCode();
-                mcc.setId(resultSet.getLong("id"));
-                mcc.setMcc(resultSet.getString("mcc"));
-                mcc.setMccName(resultSet.getString("mcc_name"));
-                return Optional.of(mcc);
+                return Optional.of(mapResultSetToMcc(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении MerchantCategoryCode по id: " + e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
 
     @Override
     public void update(MerchantCategoryCode mcc) {
-        String sql = "UPDATE merchant_category_code SET mcc = ?, mcc_name = ? WHERE id = ?";
+        // Corrected UPDATE statement
+        String sql = String.format("UPDATE %s SET %s = ?, %s = ? WHERE %s = ?",
+                TABLE_NAME, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION, COLUMN_ID);
         try (Connection connection = JDBCConfig.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, mcc.getMcc());
             preparedStatement.setString(2, mcc.getMccName());
-            preparedStatement.setLong(3, mcc.getId()); // Assuming getId() is correct for the primary key
+            preparedStatement.setLong(3, mcc.getId());
             preparedStatement.executeUpdate();
             System.out.println("MerchantCategoryCode обновлен: " + mcc);
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении MerchantCategoryCode: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

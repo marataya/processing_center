@@ -14,7 +14,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
     @Override
     public void createTable() {
         String sql = """
-                CREATE TABLE IF NOT EXISTS response_codes (
+                CREATE TABLE IF NOT EXISTS response_code (
                 id BIGINT PRIMARY KEY,
                 error_code VARCHAR(255) UNIQUE NOT NULL,
                 error_description VARCHAR(255),
@@ -30,7 +30,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public void dropTable() {
-        String sql = "DROP TABLE IF EXISTS response_codes CASCADE";
+        String sql = "DROP TABLE IF EXISTS response_code CASCADE";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица ResponseCode удалена (если существовала).");
@@ -41,7 +41,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public void clearTable() {
-        String sql = "DELETE FROM response_codes";
+        String sql = "DELETE FROM response_code";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица ResponseCode очищена.");
@@ -52,7 +52,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public void save(ResponseCode responseCode) {
-        String sql = "INSERT INTO response_codes (id, error_code, error_description, error_level) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO response_code (id, error_code, error_description, error_level) VALUES (?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, responseCode.getId());
             preparedStatement.setString(2, responseCode.getErrorCode());
@@ -67,7 +67,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public void delete(Long id) {
-        String sql = "DELETE FROM response_codes WHERE id = ?";
+        String sql = "DELETE FROM response_code WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
@@ -80,7 +80,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
     @Override
     public List<ResponseCode> findAll() {
         List<ResponseCode> responseCodes = new ArrayList<>();
-        String sql = "SELECT id, error_code, error_description, error_level FROM response_codes";
+        String sql = "SELECT id, error_code, error_description, error_level FROM response_code";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -99,7 +99,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public Optional<ResponseCode> findById(Long id) {
-        String sql = "SELECT id, error_code, error_description, error_level FROM response_codes WHERE id = ?";
+        String sql = "SELECT id, error_code, error_description, error_level FROM response_code WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -118,7 +118,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
     @Override
     public void update(ResponseCode responseCode) {
-        String sql = "UPDATE response_codes SET error_code = ?, error_description = ?, error_level = ? WHERE id = ?";
+        String sql = "UPDATE response_code SET error_code = ?, error_description = ?, error_level = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, responseCode.getErrorCode());
             preparedStatement.setString(2, responseCode.getErrorDescription());

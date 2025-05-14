@@ -53,7 +53,7 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
     public void save(AcquiringBank acquiringBank) {
         String sql = "INSERT INTO acquiring_bank (id, bic, abbreviated_name) VALUES (?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setLong(1, acquiringBank.getAcquiringBankId());
+            preparedStatement.setLong(1, acquiringBank.getId());
             preparedStatement.setString(2, acquiringBank.getBic());
             preparedStatement.setString(3, acquiringBank.getAbbreviatedName());
             preparedStatement.executeUpdate();
@@ -83,7 +83,7 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 AcquiringBank acquiringBank = new AcquiringBank();
-                acquiringBank.setAcquiringBankId(resultSet.getLong("id"));
+                acquiringBank.setId(resultSet.getLong("id"));
                 acquiringBank.setBic(resultSet.getString("bic"));
                 acquiringBank.setAbbreviatedName(resultSet.getString("abbreviated_name"));
                 acquiringBanks.add(acquiringBank);
@@ -102,7 +102,7 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 AcquiringBank acquiringBank = new AcquiringBank();
-                acquiringBank.setAcquiringBankId(resultSet.getLong("id"));
+                acquiringBank.setId(resultSet.getLong("id"));
                 acquiringBank.setBic(resultSet.getString("bic"));
                 acquiringBank.setAbbreviatedName(resultSet.getString("abbreviated_name"));
                 return Optional.of(acquiringBank);
@@ -119,7 +119,7 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, acquiringBank.getBic());
             preparedStatement.setString(2, acquiringBank.getAbbreviatedName());
-            preparedStatement.setLong(3, acquiringBank.getAcquiringBankId());
+            preparedStatement.setLong(3, acquiringBank.getId());
             preparedStatement.executeUpdate();
             System.out.println("AcquiringBank обновлен: " + acquiringBank);
         } catch (SQLException e) {

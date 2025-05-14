@@ -1,12 +1,12 @@
 package org.bank.processing_center.dao.hibernate;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.bank.processing_center.model.AcquiringBank;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+
+import java.util.List;
+import java.util.Optional;
 
 public class AcquiringBankHibernateDaoImpl implements HibernateDao<AcquiringBank, Long> {
     private final SessionFactory sessionFactory;

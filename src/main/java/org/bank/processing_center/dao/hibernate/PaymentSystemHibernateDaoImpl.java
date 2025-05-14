@@ -1,13 +1,12 @@
 package org.bank.processing_center.dao.hibernate;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.bank.processing_center.model.PaymentSystem;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+
+import java.util.List;
+import java.util.Optional;
 
 public class PaymentSystemHibernateDaoImpl implements HibernateDao<PaymentSystem, Long> {
     

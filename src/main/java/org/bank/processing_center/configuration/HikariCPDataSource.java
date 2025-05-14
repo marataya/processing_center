@@ -19,7 +19,7 @@ public class HikariCPDataSource {
 
     // Default database connection properties (used if properties file cannot be loaded)
     private static final String DEFAULT_DB_URL = "jdbc:postgresql://localhost:5432/processing_center_db";
-    private static final String DEFAULT_DB_USERNAME = "user";
+    private static final String DEFAULT_DB_USERNAME = "postgres";
     private static final String DEFAULT_DB_PASSWORD = "pass";
 
     static {

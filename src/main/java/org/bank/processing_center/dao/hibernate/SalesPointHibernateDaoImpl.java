@@ -1,8 +1,8 @@
 package org.bank.processing_center.dao.hibernate;
 
+import org.bank.processing_center.configuration.HibernateConfig;
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.SalesPoint;
-import org.bank.processing_center.configuration.HibernateConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

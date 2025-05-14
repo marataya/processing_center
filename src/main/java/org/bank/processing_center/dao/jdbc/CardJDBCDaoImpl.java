@@ -9,8 +9,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
-import java.sql.Timestamp;
 
 // JDBC implementation for Card entity DAO
 public class CardJDBCDaoImpl implements Dao<Card, Long> {

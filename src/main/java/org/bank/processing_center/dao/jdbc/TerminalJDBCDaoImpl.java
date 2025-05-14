@@ -2,6 +2,8 @@ package org.bank.processing_center.dao.jdbc;
 
 import org.bank.processing_center.configuration.JDBCConfig;
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.model.MerchantCategoryCode;
+import org.bank.processing_center.model.SalesPoint;
 import org.bank.processing_center.model.Terminal;
 
 import java.sql.*;
@@ -16,15 +18,18 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
         String sql = """
                 CREATE TABLE IF NOT EXISTS terminal (
                     id BIGINT PRIMARY KEY,
-                    terminal_id VARCHAR(50),
-                    sales_point_id BIGINT,
-                    FOREIGN KEY (sales_point_id) REFERENCES sales_point(id)
+                    terminal_id VARCHAR(9) UNIQUE NOT NULL,
+                    mcc_id BIGINT NOT NULL,      -- Define the column for the foreign key
+                    pos_id BIGINT NOT NULL,      -- Define the column for the foreign key
+                    FOREIGN KEY (mcc_id) REFERENCES merchant_category_code(id),
+                    FOREIGN KEY (pos_id) REFERENCES sales_point(id)
                 )""";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Таблица Terminal создана (или уже существовала).");
         } catch (SQLException e) {
             System.err.println("Ошибка при создании таблицы Terminal: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -52,19 +57,27 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
 
     @Override
     public void save(Terminal terminal) {
-        String sql = "INSERT INTO terminal (id, terminal_id, sales_point_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO terminal (id, terminal_id, mcc_id, pos_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, terminal.getId());
             preparedStatement.setString(2, terminal.getTerminalId());
-            if (terminal.getPos() != null) {
-                preparedStatement.setLong(3, terminal.getPos().getId());
+
+            if (terminal.getMcc() != null) {
+                preparedStatement.setLong(3, terminal.getMcc().getId());
             } else {
                 preparedStatement.setNull(3, Types.BIGINT);
+            }
+
+            if (terminal.getPos() != null) {
+                preparedStatement.setLong(4, terminal.getPos().getId());
+            } else {
+                preparedStatement.setNull(4, Types.BIGINT);
             }
             preparedStatement.executeUpdate();
             System.out.println("Terminal добавлен: " + terminal);
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Terminal: " + e.getMessage());
+            e.printStackTrace(); // For better debugging
         }
     }
 
@@ -83,7 +96,8 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
     @Override
     public List<Terminal> findAll() {
         List<Terminal> terminals = new ArrayList<>();
-        String sql = "SELECT id, terminal_id, sales_point_id FROM terminal";
+        // Corrected SQL to include mcc_id and use pos_id
+        String sql = "SELECT id, terminal_id, mcc_id, pos_id FROM terminal";
         try (Connection connection = JDBCConfig.getConnection(); Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -91,25 +105,35 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
                 terminal.setId(resultSet.getLong("id"));
                 terminal.setTerminalId(resultSet.getString("terminal_id"));
 
-                Long salesPointId = resultSet.getLong("sales_point_id");
+                Long mccId = resultSet.getLong("mcc_id");
                 if (!resultSet.wasNull()) {
-                    // Create a dummy SalesPoint with just the ID
-                    org.bank.processing_center.model.SalesPoint salesPoint = new org.bank.processing_center.model.SalesPoint();
-                    salesPoint.setId(salesPointId);
-                    terminal.setPos(salesPoint);
+                    MerchantCategoryCode mcc = new MerchantCategoryCode();
+                    mcc.setId(mccId);
+                    // Note: Full MCC details are not fetched here, only ID for relationship
+                    terminal.setMcc(mcc);
                 }
 
+                Long salesPointId = resultSet.getLong("pos_id"); // Use pos_id
+                if (!resultSet.wasNull()) {
+                    SalesPoint salesPoint = new SalesPoint();
+                    salesPoint.setId(salesPointId);
+                    // Note: Full SalesPoint details are not fetched here, only ID for relationship
+                    terminal.setPos(salesPoint);
+                }
                 terminals.add(terminal);
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении всех Terminal: " + e.getMessage());
+            e.printStackTrace(); // For better debugging
         }
         return terminals;
     }
 
+
     @Override
-    public Optional<Terminal> findById(Long id) {
-        String sql = "SELECT id, terminal_id, sales_point_id FROM terminal WHERE id = ?";
+    public Optional<Terminal> findById(Long id){
+        // Corrected SQL to include mcc_id and use pos_id
+        String sql = "SELECT id, terminal_id, mcc_id, pos_id FROM terminal WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -118,37 +142,52 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
                 terminal.setId(resultSet.getLong("id"));
                 terminal.setTerminalId(resultSet.getString("terminal_id"));
 
-                Long salesPointId = resultSet.getLong("sales_point_id");
+                Long mccId = resultSet.getLong("mcc_id");
                 if (!resultSet.wasNull()) {
-                    // Create a dummy SalesPoint with just the ID
-                    org.bank.processing_center.model.SalesPoint salesPoint = new org.bank.processing_center.model.SalesPoint();
+                    MerchantCategoryCode mcc = new MerchantCategoryCode();
+                    mcc.setId(mccId);
+                    terminal.setMcc(mcc);
+                }
+
+                Long salesPointId = resultSet.getLong("pos_id"); // Use pos_id
+                if (!resultSet.wasNull()) {
+                    SalesPoint salesPoint = new SalesPoint();
                     salesPoint.setId(salesPointId);
                     terminal.setPos(salesPoint);
                 }
-
                 return Optional.of(terminal);
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Terminal по id: " + e.getMessage());
+            e.printStackTrace(); // For better debugging
         }
         return Optional.empty();
     }
 
     @Override
     public void update(Terminal terminal) {
-        String sql = "UPDATE terminal SET terminal_id = ?, sales_point_id = ? WHERE id = ?";
+        // Corrected SQL to include mcc_id and use pos_id
+        String sql = "UPDATE terminal SET terminal_id = ?, mcc_id = ?, pos_id = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, terminal.getTerminalId());
-            if (terminal.getPos() != null) {
-                preparedStatement.setLong(2, terminal.getPos().getId());
+
+            if (terminal.getMcc() != null) {
+                preparedStatement.setLong(2, terminal.getMcc().getId());
             } else {
                 preparedStatement.setNull(2, Types.BIGINT);
             }
-            preparedStatement.setLong(3, terminal.getId());
+
+            if (terminal.getPos() != null) {
+                preparedStatement.setLong(3, terminal.getPos().getId());
+            } else {
+                preparedStatement.setNull(3, Types.BIGINT);
+            }
+            preparedStatement.setLong(4, terminal.getId()); // WHERE id = ?
             preparedStatement.executeUpdate();
             System.out.println("Terminal обновлен: " + terminal);
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Terminal: " + e.getMessage());
+            e.printStackTrace(); // For better debugging
         }
     }
 }
