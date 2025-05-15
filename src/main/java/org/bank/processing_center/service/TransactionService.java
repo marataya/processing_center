@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.Transaction;
 
 import java.util.List;
@@ -11,9 +10,8 @@ public class TransactionService implements Service<Transaction, Long> {
 
     private final Dao<Transaction, Long> transactionDao;
 
-    public TransactionService(String daoType) {
-        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-        this.transactionDao = daoFactory.getTransactionDao();
+    public TransactionService(Dao<Transaction, Long> dao) {
+        this.transactionDao = dao;
     }
 
     @Override

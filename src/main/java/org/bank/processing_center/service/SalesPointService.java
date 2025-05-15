@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.SalesPoint;
 
 import java.util.List;
@@ -10,9 +9,8 @@ public class SalesPointService implements Service<SalesPoint, Long> {
 
    private final Dao<SalesPoint, Long> salesPointDao;
 
-   public SalesPointService(String daoType) {
-      DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-      this.salesPointDao = daoFactory.getSalesPointDao();
+   public SalesPointService(Dao<SalesPoint, Long> dao) {
+      this.salesPointDao = dao;
    }
 
    @Override

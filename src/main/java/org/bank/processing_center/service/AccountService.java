@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.Account;
 
 import java.math.BigDecimal;
@@ -12,8 +11,8 @@ public class AccountService implements Service<Account, Long> {
 
     private final Dao<Account, Long> accountDao;
 
-    public AccountService(String daoType) {
-        this.accountDao = DaoFactory.getInstance(daoType).getAccountDao();
+    public AccountService(Dao<Account, Long> dao) {
+        this.accountDao = dao;
     }
 
     @Override

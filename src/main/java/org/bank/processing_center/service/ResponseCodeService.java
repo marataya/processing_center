@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.ResponseCode;
 
 import java.util.List;
@@ -11,9 +10,8 @@ public class ResponseCodeService implements Service<ResponseCode, Long> {
 
     private final Dao<ResponseCode, Long> responseCodeDao;
 
-    public ResponseCodeService(String daoType) {
-        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-        this.responseCodeDao = daoFactory.getResponseCodeDao();
+    public ResponseCodeService(Dao<ResponseCode, Long> dao) {
+        this.responseCodeDao = dao;
     }
 
     // Implement methods from Service interface here

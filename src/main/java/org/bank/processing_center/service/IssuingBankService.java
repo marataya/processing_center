@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.IssuingBank;
 
 import java.util.List;
@@ -11,8 +10,8 @@ public class IssuingBankService implements Service<IssuingBank, Long> {
 
     private final Dao<IssuingBank, Long> issuingBankDao;
 
-    public IssuingBankService(String daoType) {
-        issuingBankDao = DaoFactory.getInstance(daoType).getIssuingBankDao();
+    public IssuingBankService(Dao<IssuingBank, Long> dao) {
+        issuingBankDao = dao;
     }
 
     @Override

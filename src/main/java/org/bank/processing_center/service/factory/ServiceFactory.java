@@ -1,106 +1,83 @@
 package org.bank.processing_center.service.factory;
 
+import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.service.*;
+import org.hibernate.SessionFactory;
 
-/**
- * Factory for creating service instances
- */
 public class ServiceFactory {
 
-    private static ServiceFactory instance;
+    private static ServiceFactory jdbcInstance;
+    private static ServiceFactory hibernateInstance;
 
+    // Declare all your service fields
+    private final AccountService accountService;
     private final CardService cardService;
     private final CardStatusService cardStatusService;
-    private final PaymentSystemService paymentSystemService;
-    private final AccountService accountService;
-    private final AcquiringBankService acquiringBankService;
-    private final MerchantCategoryCodeService merchantCategoryCodeService;
-    private final TransactionTypeService transactionTypeService;
-    private final ResponseCodeService responseCodeService;
-    private final TerminalService terminalService;
-    private final TransactionService transactionService;
-    private final SalesPointService salesPointService;
     private final CurrencyService currencyService;
     private final IssuingBankService issuingBankService;
+    private final PaymentSystemService paymentSystemService;
+    private final AcquiringBankService acquiringBankService;
+    private final MerchantCategoryCodeService merchantCategoryCodeService;
+    private final SalesPointService salesPointService;
+    private final TerminalService terminalService;
+    private final TransactionService transactionService;
+    private final TransactionTypeService transactionTypeService;
+    private final ResponseCodeService responseCodeService;
 
-    private ServiceFactory(String daoType) {
 
-        // Pass the daoType to the Service constructors
-        accountService = new AccountService(daoType);
-        acquiringBankService = new AcquiringBankService(daoType);
-        cardService = new CardService(daoType);
-        cardStatusService = new CardStatusService(daoType);
-        currencyService = new CurrencyService(daoType);
-        issuingBankService = new IssuingBankService(daoType);
-        merchantCategoryCodeService = new MerchantCategoryCodeService(daoType);
-        paymentSystemService = new PaymentSystemService(daoType);
-        responseCodeService = new ResponseCodeService(daoType);
-        salesPointService = new SalesPointService(daoType);
-        terminalService = new TerminalService(daoType);
-        transactionService = new TransactionService(daoType);
-        transactionTypeService = new TransactionTypeService(daoType);
+    // Constructor
+    private ServiceFactory(String daoType, SessionFactory sessionFactory) {
+        DaoFactory daoFactory = DaoFactory.getInstance(daoType, sessionFactory);
 
-        // Create service instances
-
+        // CORRECTED: Initialize all your services using the daos from daoFactory
+        // Ensure you have corresponding implementation classes (e.g., AccountServiceImpl)
+        // that take a DAO in their constructor.
+        this.accountService = new AccountService(daoFactory.getAccountDao());
+        this.cardService = new CardService(daoFactory.getCardDao());
+        this.cardStatusService = new CardStatusService(daoFactory.getCardStatusDao());
+        this.currencyService = new CurrencyService(daoFactory.getCurrencyDao());
+        this.issuingBankService = new IssuingBankService(daoFactory.getIssuingBankDao());
+        this.paymentSystemService = new PaymentSystemService(daoFactory.getPaymentSystemDao());
+        this.acquiringBankService = new AcquiringBankService(daoFactory.getAcquiringBankDao());
+        this.merchantCategoryCodeService = new MerchantCategoryCodeService(daoFactory.getMerchantCategoryCodeDao());
+        this.salesPointService = new SalesPointService(daoFactory.getSalesPointDao());
+        this.terminalService = new TerminalService(daoFactory.getTerminalDao());
+        this.transactionService = new TransactionService(daoFactory.getTransactionDao());
+        this.transactionTypeService = new TransactionTypeService(daoFactory.getTransactionTypeDao());
+        this.responseCodeService = new ResponseCodeService(daoFactory.getResponseCodeDao());
     }
 
-    public static synchronized ServiceFactory getInstance(String daoType) {
-        // Consider how you want to handle multiple instances with different daoTypes if needed
-        if (instance == null) {
-            instance = new ServiceFactory(daoType);
+    // Static factory method
+    public static synchronized ServiceFactory getInstance(String daoType, SessionFactory sessionFactory) {
+        if ("jdbc".equalsIgnoreCase(daoType)) {
+            if (jdbcInstance == null) {
+                jdbcInstance = new ServiceFactory(daoType, null);
+            }
+            return jdbcInstance;
+        } else if ("hibernate".equalsIgnoreCase(daoType)) {
+            if (sessionFactory == null) {
+                throw new IllegalArgumentException("ServiceFactory.getInstance received a null SessionFactory for Hibernate type.");
+            }
+            if (hibernateInstance == null) {
+                hibernateInstance = new ServiceFactory(daoType, sessionFactory);
+            }
+            return hibernateInstance;
         }
-        return instance;
+        throw new IllegalArgumentException("Unknown DAO type in ServiceFactory: " + daoType);
     }
 
-    public CardService getCardService() {
-        return cardService;
-    }
-
-    public CardStatusService getCardStatusService() {
-        return cardStatusService;
-    }
-
-    public PaymentSystemService getPaymentSystemService() {
-        return paymentSystemService;
-    }
-
-    public AccountService getAccountService() {
-        return accountService;
-    }
-
-    public AcquiringBankService getAcquiringBankService() {
-        return acquiringBankService;
-    }
-
-    public MerchantCategoryCodeService getMerchantCategoryCodeService() {
-        return merchantCategoryCodeService;
-    }
-
-    public TransactionTypeService getTransactionTypeService() {
-        return transactionTypeService;
-    }
-
-    public ResponseCodeService getResponseCodeService() {
-        return responseCodeService;
-    }
-
-    public TerminalService getTerminalService() {
-        return terminalService;
-    }
-
-    public TransactionService getTransactionService() {
-        return transactionService;
-    }
-
-    public SalesPointService getSalesPointService() {
-        return salesPointService;
-    }
-
-    public CurrencyService getCurrencyService() {
-        return currencyService;
-    }
-
-    public IssuingBankService getIssuingBankService() {
-        return issuingBankService;
-    }
+    // Getters for all your services
+    public AccountService getAccountService() { return accountService; }
+    public CardService getCardService() { return cardService; }
+    public CardStatusService getCardStatusService() { return cardStatusService; }
+    public CurrencyService getCurrencyService() { return currencyService; }
+    public IssuingBankService getIssuingBankService() { return issuingBankService; }
+    public PaymentSystemService getPaymentSystemService() { return paymentSystemService; }
+    public AcquiringBankService getAcquiringBankService() { return acquiringBankService; }
+    public MerchantCategoryCodeService getMerchantCategoryCodeService() { return merchantCategoryCodeService; }
+    public SalesPointService getSalesPointService() { return salesPointService; }
+    public TerminalService getTerminalService() { return terminalService; }
+    public TransactionService getTransactionService() { return transactionService; }
+    public TransactionTypeService getTransactionTypeService() { return transactionTypeService; }
+    public ResponseCodeService getResponseCodeService() { return responseCodeService; }
 }

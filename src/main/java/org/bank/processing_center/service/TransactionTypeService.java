@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.TransactionType;
 
 import java.util.List;
@@ -10,9 +9,8 @@ public class TransactionTypeService implements Service<TransactionType, Long> {
 
     private final Dao<TransactionType, Long> transactionTypeDao;
 
-    public TransactionTypeService(String daoType) {
-        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-        this.transactionTypeDao = daoFactory.getTransactionTypeDao(); // Assuming getTransactionTypeDao() exists in DaoFactory
+    public TransactionTypeService(Dao<TransactionType, Long> dao) {
+        this.transactionTypeDao = dao;
     }
 
     // TODO: Implement Service interface methods

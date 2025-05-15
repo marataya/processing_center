@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.Currency;
 
 import java.util.List;
@@ -11,8 +10,8 @@ public class CurrencyService implements Service<Currency, Long> {
 
     private final Dao<Currency, Long> currencyDao;
 
-    public CurrencyService(String daoType) {
-        currencyDao = DaoFactory.getInstance(daoType).getCurrencyDao();
+    public CurrencyService(Dao<Currency, Long> dao) {
+        currencyDao = dao;
     }
 
     @Override

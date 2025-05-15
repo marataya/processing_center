@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.PaymentSystem;
 
 import java.util.List;
@@ -11,9 +10,8 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
     private final Dao<PaymentSystem, Long> paymentSystemDao;
 
-    public PaymentSystemService(String daoType) {
-        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-        this.paymentSystemDao = daoFactory.getPaymentSystemDao();
+    public PaymentSystemService(Dao<PaymentSystem, Long> dao) {
+        this.paymentSystemDao = dao;
     }
 
     @Override

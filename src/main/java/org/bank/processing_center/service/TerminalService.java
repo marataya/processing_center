@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.Terminal;
 
 import java.util.List;
@@ -10,9 +9,8 @@ public class TerminalService implements Service<Terminal, Long> {
 
     private final Dao<Terminal, Long> terminalDao;
 
-    public TerminalService(String daoType) {
-        DaoFactory daoFactory = DaoFactory.getInstance(daoType);
-        this.terminalDao = daoFactory.getTerminalDao(); // Assuming getTerminalDao() exists in DaoFactory
+    public TerminalService(Dao<Terminal, Long> dao) {
+        this.terminalDao = dao;
     }
 
     @Override

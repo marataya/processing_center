@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.MerchantCategoryCode;
 
 import java.util.List;
@@ -11,8 +10,8 @@ public class MerchantCategoryCodeService implements Service<MerchantCategoryCode
 
     private final Dao<MerchantCategoryCode, Long> merchantCategoryCodeDao;
 
-    public MerchantCategoryCodeService(String daoType) {
-        merchantCategoryCodeDao = DaoFactory.getInstance(daoType).getMerchantCategoryCodeDao();
+    public MerchantCategoryCodeService(Dao<MerchantCategoryCode, Long> dao) {
+        merchantCategoryCodeDao = dao;
     }
 
     @Override

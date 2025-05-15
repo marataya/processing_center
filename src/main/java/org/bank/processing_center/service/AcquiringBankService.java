@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.dao.factory.DaoFactory;
 import org.bank.processing_center.model.AcquiringBank;
 
 import java.util.List;
@@ -11,8 +10,8 @@ public class AcquiringBankService implements Service<AcquiringBank, Long> {
 
     private final Dao<AcquiringBank, Long> acquiringBankDao;
 
-    public AcquiringBankService(String daoType) {
-        this.acquiringBankDao = DaoFactory.getInstance(daoType).getAcquiringBankDao();
+    public AcquiringBankService(Dao<AcquiringBank, Long> dao) {
+        this.acquiringBankDao = dao;
     }
 
     @Override
