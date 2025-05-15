@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * Main controller that coordinates the application flow
  */
-public class ApplicationController {
+public class ApplicationController implements AutoCloseable {
 
     private final CardController cardController;
     private final AccountController accountController;
@@ -31,6 +31,31 @@ public class ApplicationController {
     private final TransactionController transactionController;
     private final SalesPointController salesPointController;
     private final ConsoleView view;
+
+    // Instance variables to hold key sample entities after they are persisted
+    private CardStatus sampleActiveStatus;
+    private CardStatus sampleBlockedStatus;
+    private Currency sampleUsd;
+    private Currency sampleEur;
+    private IssuingBank sampleIssuingBank1;
+    private IssuingBank sampleIssuingBank2;
+    private PaymentSystem sampleVisa;
+    private PaymentSystem sampleMastercard;
+    private AcquiringBank sampleAcquiringBank1;
+    private AcquiringBank sampleAcquiringBank2;
+    private MerchantCategoryCode sampleMccGroceries;
+    private MerchantCategoryCode sampleMccRestaurants;
+    private TransactionType samplePurchaseType;
+    private TransactionType sampleRefundType;
+    private ResponseCode sampleApprovedCode;
+    private ResponseCode sampleDeclinedCode;
+    private Account sampleAccount1;
+    private Account sampleAccount2;
+    private SalesPoint sampleSalesPoint1;
+    private SalesPoint sampleSalesPoint2;
+    private Terminal sampleTerminal1;
+    private Terminal sampleTerminal2;
+
 
     public ApplicationController(String daoType) {
         ControllerFactory factory = ControllerFactory.getInstance(daoType);
@@ -71,7 +96,7 @@ public class ApplicationController {
 
             // Step 3: Add sample data
             view.showMessage("Step 2: Adding sample data...");
-            addSampleData();
+            addSampleDataHibernate();
             view.showMessage("Step 2: Sample data added.");
 
             // Step 4: Get all cards and display them
@@ -85,7 +110,7 @@ public class ApplicationController {
 
             // Step 5: Update two cards
             view.showMessage("Step 4: Updating two cards...");
-            updateTwoCards(cards);
+            updateTwoCardsHibernate(cards);
             view.showMessage("Step 4: Cards updated.");
             // Optionally, retrieve and display updated cards again
             view.showMessage("Step 4: Displaying updated card details:");
@@ -100,6 +125,7 @@ public class ApplicationController {
             view.showMessage("Step 6: Tables dropped.");
 
             view.showMessage("Приложение завершило работу успешно.");
+
         } catch (Exception e) {
             view.showError("Ошибка при выполнении приложения: " + e.getMessage());
             e.printStackTrace();
@@ -249,6 +275,7 @@ public class ApplicationController {
     }
 
 
+
     private void updateTwoCards(List<Card> cards) {
         if (cards.size() >= 2) {
             // Update first card
@@ -272,6 +299,147 @@ public class ApplicationController {
             view.showError("Недостаточно карт для обновления");
         }
     }
+
+    private void addSampleDataHibernate() {
+        // --- Add Currencies ---
+        sampleUsd = new Currency(null, "840", "USD", "Доллар США");
+        sampleEur = new Currency(null, "978", "EUR", "Евро");
+        currencyController.addEntity(sampleUsd); // ID will be populated by Hibernate
+        currencyController.addEntity(sampleEur);   // ID will be populated by Hibernate
+
+        // --- Add Issuing Banks ---
+        sampleIssuingBank1 = new IssuingBank(null, "041234570", "12345", "ПАО банк-эмитент №1");
+        sampleIssuingBank2 = new IssuingBank(null, "016516515", "65432", "ПАО банк-эмитент №2");
+        issuingBankController.addEntity(sampleIssuingBank1);
+        issuingBankController.addEntity(sampleIssuingBank2);
+        System.out.println("DEBUG: Persisted sampleIssuingBank1 ID: " + sampleIssuingBank1.getId());
+
+        // --- Add Card Statuses ---
+        sampleActiveStatus = new CardStatus(null, "Active");
+        sampleBlockedStatus = new CardStatus(null, "Blocked");
+        cardStatusController.addEntity(sampleActiveStatus);
+        cardStatusController.addEntity(sampleBlockedStatus);
+
+        // --- Add Payment Systems ---
+        sampleVisa = new PaymentSystem(null, "VISA");
+        sampleMastercard = new PaymentSystem(null, "MasterCard");
+        paymentSystemController.addEntity(sampleVisa);
+        paymentSystemController.addEntity(sampleMastercard);
+
+        // --- Add Acquiring Banks ---
+        sampleAcquiringBank1 = new AcquiringBank(null, "049876543", "Банк-эквайер Альфа");
+        sampleAcquiringBank2 = new AcquiringBank(null, "041122334", "Банк-эквайер Бета");
+        acquiringBankController.addEntity(sampleAcquiringBank1);
+        acquiringBankController.addEntity(sampleAcquiringBank2);
+        System.out.println("DEBUG: Persisted sampleAcquiringBank1 ID: " + sampleAcquiringBank1.getId());
+
+        // --- Add Merchant Category Codes (MCC) ---
+        sampleMccGroceries = new MerchantCategoryCode(null, "5411", "Grocery Stores, Supermarkets");
+        sampleMccRestaurants = new MerchantCategoryCode(null, "5812", "Eating Places, Restaurants");
+        merchantCategoryCodeController.addEntity(sampleMccGroceries);
+        merchantCategoryCodeController.addEntity(sampleMccRestaurants);
+
+        // --- Add Transaction Types ---
+        samplePurchaseType = new TransactionType(null, "Standard purchase transaction");
+        sampleRefundType = new TransactionType(null, "Refund transaction");
+        transactionTypeController.addEntity(samplePurchaseType);
+        transactionTypeController.addEntity(sampleRefundType);
+
+        // --- Add Response Codes ---
+        sampleApprovedCode = new ResponseCode(null, "00", "Approved or completed successfully", "OK");
+        sampleDeclinedCode = new ResponseCode(null, "05", "Do not honor / Declined", "CRITICAL");
+        responseCodeController.addEntity(sampleApprovedCode);
+        responseCodeController.addEntity(sampleDeclinedCode);
+
+        // --- Add Accounts (using persisted currency and issuingBank objects) ---
+        sampleAccount1 = new Account(null, "40817810123456789012", new BigDecimal("10000.00"), sampleUsd, sampleIssuingBank1);
+        sampleAccount2 = new Account(null, "40817810987654321098", new BigDecimal("5000.00"), sampleEur, sampleIssuingBank2);
+        accountController.addEntity(sampleAccount1);
+        accountController.addEntity(sampleAccount2);
+
+        // --- Add Sales Points ---
+        sampleSalesPoint1 = new SalesPoint(null, "SuperMarket Central N1", "123 Main St, Cityville", "1234567890", sampleAcquiringBank1);
+        sampleSalesPoint2 = new SalesPoint(null, "Cafe Downtown N1", "456 Oak Ave, Townsville", "1234567891", sampleAcquiringBank2);
+        salesPointController.addEntity(sampleSalesPoint1);
+        salesPointController.addEntity(sampleSalesPoint2);
+
+        // --- Add Terminals ---
+        sampleTerminal1 = new Terminal(null, "000000001", sampleMccGroceries, sampleSalesPoint1);
+        sampleTerminal2 = new Terminal(null, "000000002", sampleMccRestaurants, sampleSalesPoint2);
+        terminalController.addEntity(sampleTerminal1);
+        terminalController.addEntity(sampleTerminal2);
+
+        // --- Add Cards ---
+        Random random = new Random();
+        Card card1 = new Card(
+                null, "4111111111111111", LocalDate.now().plusYears(3), "IVAN IVANOV",
+                sampleActiveStatus, sampleVisa, sampleAccount1,
+                Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now().plusMonths(24)));
+        Card card2 = new Card(
+                null, "5222222222222222", LocalDate.now().plusYears(random.nextInt(5) + 1), "PETR PETROV",
+                sampleBlockedStatus, sampleMastercard, sampleAccount1,
+                Timestamp.valueOf(LocalDateTime.now().minusDays(random.nextInt(365))),
+                random.nextBoolean() ? Timestamp.valueOf(LocalDateTime.now().plusDays(random.nextInt(365))) : Timestamp.valueOf(LocalDateTime.now()));
+        Card card3 = new Card(
+                null, "4333333333333333", LocalDate.now().plusYears(random.nextInt(5) + 1), "ANNA SIDOROVA",
+                sampleActiveStatus, sampleVisa, sampleAccount2,
+                Timestamp.valueOf(LocalDateTime.now().minusDays(random.nextInt(365))),   random.nextBoolean() ? Timestamp.valueOf(LocalDateTime.now().plusDays(random.nextInt(365))) : Timestamp.valueOf(LocalDateTime.now()));
+        Card card4 = new Card(
+                null, "5444444444444444", LocalDate.now().plusYears(random.nextInt(5) + 1), "OLGA KOZLOVA",
+                sampleActiveStatus, sampleMastercard, sampleAccount2, Timestamp.valueOf(LocalDateTime.now().minusDays(random.nextInt(365))), Timestamp.valueOf(LocalDateTime.now()));
+        String luhnValidVisaNumber = "4444333322221111";
+        Card card5 = new Card(
+                null, luhnValidVisaNumber, LocalDate.now().plusYears(2), "LUHN VALIDATOR", sampleActiveStatus, sampleVisa, sampleAccount1, Timestamp.valueOf(LocalDateTime.now().minusDays(10)), Timestamp.valueOf(LocalDateTime.now())
+        );
+
+        cardController.addEntity(card1);
+        cardController.addEntity(card2);
+        cardController.addEntity(card3);
+        cardController.addEntity(card4);
+        cardController.addEntity(card5);
+
+        // --- Add Transactions ---
+        Transaction transaction1 = new Transaction(null, LocalDate.now(), new BigDecimal("120.50"), "Purchase at SuperMarket Central N1",
+                sampleAccount1, samplePurchaseType, card1, sampleTerminal1, sampleApprovedCode, null,
+                LocalDateTime.now().minusHours(1), LocalDateTime.now()
+        );
+        // For card5 in transaction2, ensure card5 object is the one returned/updated by cardController.addEntity(card5)
+        // If addEntity doesn't return, but updates by reference, card5 above will have its ID.
+        Transaction transaction2 = new Transaction(null, LocalDate.now().minusDays(1), new BigDecimal("50.00"), "Refund for previous purchase",
+                sampleAccount2, sampleRefundType, card5, sampleTerminal2, sampleApprovedCode, null, // card5 here will use its generated ID
+                LocalDateTime.now().minusDays(1).minusHours(2), LocalDateTime.now().minusDays(1)
+        );
+
+        transactionController.addEntity(transaction1);
+        transactionController.addEntity(transaction2);
+    }
+
+
+    private void updateTwoCardsHibernate(List<Card> cards) {
+        if (cards.size() >= 2) {
+            // Update first card
+            Card cardToUpdate1 = cards.get(0);
+            cardToUpdate1.setHolderName(cardToUpdate1.getHolderName() + " UPDATED");
+            cardToUpdate1.setSentToIssuingBank(Timestamp.valueOf(LocalDateTime.now()));
+            cardController.updateEntity(cardToUpdate1);
+
+            // Update second card
+            Card cardToUpdate2 = cards.get(1);
+            // Use the sampleBlockedStatus instance variable which holds the persisted "Blocked" status
+            if (this.sampleBlockedStatus != null) {
+                cardToUpdate2.setCardStatus(this.sampleBlockedStatus);
+            } else {
+                // Fallback or error: This shouldn't happen if addSampleData ran correctly
+                view.showError("Sample 'Blocked' CardStatus not available for update. Card status not changed.");
+            }
+
+            cardToUpdate2.setSentToIssuingBank(Timestamp.valueOf(LocalDateTime.now()));
+            cardController.updateEntity(cardToUpdate2);
+        } else {
+            view.showError("Недостаточно карт для обновления");
+        }
+    }
+
 
     private void clearTables() {
         transactionController.clearTable();
@@ -303,5 +471,10 @@ public class ApplicationController {
         currencyController.dropTable();
         paymentSystemController.dropTable();
         cardStatusController.dropTable();
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

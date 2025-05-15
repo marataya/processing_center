@@ -22,6 +22,6 @@ public class Currency {
     @Column(name = "currency_letter_code", nullable = false, length = 3)
     private String currencyLetterCode;  //Буквенный код валюты (например, USD).
 
-    @Column(name = "currency_name", nullable = false, length = 255)
+    @Column(name = "currency_name", nullable = false)
     private String currencyName;        //Название валюты.
 }

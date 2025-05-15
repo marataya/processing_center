@@ -16,7 +16,7 @@ public class CardStatus {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "card_status_name", nullable = false, length = 255)
+    @Column(name = "card_status_name", nullable = false)
     private String status_name;
 
 }

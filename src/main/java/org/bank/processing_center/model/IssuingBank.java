@@ -23,6 +23,6 @@ public class IssuingBank {
     @Column(name = "bin", nullable = false, length = 5)
     private String bin;                 //Идентификатор банка-эмитента для карт (BIN).
 
-    @Column(name = "abbreviated_name", nullable = false, length = 255)
+    @Column(name = "abbreviated_name", nullable = false)
     private String abbreviatedName;     //Сокращённое название банка.
 }

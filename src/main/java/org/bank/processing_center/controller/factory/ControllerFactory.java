@@ -1,8 +1,10 @@
 package org.bank.processing_center.controller.factory;
 
+import org.bank.processing_center.configuration.HibernateConfig;
 import org.bank.processing_center.controller.*;
 import org.bank.processing_center.service.factory.ServiceFactory;
 import org.bank.processing_center.view.ConsoleView;
+import org.hibernate.SessionFactory;
 
 /**
  * Factory for creating controller instances
@@ -27,12 +29,12 @@ public class ControllerFactory {
     private final SalesPointController salesPointController;
     private final ConsoleView view;
 
-    private ControllerFactory(String daoType) {
+    private ControllerFactory(String daoType, SessionFactory sessionFactory) {
         // Create view
         this.view = new ConsoleView();
 
         // Get service instances
-        ServiceFactory serviceFactory = ServiceFactory.getInstance(daoType);
+        ServiceFactory serviceFactory = ServiceFactory.getInstance(daoType, sessionFactory);
 
         // Create controllers
         this.cardController = new CardController(serviceFactory.getCardService(), view);
@@ -50,7 +52,9 @@ public class ControllerFactory {
         this.salesPointController = new SalesPointController(serviceFactory.getSalesPointService(), view);
     }
 
-    public CardController getCardController() { return cardController; }
+    public CardController getCardController() {
+        return cardController;
+    }
 
     public AccountController getAccountController() {
         return accountController;
@@ -107,12 +111,25 @@ public class ControllerFactory {
     public static synchronized ControllerFactory getInstance(String daoType) {
         if ("jdbc".equalsIgnoreCase(daoType)) {
             if (jdbcInstance == null) {
-                jdbcInstance = new ControllerFactory(daoType);
+                // For JDBC, SessionFactory is null
+                jdbcInstance = new ControllerFactory(daoType, null);
             }
             return jdbcInstance;
         } else if ("hibernate".equalsIgnoreCase(daoType)) {
             if (hibernateInstance == null) {
-                hibernateInstance = new ControllerFactory(daoType);
+                SessionFactory sessionFactory = null;
+                try {
+                    sessionFactory = HibernateConfig.getSessionFactory();
+                    // Create the instance, passing the obtained SessionFactory
+                    hibernateInstance = new ControllerFactory(daoType, sessionFactory);
+                } catch (Exception e) {
+                    System.err.println("Error obtaining Hibernate SessionFactory: " + e.getMessage());
+                    e.printStackTrace();
+                    if (sessionFactory != null) {
+                        sessionFactory.close();
+                    }
+                    throw new RuntimeException("Failed to initialize Hibernate SessionFactory", e);
+                }
             }
             return hibernateInstance;
         }
