@@ -1,119 +1,71 @@
 package org.bank.processing_center.dao.hibernate;
 
+import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.PaymentSystem;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class PaymentSystemHibernateDaoImpl implements HibernateDao<PaymentSystem, Long> {
-    
-    private SessionFactory sessionFactory;
+public class PaymentSystemHibernateDaoImpl extends AbstractHibernateDao implements Dao<PaymentSystem, Long> {
 
- public PaymentSystemHibernateDaoImpl(SessionFactory sessionFactory) {
- this.sessionFactory = sessionFactory;
+    @Override
+    public List<PaymentSystem> findAll() {
+        return executeInsideTransaction(session -> {
+            String hql = "FROM PaymentSystem";
+            Query<PaymentSystem> query = session.createQuery(hql, PaymentSystem.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(PaymentSystem paymentSystem) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(paymentSystem);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Optional<PaymentSystem> findById(Long id) {
- return Optional.ofNullable(sessionFactory.openSession().get(PaymentSystem.class, id));
-    }
-
-    @Override
- public List<PaymentSystem> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM PaymentSystem", PaymentSystem.class).list();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        executeInsideTransaction(session -> {
+            session.persist(paymentSystem);
+        });
     }
 
     @Override
     public void update(PaymentSystem paymentSystem) {
-        try (Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            session.update(paymentSystem);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            if (sessionFactory != null && sessionFactory.getCurrentSession().getTransaction() != null) {
-                sessionFactory.getCurrentSession().getTransaction().rollback();
-            }
-            e.printStackTrace();
-        }
+        executeInsideTransaction(session -> {
+            session.merge(paymentSystem);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        Transaction transaction = null; // Keep declaration outside try-with-resources
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction(); // Initialize transaction inside the try block
+        executeInsideTransaction(session -> {
             PaymentSystem paymentSystem = session.get(PaymentSystem.class, id);
             if (paymentSystem != null) {
-                session.delete(paymentSystem);
+                session.remove(paymentSystem);
             }
-            transaction.commit(); // Commit the transaction if successful
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        });
+    }
+
+    @Override
+    public Optional<PaymentSystem> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            PaymentSystem paymentSystem = session.get(PaymentSystem.class, id);
+            return Optional.ofNullable(paymentSystem);
+        });
     }
 
     @Override
     public void createTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession();) {
-            transaction = session.beginTransaction(); // Initialize transaction inside the try block
-            session.getTransaction().commit();
-        }  catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("PaymentSystem table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        try (Session session = sessionFactory.openSession()) {
-            session.createNativeQuery("DROP TABLE IF EXISTS payment_system").executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("PaymentSystem table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
     }
 
     @Override
     public void clearTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DELETE FROM payment_system").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-        }
-    }
-
-    @Override
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM PaymentSystem";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("PaymentSystem table cleared via Hibernate.");
+        });
     }
 }

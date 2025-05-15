@@ -2,127 +2,70 @@ package org.bank.processing_center.dao.hibernate;
 
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.CardStatus;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CardStatusHibernateDaoImpl implements Dao<CardStatus, Long> {
-
-    private SessionFactory sessionFactory = null;
-
-    public CardStatusHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public CardStatusHibernateDaoImpl() {
-        try {
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle the exception appropriately
-        }
-    }
-
-    @Override
-    public void createTable() {
-        // Table creation is typically handled by Hibernate configuration
-    }
-
-    @Override
-    public Optional<CardStatus> findById(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.get(CardStatus.class, id));
-        }
-    }
+public class CardStatusHibernateDaoImpl extends AbstractHibernateDao implements Dao<CardStatus, Long> {
 
     @Override
     public List<CardStatus> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM CardStatus", CardStatus.class).list();
-        }
+        return executeInsideTransaction(session -> {
+            String hql = "FROM CardStatus";
+            Query<CardStatus> query = session.createQuery(hql, CardStatus.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(CardStatus cardStatus) {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(cardStatus);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            // Handle the exception appropriately
-        }
+        executeInsideTransaction(session -> {
+            session.persist(cardStatus);
+        });
     }
 
     @Override
     public void update(CardStatus cardStatus) {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.update(cardStatus);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            // Handle the exception appropriately
-        }
+        executeInsideTransaction(session -> {
+            session.merge(cardStatus);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
+        executeInsideTransaction(session -> {
             CardStatus cardStatus = session.get(CardStatus.class, id);
             if (cardStatus != null) {
-                session.delete(cardStatus);
+                session.remove(cardStatus);
             }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            // Handle the exception appropriately
-        }
+        });
     }
 
     @Override
-    public void clearTable() {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DELETE FROM card_status").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.getStatus() == org.hibernate.resource.transaction.spi.TransactionStatus.ACTIVE) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+    public Optional<CardStatus> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            CardStatus cardStatus = session.get(CardStatus.class, id);
+            return Optional.ofNullable(cardStatus);
+        });
+    }
+
+    @Override
+    public void createTable() {
+        System.out.println("CardStatus table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DROP TABLE IF EXISTS card_status").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.getStatus() == org.hibernate.resource.transaction.spi.TransactionStatus.ACTIVE) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        System.out.println("CardStatus table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
+    }
+
+    @Override
+    public void clearTable() {
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM CardStatus";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("CardStatus table cleared via Hibernate.");
+        });
     }
 }

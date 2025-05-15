@@ -1,130 +1,97 @@
 package org.bank.processing_center.dao.hibernate;
 
+import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.model.MerchantCategoryCode;
+import org.bank.processing_center.model.SalesPoint;
 import org.bank.processing_center.model.Terminal;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class TerminalHibernateDaoImpl implements HibernateDao<Terminal, Long> {
+public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Dao<Terminal, Long> {
 
-    public TerminalHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    // No SessionFactory field or constructor needed anymore,
+    // as AbstractHibernateDao gets it from HibernateConfig
 
-    private final SessionFactory sessionFactory;
     @Override
     public List<Terminal> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Terminal", Terminal.class).list();
-        }
+        return executeInsideTransaction(session -> {
+            String hql = "FROM Terminal"; // "Terminal" is the Entity name
+            Query<Terminal> query = session.createQuery(hql, Terminal.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(Terminal terminal) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(terminal);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        executeInsideTransaction(session -> {
+            if (terminal.getMcc() != null) {
+                MerchantCategoryCode managedMcc = session.merge(terminal.getMcc());
+                terminal.setMcc(managedMcc);
             }
-            e.printStackTrace();
-        }
+            if (terminal.getPos() != null) {
+                SalesPoint managedPos = session.merge(terminal.getPos());
+                terminal.setPos(managedPos);
+            }
+            session.persist(terminal);
+        });
     }
 
     @Override
     public void update(Terminal terminal) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.update(terminal);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        executeInsideTransaction(session -> {
+            if (terminal.getMcc() != null) {
+                MerchantCategoryCode managedMcc = session.merge(terminal.getMcc());
+                terminal.setMcc(managedMcc);
             }
-            e.printStackTrace();
-        }
+            if (terminal.getPos() != null) {
+                SalesPoint managedPos = session.merge(terminal.getPos());
+                terminal.setPos(managedPos);
+            }
+            session.merge(terminal); // Use merge for updates
+        });
     }
 
     @Override
     public void delete(Long id) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
+        executeInsideTransaction(session -> {
             Terminal terminal = session.get(Terminal.class, id);
             if (terminal != null) {
-                session.delete(terminal);
-                transaction.commit();
+                session.remove(terminal);
             }
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        });
     }
 
     @Override
     public Optional<Terminal> findById(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.get(Terminal.class, id));
-        }
+        return executeInsideTransaction(session -> {
+            Terminal terminal = session.get(Terminal.class, id);
+            return Optional.ofNullable(terminal);
+        });
     }
 
     @Override
     public void createTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("CREATE TABLE terminal (\n" +
-                                       "                          id BIGINT PRIMARY KEY,\n" +
-                                       "                          merchant_id BIGINT,\n" +
-                                       "                          FOREIGN KEY (merchant_id) REFERENCES merchant(id)\n" +
-                                       ")").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        // NO-OP: Schema is managed by hibernate.hbm2ddl.auto setting in HibernateConfig.java
+        System.out.println("Terminal table schema is managed by Hibernate (hbm2ddl.auto). " +
+                "TerminalHibernateDaoImpl.createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DROP TABLE IF EXISTS terminal").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        // NO-OP: Schema is managed by hibernate.hbm2ddl.auto setting in HibernateConfig.java
+        // For "create-drop", Hibernate drops tables when SessionFactory is closed.
+        System.out.println("Terminal table schema is managed by Hibernate (hbm2ddl.auto). " +
+                "TerminalHibernateDaoImpl.dropTable() is a no-op.");
     }
 
     @Override
     public void clearTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DELETE FROM terminal").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM Terminal";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("Terminal table cleared via Hibernate.");
+        });
     }
 }

@@ -1,116 +1,94 @@
 package org.bank.processing_center.dao.hibernate;
 
-import org.bank.processing_center.configuration.HibernateConfig;
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.model.AcquiringBank;
 import org.bank.processing_center.model.SalesPoint;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class SalesPointHibernateDaoImpl implements Dao<SalesPoint, Long> {
-
-    private final SessionFactory sessionFactory;
-
-    public SalesPointHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements Dao<SalesPoint, Long> {
 
     @Override
-    public void createTable() {
-        // Hibernate handles schema creation based on entity definitions and configuration
-        // No explicit DDL is needed in DAO for this
-    }
-
-    @Override
-    public void dropTable() {
-        // Hibernate handles schema drop if configured
-        // No explicit DDL is needed in DAO for this
-    }
-
-    @Override
-    public void clearTable() {
-        Transaction transaction = null;
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM SalesPoint").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Or log the error
-        }
+    public List<SalesPoint> findAll() {
+        return executeInsideTransaction(session -> {
+            String hql = "FROM SalesPoint";
+            Query<SalesPoint> query = session.createQuery(hql, SalesPoint.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(SalesPoint salesPoint) {
-        Transaction transaction = null;
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.save(salesPoint);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        executeInsideTransaction(session -> {
+            // Option 2: Explicitly merge the associated AcquiringBank if it's detached
+            // This brings it into the current session's managed state.
+            if (salesPoint.getAcquiringBank() != null) {
+                // If acquiringBank has an ID, it's potentially detached.
+                // If it's a new AcquiringBank (ID is null), merge will behave like persist.
+                // The session.merge() returns a managed instance.
+                AcquiringBank managedAcquiringBank = session.merge(salesPoint.getAcquiringBank());
+                salesPoint.setAcquiringBank(managedAcquiringBank); // Ensure SalesPoint references the managed instance
             }
-            e.printStackTrace(); // Or log the error
-        }
-    }
-
-    @Override
-    public void delete(Long id) {
-        Transaction transaction = null;
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            SalesPoint salesPoint = session.get(SalesPoint.class, id);
-            if (salesPoint != null) {
-                session.delete(salesPoint);
-            }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Or log the error
-        }
-    }
-
-    @Override
-    public List<SalesPoint> findAll() {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            return session.createQuery("FROM SalesPoint", SalesPoint.class).list();
-        } catch (Exception e) {
-            e.printStackTrace(); // Or log the error
-            return null; // Or throw a custom exception
-        }
-    }
-
-    @Override
-    public Optional<SalesPoint> findById(Long id) {
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            SalesPoint salesPoint = session.get(SalesPoint.class, id);
-            return Optional.ofNullable(salesPoint);
-        } catch (Exception e) {
-            e.printStackTrace(); // Or log the error
-            return Optional.empty(); // Or throw a custom exception
-        }
+            session.persist(salesPoint); // Now persist SalesPoint.
+            // CascadeType.PERSIST on acquiringBank will be a no-op if it was merged.
+            // CascadeType.MERGE would also be fine.
+        });
     }
 
     @Override
     public void update(SalesPoint salesPoint) {
-        Transaction transaction = null;
-        try (Session session = HibernateConfig.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.update(salesPoint);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
+        executeInsideTransaction(session -> {
+            // Option 2: Explicitly merge the associated AcquiringBank if it's detached
+            // This brings it into the current session's managed state.
+            if (salesPoint.getAcquiringBank() != null) {
+                // If acquiringBank has an ID, it's potentially detached.
+                // If it's a new AcquiringBank (ID is null), merge will behave like persist.
+                // The session.merge() returns a managed instance.
+                AcquiringBank managedAcquiringBank = session.merge(salesPoint.getAcquiringBank());
+                salesPoint.setAcquiringBank(managedAcquiringBank); // Ensure SalesPoint references the managed instance
             }
-            e.printStackTrace(); // Or log the error
-        }
+            session.persist(salesPoint); // Now persist SalesPoint.
+            // CascadeType.PERSIST on acquiringBank will be a no-op if it was merged.
+            // CascadeType.MERGE would also be fine.
+        });
+    }
+
+    @Override
+    public void delete(Long id) {
+        executeInsideTransaction(session -> {
+            SalesPoint salesPoint = session.get(SalesPoint.class, id);
+            if (salesPoint != null) {
+                session.remove(salesPoint);
+            }
+        });
+    }
+
+    @Override
+    public Optional<SalesPoint> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            SalesPoint salesPoint = session.get(SalesPoint.class, id);
+            return Optional.ofNullable(salesPoint);
+        });
+    }
+
+    @Override
+    public void createTable() {
+        System.out.println("SalesPoint table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
+    }
+
+    @Override
+    public void dropTable() {
+        System.out.println("SalesPoint table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
+    }
+
+    @Override
+    public void clearTable() {
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM SalesPoint";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("SalesPoint table cleared via Hibernate.");
+        });
     }
 }

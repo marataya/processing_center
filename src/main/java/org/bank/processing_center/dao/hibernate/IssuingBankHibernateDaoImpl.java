@@ -2,139 +2,70 @@ package org.bank.processing_center.dao.hibernate;
 
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.IssuingBank;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class IssuingBankHibernateDaoImpl implements Dao<IssuingBank, Long>, HibernateDao<IssuingBank, Long> {
-
- private SessionFactory sessionFactory;
-
-    public IssuingBankHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
- }
-
-    @Override
-    public void save(IssuingBank issuingBank) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(issuingBank);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Log the exception
-        }
-    }
-
-    @Override
-    public Optional<IssuingBank> findById(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.get(IssuingBank.class, id));
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-            return Optional.empty();
-        }
-    }
+public class IssuingBankHibernateDaoImpl extends AbstractHibernateDao implements Dao<IssuingBank, Long> {
 
     @Override
     public List<IssuingBank> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM IssuingBank", IssuingBank.class).list();
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-            return null;
-        }
+        return executeInsideTransaction(session -> {
+            String hql = "FROM IssuingBank";
+            Query<IssuingBank> query = session.createQuery(hql, IssuingBank.class);
+            return query.list();
+        });
+    }
+
+    @Override
+    public void save(IssuingBank issuingBank) {
+        executeInsideTransaction(session -> {
+            session.persist(issuingBank);
+        });
     }
 
     @Override
     public void update(IssuingBank issuingBank) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.update(issuingBank);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Log the exception
-        }
+        executeInsideTransaction(session -> {
+            session.merge(issuingBank);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
+        executeInsideTransaction(session -> {
             IssuingBank issuingBank = session.get(IssuingBank.class, id);
             if (issuingBank != null) {
-                session.delete(issuingBank);
+                session.remove(issuingBank);
             }
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Log the exception
-        }
+        });
+    }
+
+    @Override
+    public Optional<IssuingBank> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            IssuingBank issuingBank = session.get(IssuingBank.class, id);
+            return Optional.ofNullable(issuingBank);
+        });
     }
 
     @Override
     public void createTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery(
-                    "CREATE TABLE IF NOT EXISTS issuing_bank (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))")
-                    .executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace(); // Log the exception
-        }
+        System.out.println("IssuingBank table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createNativeQuery("DROP TABLE IF EXISTS issuing_bank").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
+        System.out.println("IssuingBank table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
     }
 
- @Override
- public void clearTable() {
- Transaction transaction = null;
- try (Session session = sessionFactory.openSession()) {
- transaction = session.beginTransaction();
-            session.createNativeQuery("DELETE FROM issuing_bank").executeUpdate();
- transaction.commit();
- } catch (Exception e) {
- if (transaction != null) {
- transaction.rollback();
- }
- e.printStackTrace(); // Log the exception
- }
- }
-
- @Override
- public SessionFactory getSessionFactory() {
- return sessionFactory;
- }
-
+    @Override
+    public void clearTable() {
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM IssuingBank";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("IssuingBank table cleared via Hibernate.");
+        });
+    }
 }

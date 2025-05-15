@@ -2,107 +2,70 @@ package org.bank.processing_center.dao.hibernate;
 
 import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Card;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class CardHibernateDaoImpl implements Dao<Card, Long> {
-
-    private final SessionFactory sessionFactory;
-
-    public CardHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+public class CardHibernateDaoImpl extends AbstractHibernateDao implements Dao<Card, Long> {
 
     @Override
-    public void createTable() {
-        // Not typically needed with Hibernate's auto-DDL features,
-        // but can be implemented if manual table creation is required.
-    }
-
-    @Override
-    public Optional<Card> findById(Long id) {
-        Session session = null;
-        try {
-            session = sessionFactory.openSession();
-            Card card = session.get(Card.class, id); // Retrieve the entity by ID
-            return Optional.ofNullable(card); // Wrap the result in Optional
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-            return Optional.empty(); // Return empty Optional in case of error
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
     public List<Card> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM Card", Card.class).list();
-        }
+        return executeInsideTransaction(session -> {
+            String hql = "FROM Card";
+            Query<Card> query = session.createQuery(hql, Card.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(Card card) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(card);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error saving card", e);
-        }
+        executeInsideTransaction(session -> {
+            session.persist(card);
+        });
     }
 
     @Override
     public void update(Card card) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.update(card);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException("Error updating card", e);
-        }
+        executeInsideTransaction(session -> {
+            session.merge(card);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+        executeInsideTransaction(session -> {
             Card card = session.get(Card.class, id);
             if (card != null) {
-                session.delete(card);
+                session.remove(card);
             }
-            transaction.commit();
-        } catch (Exception e) {
-            throw new RuntimeException("Error deleting card", e);
-        }
+        });
+    }
+
+    @Override
+    public Optional<Card> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            Card card = session.get(Card.class, id);
+            return Optional.ofNullable(card);
+        });
+    }
+
+    @Override
+    public void createTable() {
+        System.out.println("Card table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        // Not typically needed with Hibernate's auto-DDL features,
-        // but can be implemented if manual table dropping is required.
+        System.out.println("Card table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
     }
 
     @Override
     public void clearTable() {
-        try (Session session = sessionFactory.openSession()) {
-            org.hibernate.Transaction transaction = session.beginTransaction();
+        executeInsideTransaction(session -> {
             String hql = "DELETE FROM Card";
-            session.createQuery(hql).executeUpdate();
-        }
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("Card table cleared via Hibernate.");
+        });
     }
-
 }

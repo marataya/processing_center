@@ -1,116 +1,114 @@
 package org.bank.processing_center.dao.hibernate;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import org.bank.processing_center.model.Transaction;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.model.*;
+import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Optional;
 
-public class TransactionHibernateDaoImpl implements HibernateDao<Transaction, Long> {
-
-    private final SessionFactory sessionFactory;
-
-    public TransactionHibernateDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public Optional<org.bank.processing_center.model.Transaction> findById(Long id) {
-        return Optional.ofNullable(sessionFactory.openSession().get(org.bank.processing_center.model.Transaction.class, id));
-    }
+public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements Dao<Transaction, Long>
+ {
 
     @Override
     public List<Transaction> findAll() {
-        try (Session session = sessionFactory.openSession()) {
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery<Transaction> criteria = builder.createQuery(Transaction.class);
-            Root<Transaction> root = criteria.from(Transaction.class);
-            criteria.select(root);
-            return session.createQuery(criteria).getResultList();
-        }
+        return executeInsideTransaction(session -> {
+            String hql = "FROM Transaction";
+            Query<Transaction> query = session.createQuery(hql, Transaction.class);
+            return query.list();
+        });
     }
 
     @Override
     public void save(Transaction transaction) {
-        org.hibernate.Transaction transactionHibernate = null;
-        try (Session session = sessionFactory.openSession()) {
-            transactionHibernate = session.beginTransaction();
-            session.save(transaction);
-            transactionHibernate.commit();
-        } catch (Exception e) {
-            if (transactionHibernate != null) {
-                transactionHibernate.rollback();
+        executeInsideTransaction(session -> {
+            if (transaction.getAccount() != null) {
+                Account managedAccount = session.merge(transaction.getAccount());
+                transaction.setAccount(managedAccount);
             }
-            e.printStackTrace(); // Or log the exception
-        }
+            if (transaction.getTransactionType() != null) {
+                TransactionType managedTransactionType = session.merge(transaction.getTransactionType());
+                transaction.setTransactionType(managedTransactionType);
+            }
+            if (transaction.getCard() != null) {
+                Card managedCard = session.merge(transaction.getCard());
+                transaction.setCard(managedCard);
+            }
+            if (transaction.getTerminal() != null) {
+                Terminal managedTerminal = session.merge(transaction.getTerminal());
+                transaction.setTerminal(managedTerminal);
+            }
+            if (transaction.getResponseCode() != null) {
+                ResponseCode managedResponseCode = session.merge(transaction.getResponseCode());
+                transaction.setResponseCode(managedResponseCode);
+            }
+
+            session.persist(transaction);
+        });
     }
 
     @Override
     public void update(Transaction transaction) {
-        org.hibernate.Transaction transactionHibernate = null;
-        try (Session session = sessionFactory.openSession()) {
-            transactionHibernate = session.beginTransaction();
-            session.update(transaction);
-            transactionHibernate.commit();
-        } catch (Exception e) {
-            if (transactionHibernate != null) {
-                transactionHibernate.rollback();
+        executeInsideTransaction(session -> {
+            if (transaction.getAccount() != null) {
+                Account managedAccount = session.merge(transaction.getAccount());
+                transaction.setAccount(managedAccount);
             }
-            e.printStackTrace(); // Or log the exception
-        }
+            if (transaction.getTransactionType() != null) {
+                TransactionType managedTransactionType = session.merge(transaction.getTransactionType());
+                transaction.setTransactionType(managedTransactionType);
+            }
+            if (transaction.getCard() != null) {
+                Card managedCard = session.merge(transaction.getCard());
+                transaction.setCard(managedCard);
+            }
+            if (transaction.getTerminal() != null) {
+                Terminal managedTerminal = session.merge(transaction.getTerminal());
+                transaction.setTerminal(managedTerminal);
+            }
+            if (transaction.getResponseCode() != null) {
+                ResponseCode managedResponseCode = session.merge(transaction.getResponseCode());
+                transaction.setResponseCode(managedResponseCode);
+            }
+
+            session.merge(transaction);
+        });
     }
 
     @Override
     public void delete(Long id) {
-        org.hibernate.Transaction transactionHibernate = null;
-        try (Session session = sessionFactory.openSession()) {
-            transactionHibernate = session.beginTransaction();
+        executeInsideTransaction(session -> {
             Transaction transaction = session.get(Transaction.class, id);
             if (transaction != null) {
-                session.delete(transaction);
+                session.remove(transaction);
             }
-            transactionHibernate.commit();
-        } catch (Exception e) {
-            if (transactionHibernate != null) {
-                transactionHibernate.rollback();
-            }
-            e.printStackTrace(); // Or log the exception
-        }
+        });
     }
 
     @Override
-    public void clearTable() {
-        org.hibernate.Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.createQuery("delete from Transaction").executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null)
-                transaction.rollback();
-            e.printStackTrace();
-        }
+    public Optional<Transaction> findById(Long id) {
+        return executeInsideTransaction(session -> {
+            Transaction transaction = session.get(Transaction.class, id);
+            return Optional.ofNullable(transaction);
+        });
     }
 
     @Override
     public void createTable() {
-        // Basic Hibernate logic to create table (often handled by Hibernate schema
-        // export)
-        System.out.println("Hibernate table creation for Transaction entity is typically handled by schema export.");
+        System.out.println("Transaction table schema is managed by Hibernate (hbm2ddl.auto). createTable() is a no-op.");
     }
 
     @Override
     public void dropTable() {
-        // Basic Hibernate logic to drop table (often handled by Hibernate schema
-        // export)
-        System.out.println("Hibernate table dropping for Transaction entity is typically handled by schema export.");
+        System.out.println("Transaction table schema is managed by Hibernate (hbm2ddl.auto). dropTable() is a no-op.");
     }
 
     @Override
-    public SessionFactory getSessionFactory() {
-        return this.sessionFactory;
+    public void clearTable() {
+        executeInsideTransaction(session -> {
+            String hql = "DELETE FROM Transaction";
+            session.createMutationQuery(hql).executeUpdate();
+            System.out.println("Transaction table cleared via Hibernate.");
+        });
     }
 }
