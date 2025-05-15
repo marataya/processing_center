@@ -12,7 +12,7 @@ import java.util.Optional;
 public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
     // Column names from Currency.java entity
-    private static final String TABLE_NAME = "currencies"; // As per @Table(name = "currencies")
+    private static final String TABLE_NAME = "currency"; // As per @Table(name = "currencies")
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_DIGITAL_CODE = "currency_digital_code"; // As per @Column(name = "currency_digital_code")
     private static final String COLUMN_LETTER_CODE = "currency_letter_code";  // As per @Column(name = "currency_letter_code")
