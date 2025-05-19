@@ -1,109 +1,329 @@
-// src/test/java/org/bank/processing_center/model/AccountTest.java
+// /home/nemo/dev/ayaibergenov_jan1_processingcenter/src/test/java/org/bank/processing_center/model/AccountTest.java
 package org.bank.processing_center.model;
 
-import org.junit.jupiter.api.Test; // JUnit 5 Test annotation
-import static org.junit.jupiter.api.Assertions.*; // JUnit 5 assertions
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.Set;
+
+// Assuming Currency and IssuingBank classes exist and have necessary methods (e.g., setId, getId, setCode)
+// For simplicity, we'll assume they have default constructors and setters.
+
+// Example stub for Currency (if not available or to simplify):
+// class Currency {
+//     private Long id;
+//     private String code;
+//     private String name;
+//     public Currency() {}
+//     public Long getId() { return id; }
+//     public void setId(Long id) { this.id = id; }
+//     public String getCode() { return code; }
+//     public void setCode(String code) { this.code = code; }
+//     public String getName() { return name; }
+//     public void setName(String name) { this.name = name; }
+//     // equals and hashCode if needed for direct comparison in tests
+// }
+
+// Example stub for IssuingBank (if not available or to simplify):
+// class IssuingBank {
+//     private Long id;
+//     private String name;
+//     public IssuingBank() {}
+//     public Long getId() { return id; }
+//     public void setId(Long id) { this.id = id; }
+//     public String getName() { return name; }
+//     public void setName(String name) { this.name = name; }
+//     // equals and hashCode if needed
+// }
+
 
 class AccountTest {
+    private Validator validator;
+    private Currency testCurrency;
+    private IssuingBank testIssuingBank;
 
+    @BeforeEach
+    void setUp() {
+        // Setup Bean Validation validator
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
+        // Create valid instances of related entities for tests
+        testCurrency = new Currency();
+        testCurrency.setId(1L);
+        testCurrency.setCurrencyLetterCode("USD");
+
+        testIssuingBank = new IssuingBank();
+        testIssuingBank.setId(1L);
+        testIssuingBank.setAbbreviatedName("Test Bank");
+    }
     @Test
     void testDefaultConstructor() {
         Account account = new Account();
         assertNull(account.getId(), "ID should be null for default constructor");
         assertNull(account.getAccountNumber(), "Account number should be null for default constructor");
-        assertNull(account.getOwnerName(), "Owner name should be null for default constructor");
         assertNull(account.getBalance(), "Balance should be null for default constructor");
-        assertFalse(account.isActive(), "Account should be inactive by default");
+        assertNull(account.getCurrency(), "Currency should be null for default constructor");
+        assertNull(account.getIssuingBank(), "IssuingBank should be null for default constructor");
     }
 
     @Test
-    void testParameterizedConstructorAndGetters() {
+    void testAllArgsConstructor() {
         Long id = 1L;
-        String accNum = "ACC001";
-        String owner = "Alice Wonderland";
-        BigDecimal balance = new BigDecimal("1234.56");
-        boolean isActive = true;
+        String accountNumber = "1234567890";
+        BigDecimal balance = new BigDecimal("1000.50");
+        Currency currency = new Currency();
+        currency.setId(10L);
+        currency.setCurrencyLetterCode("USD");
+        IssuingBank issuingBank = new IssuingBank();
+        issuingBank.setId(20L);
 
-        Account account = new Account(id, accNum, owner, balance, isActive);
+        Account account = new Account(id, accountNumber, balance, currency, issuingBank);
 
         assertEquals(id, account.getId(), "ID should match constructor argument");
-        assertEquals(accNum, account.getAccountNumber(), "Account number should match constructor argument");
-        assertEquals(owner, account.getOwnerName(), "Owner name should match constructor argument");
-        assertNotNull(account.getBalance(), "Balance should not be null");
+        assertEquals(accountNumber, account.getAccountNumber(), "Account number should match constructor argument");
         assertEquals(0, balance.compareTo(account.getBalance()), "Balance should match constructor argument");
-        assertEquals(isActive, account.isActive(), "Active status should match constructor argument");
+        assertEquals(currency, account.getCurrency(), "Currency should match constructor argument");
+        assertEquals(issuingBank, account.getIssuingBank(), "IssuingBank should match constructor argument");
     }
 
+
     @Test
-    void testSetters() {
+    void testGettersAndSetters() {
         Account account = new Account();
 
-        Long id = 2L;
+        Long id = 1L;
+        String accountNumber = "0987654321";
+        BigDecimal balance = new BigDecimal("250.75");
+
+        Currency currency = new Currency();
+        currency.setId(11L);
+        currency.setCurrencyLetterCode("EUR");
+
+        IssuingBank issuingBank = new IssuingBank();
+        issuingBank.setId(21L);
+        // issuingBank.setName("Test Bank"); // If IssuingBank has a name
+
         account.setId(id);
-        assertEquals(id, account.getId(), "Setter for ID failed");
-
-        String accNum = "ACC002";
-        account.setAccountNumber(accNum);
-        assertEquals(accNum, account.getAccountNumber(), "Setter for AccountNumber failed");
-
-        String owner = "Bob The Builder";
-        account.setOwnerName(owner);
-        assertEquals(owner, account.getOwnerName(), "Setter for OwnerName failed");
-
-        BigDecimal balance = new BigDecimal("500.75");
+        account.setAccountNumber(accountNumber);
         account.setBalance(balance);
-        assertNotNull(account.getBalance());
-        assertEquals(0, balance.compareTo(account.getBalance()), "Setter for Balance failed");
+        account.setCurrency(currency);
+        account.setIssuingBank(issuingBank);
 
-        account.setActive(true);
-        assertTrue(account.isActive(), "Setter for Active failed");
+        assertEquals(id, account.getId(), "Getter for ID should return set value");
+        assertEquals(accountNumber, account.getAccountNumber(), "Getter for AccountNumber should return set value");
+        assertEquals(0, balance.compareTo(account.getBalance()), "Getter for Balance should return set value");
+        assertEquals(currency, account.getCurrency(), "Getter for Currency should return set value");
+        assertEquals(issuingBank, account.getIssuingBank(), "Getter for IssuingBank should return set value");
     }
 
     @Test
     void testEqualsAndHashCode() {
-        Account account1 = new Account(1L, "ACC001", "Alice", new BigDecimal("100.00"), true);
-        Account account2 = new Account(1L, "ACC001", "Alice", new BigDecimal("100.00"), true); // Same as account1
-        Account account3 = new Account(2L, "ACC002", "Bob", new BigDecimal("200.00"), false);   // Different from account1
-        Account account4 = new Account(1L, "ACC001", "Alice", new BigDecimal("100.01"), true); // Different balance
+        Currency usd = new Currency();
+        usd.setId(1L);
+        usd.setCurrencyLetterCode("USD");
 
-        // Reflexive
-        assertEquals(account1, account1, "Equals should be reflexive");
+        IssuingBank bank1 = new IssuingBank();
+        bank1.setId(100L);
 
-        // Symmetric
-        assertEquals(account1, account2, "Equals should be symmetric (1 vs 2)");
-        assertEquals(account2, account1, "Equals should be symmetric (2 vs 1)");
+        IssuingBank bank2 = new IssuingBank();
+        bank2.setId(101L);
 
-        // Consistent hashCode
-        assertEquals(account1.hashCode(), account2.hashCode(), "Hashcode should be consistent for equal objects");
+        // Account.equals is based SOLELY on non-null ID.
+        Account account1 = new Account(1L, "ACC123", new BigDecimal("100.00"), usd, bank1);
+        Account account2 = new Account(1L, "ACCXYZ", new BigDecimal("200.00"), usd, bank2); // Same ID, different other fields
+        Account account3 = new Account(2L, "ACC456", new BigDecimal("300.00"), usd, bank1); // Different ID
 
-        // Not equal to different object
-        assertNotEquals(account1, account3, "Objects with different properties should not be equal");
-        // Note: Hashcodes are not guaranteed to be different for non-equal objects, but usually are.
-        // assertNotEquals(account1.hashCode(), account3.hashCode());
+        // Reflexivity
+        assertEquals(account1, account1, "Account should be equal to itself.");
+        // HashCode contract: if equals is true, hashCodes must be equal.
+        // The current hashCode() returns getClass().hashCode() (or proxy's class hashcode)
+        // which will be the same for all instances of Account.
+        assertEquals(account1.hashCode(), account1.hashCode(), "HashCode should be consistent for the same object.");
 
-        // Not equal if a field differs
-        assertNotEquals(account1, account4, "Objects with different balance should not be equal");
+        // Symmetry
+        assertEquals(account1, account2, "account1 and account2 should be equal (same ID).");
+        assertEquals(account2, account1, "Symmetry: account2 and account1 should be equal (same ID).");
+        assertEquals(account1.hashCode(), account2.hashCode(), "HashCodes should be equal for equal objects (same ID).");
 
-        // Not equal to null
-        assertNotEquals(null, account1, "Object should not be equal to null");
+        // Transitivity
+        Account account1_clone = new Account(1L, "ACC_CLONE", new BigDecimal("50.00"), usd, bank1); // Same ID
+        assertEquals(account1, account1_clone, "Account and its clone (same ID) should be equal.");
+        assertEquals(account2, account1_clone, "Account2 and clone of Account1 (same ID) should be equal.");
 
-        // Not equal to different type
-        assertNotEquals("a string", account1, "Object should not be equal to an object of a different type");
+        // Inequality
+        assertNotEquals(account1, account3, "Accounts with different IDs should not be equal.");
+        // Hashcodes might be the same even if objects are not equal, which is fine.
+        // In this specific hashCode impl, they will be the same.
+        assertEquals(account1.hashCode(), account3.hashCode(), "HashCodes can be the same for non-equal objects with this specific hashCode impl.");
+
+
+        // Inequality with null and different type
+        assertNotEquals(null, account1, "Account should not be equal to null.");
+        assertNotEquals(account1, new Object(), "Account should not be equal to an object of a different type.");
+
+        // Test with null ID
+        // According to Account.equals(): `return getId() != null && Objects.equals(getId(), account.getId());`
+        // If `this.getId()` is null, it returns false.
+        Account accNoId1 = new Account(null, "NO_ID_ACC", BigDecimal.TEN, usd, bank1);
+        Account accNoId2 = new Account(null, "NO_ID_ACC", BigDecimal.TEN, usd, bank1); // Same fields, but ID is null
+        Account accNoId3 = new Account(null, "NO_ID_ACC_DIFF", BigDecimal.TEN, usd, bank1);
+
+        assertNotEquals(accNoId1, accNoId2, "Accounts with null IDs are not equal by current equals implementation.");
+        // Hashcodes will be the same (getClass().hashCode())
+        assertEquals(accNoId1.hashCode(), accNoId2.hashCode());
+
+        assertNotEquals(accNoId1, accNoId3, "Accounts with null IDs are not equal.");
+
+        Account accWithId = new Account(5L, "ID_ACC", BigDecimal.ONE, usd, bank1);
+        assertNotEquals(accNoId1, accWithId, "Account with null ID is not equal to account with non-null ID.");
+        assertNotEquals(accWithId, accNoId1, "Account with non-null ID is not equal to account with null ID.");
     }
 
     @Test
     void testToString() {
-        Account account = new Account(1L, "ACC001", "Alice", new BigDecimal("100.00"), true);
-        String accountString = account.toString();
+        Currency currency = new Currency();
+        currency.setId(30L);
+        currency.setCurrencyLetterCode("GBP");
+        // currency.setName("British Pound"); // Name is not used in Account.toString()
 
-        assertTrue(accountString.contains("id=1"), "toString should contain id");
-        assertTrue(accountString.contains("accountNumber='ACC001'"), "toString should contain accountNumber");
-        assertTrue(accountString.contains("ownerName='Alice'"), "toString should contain ownerName");
-        // BigDecimal.toString() can vary (e.g., "100.00" vs "100").
-        // For more precise matching, you might compare specific parts or use a regex.
-        assertTrue(accountString.contains("balance=" + new BigDecimal("100.00").toString()), "toString should contain balance");
-        assertTrue(accountString.contains("active=true"), "toString should contain active status");
+        IssuingBank issuingBank = new IssuingBank();
+        issuingBank.setId(40L);
+        // issuingBank.setName("Test GBP Bank"); // Name is not used in Account.toString()
+
+        Account account = new Account(77L, "ACC_TO_STRING", new BigDecimal("555.55"), currency, issuingBank);
+
+        String accountString = account.toString();
+        // Expected: "Account{id=77, accountNumber='ACC_TO_STRING', balance=555.55, currency=30, issuingBank=40}"
+
+        assertNotNull(accountString, "toString() should not return null.");
+        assertTrue(accountString.contains("Account{"), "toString() should start with class name.");
+        assertTrue(accountString.contains("id=77"), "toString() should contain the id.");
+        assertTrue(accountString.contains("accountNumber='ACC_TO_STRING'"), "toString() should contain the account number.");
+        assertTrue(accountString.contains("balance=555.55"), "toString() should contain the balance.");
+        assertTrue(accountString.contains("currency=30"), "toString() should contain the currency ID.");
+        assertTrue(accountString.contains("issuingBank=40"), "toString() should contain the issuingBank ID.");
+        assertTrue(accountString.endsWith("}"), "toString() should end with '}'.");
+
+        Account accountNoCurrencyOrBank = new Account(88L, "ACC_NO_REFS", BigDecimal.ONE, null, null);
+        String noRefsString = accountNoCurrencyOrBank.toString();
+        // Expected: "Account{id=88, accountNumber='ACC_NO_REFS', balance=1, currency=null, issuingBank=null}"
+        assertTrue(noRefsString.contains("currency=null"), "toString() should handle null currency gracefully.");
+        assertTrue(noRefsString.contains("issuingBank=null"), "toString() should handle null issuingBank gracefully.");
+    }
+
+    // --- Validation Specific Tests ---
+
+    @Test
+    void testValidation_accountNumber_NotNull() {
+        Account account = new Account(1L, null, BigDecimal.TEN, testCurrency, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Account number should not be null");
+        assertEquals(1, violations.size(), "Should have exactly one violation for null account number");
+        assertEquals("accountNumber", violations.iterator().next().getPropertyPath().toString());
+        // Depending on the exact message in @NotNull, you could check the message too
+        // assertTrue(violations.iterator().next().getMessage().contains("cannot be null"));
+    }
+
+    @Test
+    void testValidation_accountNumber_NotBlank() {
+        Account account = new Account(1L, "", BigDecimal.TEN, testCurrency, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Account number should not be blank (empty string)");
+        assertEquals(1, violations.size(), "Should have exactly one violation for blank account number");
+        assertEquals("accountNumber", violations.iterator().next().getPropertyPath().toString());
+
+        account.setAccountNumber("   "); // Test whitespace
+        violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Account number should not be blank (whitespace)");
+        assertEquals(1, violations.size(), "Should have exactly one violation for blank account number");
+        assertEquals("accountNumber", violations.iterator().next().getPropertyPath().toString());
+    }
+
+
+    @Test
+    void testValidation_accountNumber_Size() {
+        String longAccountNumber = "A".repeat(51); // Exceeds max size 50
+        Account account = new Account(1L, longAccountNumber, BigDecimal.TEN, testCurrency, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Account number should not exceed 50 characters");
+        assertEquals(1, violations.size(), "Should have exactly one violation for account number size");
+        assertEquals("accountNumber", violations.iterator().next().getPropertyPath().toString());
+
+        String validAccountNumber = "A".repeat(50); // Exactly max size 50
+        account.setAccountNumber(validAccountNumber);
+        violations = validator.validate(account);
+        assertTrue(violations.isEmpty(), "Account number of exactly 50 characters should be valid");
+    }
+
+    @Test
+    void testValidation_balance_NotNull() {
+        Account account = new Account(1L, "ACC123", null, testCurrency, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Balance should not be null");
+        assertEquals(1, violations.size(), "Should have exactly one violation for null balance");
+        assertEquals("balance", violations.iterator().next().getPropertyPath().toString());
+    }
+
+    @Test
+    void testValidation_balance_DecimalMin() {
+        Account account = new Account(1L, "ACC123", new BigDecimal("-0.01"), testCurrency, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Balance should not be negative");
+        assertEquals(1, violations.size(), "Should have exactly one violation for negative balance");
+        assertEquals("balance", violations.iterator().next().getPropertyPath().toString());
+
+        account.setBalance(BigDecimal.ZERO); // Test minimum allowed value
+        violations = validator.validate(account);
+        assertTrue(violations.isEmpty(), "Balance of 0.00 should be valid");
+
+        account.setBalance(new BigDecimal("0.00")); // Test minimum allowed value explicitly
+        violations = validator.validate(account);
+        assertTrue(violations.isEmpty(), "Balance of 0.00 should be valid");
+    }
+
+    @Test
+    void testValidation_balance_Digits() {
+        // Assuming @Digits(integer = 15, fraction = 4)
+        Account account = new Account(1L, "ACC123", new BigDecimal("1234567890123456.00"), testCurrency, testIssuingBank); // 16 integer digits
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Balance should not exceed 15 integer digits");
+        assertEquals(1, violations.size(), "Should have exactly one violation for too many integer digits");
+        assertEquals("balance", violations.iterator().next().getPropertyPath().toString());
+
+        account.setBalance(new BigDecimal("1.23456")); // 5 fraction digits
+        violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Balance should not exceed 4 fraction digits");
+        assertEquals(1, violations.size(), "Should have exactly one violation for too many fraction digits");
+        assertEquals("balance", violations.iterator().next().getPropertyPath().toString());
+
+        account.setBalance(new BigDecimal("123456789012345.1234")); // Valid digits
+        violations = validator.validate(account);
+        assertTrue(violations.isEmpty(), "Balance with valid digits should be valid");
+    }
+
+
+    @Test
+    void testValidation_currency_NotNull() {
+        Account account = new Account(1L, "ACC123", BigDecimal.TEN, null, testIssuingBank);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Currency should not be null");
+        assertEquals(1, violations.size(), "Should have exactly one violation for null currency");
+        assertEquals("currency", violations.iterator().next().getPropertyPath().toString());
+    }
+
+    @Test
+    void testValidation_issuingBank_NotNull() {
+        Account account = new Account(1L, "ACC123", BigDecimal.TEN, testCurrency, null);
+        Set<ConstraintViolation<Account>> violations = validator.validate(account);
+        assertFalse(violations.isEmpty(), "Issuing bank should not be null");
+        assertEquals(1, violations.size(), "Should have exactly one violation for null issuing bank");
+        assertEquals("issuingBank", violations.iterator().next().getPropertyPath().toString());
     }
 }
