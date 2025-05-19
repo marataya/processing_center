@@ -47,7 +47,7 @@ public class CardServiceTest {
     private CardStatus createStubCardStatus(Long id, String name) {
         CardStatus status = new CardStatus();
         status.setId(id);
-        status.setStatus_name(name);
+        status.setStatusName(name);
         return status;
     }
 

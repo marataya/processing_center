@@ -13,8 +13,6 @@ public class TransactionTypeService implements Service<TransactionType, Long> {
         this.transactionTypeDao = dao;
     }
 
-    // TODO: Implement Service interface methods
-
     @Override
     public void createTable() {
         transactionTypeDao.createTable();

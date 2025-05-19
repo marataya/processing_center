@@ -22,6 +22,7 @@ public class HibernateConfig {
                 settings.put("hibernate.connection.password", "pass");
                 settings.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                 settings.put("hibernate.show_sql", "true");
+                settings.put("hibernate.use_sql_comments", "true");
                 settings.put("hibernate.format_sql", "true");
                 settings.put("hibernate.hbm2ddl.auto", "create-drop");
 

@@ -87,49 +87,5 @@ public class AccountService implements Service<Account, Long> {
         }
     }
 
-    /**
-     * Transfers money between accounts
-     * 
-     * @param fromAccountId Source account ID
-     * @param toAccountId   Destination account ID
-     * @param amount        Amount to transfer
-     * @return true if the transfer was successful, false otherwise
-     */
-    public boolean transferMoney(Long fromAccountId, Long toAccountId, double amount) {
-        BigDecimal transferAmount = BigDecimal.valueOf(amount);
 
-        if (transferAmount.compareTo(BigDecimal.ZERO) <= 0) {
-            System.out.println("Сумма перевода должна быть положительной");
-            return false;
-        }
-
-        Optional<Account> fromAccountOpt = accountDao.findById(fromAccountId);
-        Optional<Account> toAccountOpt = accountDao.findById(toAccountId);
-
-        if (!fromAccountOpt.isPresent() || !toAccountOpt.isPresent()) {
-            System.out.println("Один или оба счета не найдены");
-            return false;
-        }
-
-        Account fromAccount = fromAccountOpt.get();
-        Account toAccount = toAccountOpt.get();
-
-        // Check if the source account has enough funds
-        if (fromAccount.getBalance().compareTo(transferAmount) < 0) {
-            System.out.println("Недостаточно средств на счете: " + fromAccount.getAccountNumber());
-            return false;
-        }
-
-        // Update balances
-        fromAccount.setBalance(fromAccount.getBalance().subtract(transferAmount));
-        toAccount.setBalance(toAccount.getBalance().add(transferAmount));
-
-            // Save changes
-            accountDao.update(fromAccount);
-            accountDao.update(toAccount);
-
-            System.out.println("Перевод выполнен успешно. Со счета " + fromAccount.getAccountNumber() +
-                    " на счет " + toAccount.getAccountNumber() + " переведено " + amount);
-            return true;
-    }
 }

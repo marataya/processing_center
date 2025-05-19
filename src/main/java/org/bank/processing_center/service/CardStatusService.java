@@ -61,7 +61,7 @@ public class CardStatusService implements Service<CardStatus, Long> {
      */
     public Optional<CardStatus> findByName(String statusName) {
         return cardStatusDao.findAll().stream()
-                .filter(status -> status.getStatus_name().equalsIgnoreCase(statusName))
+                .filter(status -> status.getStatusName().equalsIgnoreCase(statusName))
                 .findFirst();
     }
 
@@ -74,7 +74,7 @@ public class CardStatusService implements Service<CardStatus, Long> {
         Optional<CardStatus> cardStatusOpt = cardStatusDao.findById(id);
         if (cardStatusOpt.isPresent()) {
             CardStatus cardStatus = cardStatusOpt.get();
-            return cardStatus.getStatus_name();
+            return cardStatus.getStatusName();
         }
         return null;
     }

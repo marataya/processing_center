@@ -96,6 +96,7 @@ public class ApplicationController implements AutoCloseable {
 
             // Step 3: Add sample data
             view.showMessage("Step 2: Adding sample data...");
+//            addSampleData();
             addSampleDataHibernate();
             view.showMessage("Step 2: Sample data added.");
 
@@ -111,6 +112,7 @@ public class ApplicationController implements AutoCloseable {
             // Step 5: Update two cards
             view.showMessage("Step 4: Updating two cards...");
             updateTwoCardsHibernate(cards);
+//            updateTwoCards(cards);
             view.showMessage("Step 4: Cards updated.");
             // Optionally, retrieve and display updated cards again
             view.showMessage("Step 4: Displaying updated card details:");
@@ -119,7 +121,7 @@ public class ApplicationController implements AutoCloseable {
                 view.showMessage(card.toString());
             }
 
-            // Step 6: Drop tables
+//             Step 6: Drop tables
             view.showMessage("Step 6: Dropping tables...");
             dropTables();
             view.showMessage("Step 6: Tables dropped.");

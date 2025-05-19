@@ -1,19 +1,20 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy; // Ensure this import is present
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects; // Ensure this import is present
 
 @Entity
 @Table(name = "transaction")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Transaction {
 
     @Id
@@ -30,23 +31,28 @@ public class Transaction {
     @Column(name = "transaction_name")
     private String transactionName;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // Consider adding fetch = FetchType.LAZY for performance
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // Consider adding fetch = FetchType.LAZY for performance
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_type_id")
     private TransactionType transactionType;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // Consider adding fetch = FetchType.LAZY for performance
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "card_id")
     private Card card;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // Consider adding fetch = FetchType.LAZY for performance
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "terminal_id")
     private Terminal terminal;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // Consider adding fetch = FetchType.LAZY for performance
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "response_code_id")
     private ResponseCode responseCode;
 
@@ -59,4 +65,48 @@ public class Transaction {
     @Column(name = "sent_to_issuing_bank")
     private LocalDateTime sentToIssuingBank;
 
+    // Add other fields as necessary
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        // Check effective class, considering Hibernate proxies
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Transaction that = (Transaction) o; // Correct cast to Transaction
+        // Equality based on ID for persisted entities
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        // This implementation is consistent with the equals method when ID is the basis of equality for persisted entities.
+        // For transient entities (ID is null), it relies on the class hash code.
+        return this instanceof HibernateProxy
+                ? ((HibernateProxy) this).getHibernateLazyInitializer()
+                .getPersistentClass()
+                .hashCode()
+                : getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", transactionDate=" + transactionDate +
+                ", sum=" + sum +
+                ", transactionName='" + transactionName + '\'' +
+                // Print IDs of related entities to avoid lazy loading issues
+                ", account=" + (account != null ? account.getId() : "null") +
+                ", transactionType=" + (transactionType != null ? transactionType.getId() : "null") +
+                ", card=" + (card != null ? card.getId() : "null") +
+                ", terminal=" + (terminal != null ? terminal.getId() : "null") +
+                ", responseCode=" + (responseCode != null ? responseCode.getId() : "null") +
+                ", authorizationCode='" + authorizationCode + '\'' +
+                ", receivedFromIssuingBank=" + receivedFromIssuingBank +
+                ", sentToIssuingBank=" + sentToIssuingBank +
+                '}';
+    }
 }
