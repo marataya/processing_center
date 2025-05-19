@@ -35,7 +35,7 @@ public class Currency {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Account account = (Account) o;
+        Currency account = (Currency) o;
         return getId() != null && Objects.equals(getId(), account.getId());
     }
 
