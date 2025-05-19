@@ -31,9 +31,15 @@ public class CardService implements Service<Card, Long> {
 
     @Override
     public void save(Card card) {
-        // Validate card number before saving
-        if (validateCard(card)) {
+        // Validate card before saving using the method in the Card entity
+        if (card != null && card.validateCard(card)) { // Assuming Card entity has a validate() method now
             cardDao.save(card);
+        } else {
+            // Optional: Log or handle the validation failure if card is null or validation fails
+            if (card == null) {
+                System.err.println("Ошибка: Карта для сохранения не может быть null.");
+            }
+            // The Card.validate() method is expected to print specific errors
         }
     }
 
@@ -54,112 +60,16 @@ public class CardService implements Service<Card, Long> {
 
     @Override
     public void update(Card card) {
-        // Validate card number before updating
-        if (validateCard(card)) {
+        // Validate card before updating using the method in the Card entity
+        if (card != null && card.validateCard(card)) { // Assuming Card entity has a validate() method now
             cardDao.update(card);
-        }
-    }
-
-    /**
-     * Checks if a card is expired
-     * @param card Card to check
-     * @return true if the card is expired, false otherwise
-     */
-    public boolean isCardExpired(Card card) {
-        return card.getExpirationDate().isBefore(java.time.LocalDate.now());
-    }
-
-    /**
-     * Masks a card number for display (e.g., **** **** **** 1234)
-     * @param cardNumber Full card number
-     * @return Masked card number
-     */
-    public String maskCardNumber(String cardNumber) {
-        if (cardNumber == null || cardNumber.length() < 4) {
-            return cardNumber;
-        }
-
-        String lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
-        return "**** **** **** " + lastFourDigits;
-    }
-
-    /**
-     * Validates a card number using the Luhn algorithm
-     * @param cardNumber Card number to validate
-     * @return true if the card number is valid, false otherwise
-     */
-    public boolean isValidCardNumber(String cardNumber) {
-        if (cardNumber == null) {
-            return false;
-        }
-
-        // Remove any non-digit characters
-        String digitsOnly = cardNumber.replaceAll("\\D", "");
-
-        if (digitsOnly.length() < 13 || digitsOnly.length() > 19) {
-            // Most card numbers are between 13 and 19 digits
-            return false;
-        }
-
-        // Luhn algorithm implementation
-        int sum = 0;
-        boolean alternate = false;
-
-        // Process digits from right to left
-        for (int i = digitsOnly.length() - 1; i >= 0; i--) {
-            int digit = Character.getNumericValue(digitsOnly.charAt(i));
-
-            if (alternate) {
-                digit *= 2;
-                if (digit > 9) {
-                    digit = digit - 9; // Same as summing the digits (e.g., 12 -> 1+2 = 3, which is 12-9)
-                }
+        } else {
+            // Optional: Log or handle the validation failure if card is null or validation fails
+            if (card == null) {
+                System.err.println("Ошибка: Карта для обновления не может быть null.");
             }
-
-            sum += digit;
-            alternate = !alternate;
+            // The Card.validate() method is expected to print specific errors
         }
-
-        // If the sum is divisible by 10, the card number is valid
-        return sum % 10 == 0;
     }
 
-    /**
-     * Validates a card before saving or updating
-     * @param card Card to validate
-     * @return true if the card is valid, false otherwise
-     */
-    public boolean validateCard(Card card) {
-        if (card == null) {
-            System.err.println("Ошибка: Карта не может быть null");
-            return false;
-        }
-
-        if (card.getCardNumber() == null || card.getCardNumber().isEmpty()) {
-            System.err.println("Ошибка: Номер карты не может быть пустым");
-            return false;
-        }
-
-        if (!isValidCardNumber(card.getCardNumber())) {
-            System.err.println("Ошибка: Недействительный номер карты (не прошел проверку по алгоритму Луна): " + card.getCardNumber());
-            return false;
-        }
-
-        if (card.getExpirationDate() == null) {
-            System.err.println("Ошибка: Дата истечения срока действия не может быть null");
-            return false;
-        }
-
-        if (isCardExpired(card)) {
-            System.err.println("Ошибка: Срок действия карты истек: " + card.getExpirationDate());
-            return false;
-        }
-
-        if (card.getHolderName() == null || card.getHolderName().isEmpty()) {
-            System.err.println("Ошибка: Имя держателя карты не может быть пустым");
-            return false;
-        }
-
-        return true;
-    }
 }

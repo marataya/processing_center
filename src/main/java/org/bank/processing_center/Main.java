@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String daoType = "jdbc";
+        String daoType = "hibernate";
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Application shutting down, closing resources...");
