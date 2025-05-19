@@ -7,7 +7,6 @@ import org.bank.processing_center.model.ResponseCode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
 
@@ -98,7 +97,7 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
     }
 
     @Override
-    public Optional<ResponseCode> findById(Long id) {
+    public ResponseCode findById(Long id) {
         String sql = "SELECT id, error_code, error_description, error_level FROM response_code WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
@@ -108,12 +107,12 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
                 responseCode.setId(resultSet.getLong("id")); // Keep getId for entity id
                 responseCode.setErrorCode(resultSet.getString("error_code"));
                 responseCode.setErrorDescription(resultSet.getString("error_description"));
-                return Optional.of(responseCode);
+                return responseCode;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении ResponseCode по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

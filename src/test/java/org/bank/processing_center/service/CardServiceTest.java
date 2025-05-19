@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -137,29 +136,29 @@ class CardServiceTest {
     @Test
     void testFindById_found() {
         // Arrange: Prepare the mock response for finding the card
-        when(cardDao.findById(TEST_CARD_ID)).thenReturn(Optional.of(mockCard));
+        when(cardDao.findById(TEST_CARD_ID)).thenReturn(mockCard);
 
         // Act: Call the service method
-        Optional<Card> foundCardOpt = cardService.findById(TEST_CARD_ID);
+        Card foundCard = cardService.findById(TEST_CARD_ID);
 
         // Assert: Verify the DAO method was called and the card is present
         verify(cardDao, times(1)).findById(TEST_CARD_ID);
-        assertTrue(foundCardOpt.isPresent());
-        assertEquals(mockCard, foundCardOpt.get()); // This assertion calls equals() on the mocks, which calls getId()
+        assertNotNull(foundCard);
+        assertEquals(mockCard, foundCard); // This assertion calls equals() on the mocks, which calls getId()
     }
 
     @Test
     void testFindById_notFound() {
         // Arrange: Prepare the mock response for not finding the card
         Long nonExistentId = 99L;
-        when(cardDao.findById(nonExistentId)).thenReturn(Optional.empty());
+        when(cardDao.findById(nonExistentId)).thenReturn(null);
 
         // Act: Call the service method
-        Optional<Card> foundCardOpt = cardService.findById(nonExistentId);
+        Card foundCard = cardService.findById(nonExistentId);
 
         // Assert: Verify the DAO method was called and the card is not present
         verify(cardDao, times(1)).findById(nonExistentId);
-        assertFalse(foundCardOpt.isPresent());
+        assertNull(foundCard);
     }
 
     // --- Tests for update method ---

@@ -7,7 +7,6 @@ import org.bank.processing_center.model.Terminal;
 import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Dao<Terminal, Long> {
 
@@ -64,10 +63,10 @@ public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Da
     }
 
     @Override
-    public Optional<Terminal> findById(Long id) {
+    public Terminal findById(Long id) {
         return executeInsideTransaction(session -> {
             Terminal terminal = session.get(Terminal.class, id);
-            return Optional.ofNullable(terminal);
+            return terminal;
         });
     }
 

@@ -9,7 +9,6 @@ import org.bank.processing_center.model.Terminal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
 
@@ -131,7 +130,7 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
 
 
     @Override
-    public Optional<Terminal> findById(Long id){
+    public Terminal findById(Long id) {
         // Corrected SQL to include mcc_id and use pos_id
         String sql = "SELECT id, terminal_id, mcc_id, pos_id FROM terminal WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -155,13 +154,13 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
                     salesPoint.setId(salesPointId);
                     terminal.setPos(salesPoint);
                 }
-                return Optional.of(terminal);
+                return terminal;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Terminal по id: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

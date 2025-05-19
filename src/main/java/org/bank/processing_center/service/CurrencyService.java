@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Currency;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CurrencyService implements Service<Currency, Long> {
 
@@ -45,7 +44,7 @@ public class CurrencyService implements Service<Currency, Long> {
     }
 
     @Override
-    public Optional<Currency> findById(Long id) {
+    public Currency findById(Long id) {
         return currencyDao.findById(id);
     }
 

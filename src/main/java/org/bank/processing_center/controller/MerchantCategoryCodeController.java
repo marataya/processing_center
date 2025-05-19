@@ -5,7 +5,6 @@ import org.bank.processing_center.service.MerchantCategoryCodeService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MerchantCategoryCodeController implements Controller<MerchantCategoryCode, Long> {
 
@@ -62,10 +61,10 @@ public class MerchantCategoryCodeController implements Controller<MerchantCatego
     }
 
     @Override
-    public Optional<MerchantCategoryCode> findById(Long id) {
-        Optional<MerchantCategoryCode> mcc = merchantCategoryCodeService.findById(id);
-        if (mcc.isPresent()) {
-            view.showMessage("Merchant Category Code found: " + mcc.get());
+    public MerchantCategoryCode findById(Long id) {
+        MerchantCategoryCode mcc = merchantCategoryCodeService.findById(id);
+        if (mcc != null) {
+            view.showMessage("Merchant Category Code found: " + mcc.toString());
         } else {
             view.showMessage("Merchant Category Code with ID " + id + " not found.");
         }

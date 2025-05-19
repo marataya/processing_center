@@ -1,13 +1,16 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.proxy.HibernateProxy; // Ensure this import is present
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects; // Ensure this import is present
+import java.util.Objects;
 
 @Entity
 @Table(name = "transaction")

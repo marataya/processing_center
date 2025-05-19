@@ -7,10 +7,11 @@ import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 // Assuming Currency and IssuingBank classes exist and have necessary methods (e.g., setId, getId, setCode)
 // For simplicity, we'll assume they have default constructors and setters.

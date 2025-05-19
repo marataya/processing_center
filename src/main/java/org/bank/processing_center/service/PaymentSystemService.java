@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.PaymentSystem;
 
 import java.util.List;
-import java.util.Optional;
 
 public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
@@ -45,7 +44,7 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
     }
 
     @Override
-    public Optional<PaymentSystem> findById(Long id) {
+    public PaymentSystem findById(Long id) {
         return paymentSystemDao.findById(id);
     }
 
@@ -58,12 +57,12 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
      * Finds a payment system by name
      * 
      * @param name Payment system name to search for
-     * @return Optional containing the payment system if found
+     * @return payment system if found
      */
-    public Optional<PaymentSystem> findByName(String name) {
+    public PaymentSystem findByName(String name) {
         return paymentSystemDao.findAll().stream()
                 .filter(system -> system.getPaymentSystemName().equalsIgnoreCase(name))
-                .findFirst();
+                .findFirst().orElse(null);
     }
 
     /**

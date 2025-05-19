@@ -44,7 +44,7 @@ public class TransactionTypeService implements Service<TransactionType, Long> {
     }
 
     @Override
-    public java.util.Optional<TransactionType> findById(Long id) {
+    public TransactionType findById(Long id) {
         return transactionTypeDao.findById(id);
     }
 

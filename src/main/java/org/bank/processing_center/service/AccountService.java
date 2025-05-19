@@ -5,7 +5,6 @@ import org.bank.processing_center.model.Account;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 public class AccountService implements Service<Account, Long> {
 
@@ -46,7 +45,7 @@ public class AccountService implements Service<Account, Long> {
     }
 
     @Override
-    public Optional<Account> findById(Long id) {
+    public Account findById(Long id) {
         return accountDao.findById(id);
     }
 
@@ -63,10 +62,9 @@ public class AccountService implements Service<Account, Long> {
      * @return true if the operation was successful, false otherwise
      */
     public boolean updateBalance(Long accountId, double amount) {
-        Optional<Account> accountOpt = accountDao.findById(accountId);
+        Account account = accountDao.findById(accountId);
 
-        if (accountOpt.isPresent()) {
-            Account account = accountOpt.get();
+        if (account != null) {
             BigDecimal amountBigDecimal = BigDecimal.valueOf(amount);
             BigDecimal newBalanceBigDecimal = account.getBalance().add(amountBigDecimal);
 

@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -94,25 +93,25 @@ class AcquiringBankServiceTest {
 
     @Test
     void testFindById_found() {
-        when(acquiringBankDao.findById(TEST_BANK_ID)).thenReturn(Optional.of(testAcquiringBank));
+        when(acquiringBankDao.findById(TEST_BANK_ID)).thenReturn(testAcquiringBank);
 
-        Optional<AcquiringBank> foundBankOpt = acquiringBankService.findById(TEST_BANK_ID);
+        AcquiringBank foundBank = acquiringBankService.findById(TEST_BANK_ID);
 
         verify(acquiringBankDao, times(1)).findById(TEST_BANK_ID);
-        assertTrue(foundBankOpt.isPresent());
-        assertEquals(testAcquiringBank, foundBankOpt.get());
-        assertEquals(TEST_BANK_BIC, foundBankOpt.get().getBic());
+        assertNotNull(foundBank);
+        assertEquals(testAcquiringBank, foundBank);
+        assertEquals(TEST_BANK_BIC, foundBank.getBic());
     }
 
     @Test
     void testFindById_notFound() {
         Long nonExistentId = 99L;
-        when(acquiringBankDao.findById(nonExistentId)).thenReturn(Optional.empty());
+        when(acquiringBankDao.findById(nonExistentId)).thenReturn(null);
 
-        Optional<AcquiringBank> foundBankOpt = acquiringBankService.findById(nonExistentId);
+        AcquiringBank foundBankOpt = acquiringBankService.findById(nonExistentId);
 
         verify(acquiringBankDao, times(1)).findById(nonExistentId);
-        assertFalse(foundBankOpt.isPresent());
+        assertNull(foundBankOpt);
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.bank.processing_center.service.IssuingBankService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class IssuingBankController implements Controller<IssuingBank, Long> {
 
@@ -49,9 +48,9 @@ public class IssuingBankController implements Controller<IssuingBank, Long> {
         view.showMessage("IssuingBank with ID " + id + " deleted successfully.");
     }
 
-    public Optional<IssuingBank> findById(Long id) {
+    public IssuingBank findById(Long id) {
         view.showMessage("Finding IssuingBank with ID: " + id);
-        Optional<IssuingBank> issuingBank = issuingBankService.findById(id);
+        IssuingBank issuingBank = issuingBankService.findById(id);
         view.showMessage("Find IssuingBank operation completed.");
         return issuingBank;
     }

@@ -5,7 +5,6 @@ import org.bank.processing_center.model.PaymentSystem;
 import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public class PaymentSystemHibernateDaoImpl extends AbstractHibernateDao implements Dao<PaymentSystem, Long> {
 
@@ -43,10 +42,10 @@ public class PaymentSystemHibernateDaoImpl extends AbstractHibernateDao implemen
     }
 
     @Override
-    public Optional<PaymentSystem> findById(Long id) {
+    public PaymentSystem findById(Long id) {
         return executeInsideTransaction(session -> {
             PaymentSystem paymentSystem = session.get(PaymentSystem.class, id);
-            return Optional.ofNullable(paymentSystem);
+            return paymentSystem;
         });
     }
 

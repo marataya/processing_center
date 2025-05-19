@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.Transaction;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionService implements Service<Transaction, Long> {
 
@@ -45,7 +44,7 @@ public class TransactionService implements Service<Transaction, Long> {
     }
 
     @Override
-    public Optional<Transaction> findById(Long id) {
+    public Transaction findById(Long id) {
         return transactionDao.findById(id);
     }
 

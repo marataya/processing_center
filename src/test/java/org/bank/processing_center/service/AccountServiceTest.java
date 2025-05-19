@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -108,28 +107,29 @@ class AccountServiceTest {
     @Test
     void testFindById_found() {
         // Prepare the mock response for finding the account
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         // Call the service method
-        Optional<Account> foundAccountOpt = accountService.findById(TEST_ACCOUNT_ID);
+        Account foundAccount = accountService.findById(TEST_ACCOUNT_ID);
 
         // Verify the DAO method was called and the account is present
         verify(accountDao, times(1)).findById(TEST_ACCOUNT_ID);
-        assertTrue(foundAccountOpt.isPresent());
-        assertEquals(testAccount, foundAccountOpt.get());
+        assertNotNull(foundAccount);
+        assertEquals(testAccount, foundAccount);
     }
 
     @Test
     void testFindById_notFound() {
         // Prepare the mock response for not finding the account
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.empty());
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(null);
 
         // Call the service method
-        Optional<Account> foundAccountOpt = accountService.findById(TEST_ACCOUNT_ID);
+        Account foundAccount = accountService.findById(TEST_ACCOUNT_ID);
 
         // Verify the DAO method was called and the account is not present
         verify(accountDao, times(1)).findById(TEST_ACCOUNT_ID);
-        assertFalse(foundAccountOpt.isPresent());
+        assertNotNull(foundAccount);
+
     }
 
     @Test
@@ -153,7 +153,7 @@ class AccountServiceTest {
         BigDecimal expectedNewBalance = INITIAL_BALANCE.add(amountToAdd);
 
         // Mock the DAO to return the test account
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         // Call the service method
         boolean result = accountService.updateBalance(TEST_ACCOUNT_ID, amountToAdd.doubleValue());
@@ -173,7 +173,7 @@ class AccountServiceTest {
         BigDecimal amountToSubtractNegative = new BigDecimal("-200.00");
         BigDecimal expectedNewBalance = INITIAL_BALANCE.add(amountToSubtractNegative); // This will be 1000 + (-200) = 800
 
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         boolean result = accountService.updateBalance(TEST_ACCOUNT_ID, amountToSubtractNegative.doubleValue());
 
@@ -189,7 +189,7 @@ class AccountServiceTest {
         BigDecimal amountToSubtract = new BigDecimal("200.00");
         BigDecimal expectedNewBalance = INITIAL_BALANCE.subtract(amountToSubtract); // 1000 - 200 = 800
 
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         boolean result = accountService.updateBalance(TEST_ACCOUNT_ID, -amountToSubtract.doubleValue()); // Pass as negative double
 
@@ -204,7 +204,7 @@ class AccountServiceTest {
         BigDecimal amountToSubtract = INITIAL_BALANCE; // Subtract the full initial balance
         BigDecimal expectedNewBalance = BigDecimal.ZERO;
 
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         boolean result = accountService.updateBalance(TEST_ACCOUNT_ID, -amountToSubtract.doubleValue());
 
@@ -224,7 +224,7 @@ class AccountServiceTest {
         BigDecimal amountToSubtract = new BigDecimal("1500.00"); // More than initial balance
         BigDecimal wouldBeNewBalance = INITIAL_BALANCE.subtract(amountToSubtract); // 1000 - 1500 = -500
 
-        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(Optional.of(testAccount));
+        when(accountDao.findById(TEST_ACCOUNT_ID)).thenReturn(testAccount);
 
         // Call the service method
         boolean result = accountService.updateBalance(TEST_ACCOUNT_ID, -amountToSubtract.doubleValue()); // Pass as negative double
@@ -247,7 +247,7 @@ class AccountServiceTest {
         BigDecimal amount = new BigDecimal("100.00");
 
         // Mock the DAO to return empty optional
-        when(accountDao.findById(nonExistentAccountId)).thenReturn(Optional.empty());
+        when(accountDao.findById(nonExistentAccountId)).thenReturn(null);
 
         // Call the service method
         boolean result = accountService.updateBalance(nonExistentAccountId, amount.doubleValue());

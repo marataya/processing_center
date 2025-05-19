@@ -5,7 +5,6 @@ import org.bank.processing_center.model.MerchantCategoryCode;
 import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MerchantCategoryCodeHibernateDaoImpl extends AbstractHibernateDao implements Dao<MerchantCategoryCode, Long>  {
 
@@ -43,10 +42,10 @@ public class MerchantCategoryCodeHibernateDaoImpl extends AbstractHibernateDao i
     }
 
     @Override
-    public Optional<MerchantCategoryCode> findById(Long id) {
+    public MerchantCategoryCode findById(Long id) {
         return executeInsideTransaction(session -> {
             MerchantCategoryCode mcc = session.get(MerchantCategoryCode.class, id);
-            return Optional.ofNullable(mcc);
+            return mcc;
         });
     }
 

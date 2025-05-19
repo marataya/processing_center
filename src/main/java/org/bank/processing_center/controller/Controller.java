@@ -1,7 +1,6 @@
 package org.bank.processing_center.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Generic Controller interface
@@ -46,9 +45,9 @@ public interface Controller<T, ID> {
     /**
      * Finds an entity by ID
      * @param id Entity ID
-     * @return Optional containing the entity if found
+     * @return entity if found
      */
-    Optional<T> findById(ID id);
+    T findById(ID id);
 
     /**
      * Updates an existing entity

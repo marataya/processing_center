@@ -5,7 +5,6 @@ import org.bank.processing_center.service.TransactionService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionController implements Controller<Transaction, Long> {
 
@@ -49,7 +48,7 @@ public class TransactionController implements Controller<Transaction, Long> {
     }
 
     @Override
-    public Optional<Transaction> findById(Long id) {
+    public Transaction findById(Long id) {
         return transactionService.findById(id);
     }
 

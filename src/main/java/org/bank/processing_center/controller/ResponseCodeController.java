@@ -5,7 +5,6 @@ import org.bank.processing_center.service.ResponseCodeService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ResponseCodeController implements Controller<ResponseCode, Long> {
 
@@ -63,7 +62,7 @@ public class ResponseCodeController implements Controller<ResponseCode, Long> {
         responseCodeService.dropTable();
     }
 
-    public Optional<ResponseCode> findById(Long id) {
+    public ResponseCode findById(Long id) {
         try {
             return responseCodeService.findById(id);
         } catch (Exception e) {

@@ -1,7 +1,6 @@
 package org.bank.processing_center.service;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Generic Service interface
@@ -47,9 +46,9 @@ public interface Service<T, ID> {
     /**
      * Finds an entity by ID
      * @param id Entity ID
-     * @return Optional containing the entity if found
+     * @return entity if found
      */
-    Optional<T> findById(ID id);
+    T findById(ID id);
 
     /**
      * Updates an existing entity

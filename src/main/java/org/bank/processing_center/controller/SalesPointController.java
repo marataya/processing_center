@@ -5,7 +5,6 @@ import org.bank.processing_center.service.SalesPointService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SalesPointController implements Controller<SalesPoint, Long> {
 
@@ -52,10 +51,10 @@ public class SalesPointController implements Controller<SalesPoint, Long> {
       view.showMessage("SalesPoint with ID " + id + " deleted.");
    }
 
-   public Optional<SalesPoint> findById(Long id) {
-      Optional<SalesPoint> salesPoint = salesPointService.findById(id);
-      if (salesPoint.isPresent()) {
-         view.showMessage("SalesPoint found: " + salesPoint.get());
+   public SalesPoint findById(Long id) {
+      SalesPoint salesPoint = salesPointService.findById(id);
+      if (salesPoint != null) {
+         view.showMessage("SalesPoint found: " + salesPoint.toString());
       } else {
          view.showMessage("SalesPoint with ID " + id + " not found.");
       }

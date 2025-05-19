@@ -8,7 +8,6 @@ import org.bank.processing_center.model.Account;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 public class AccountJDBCDaoImpl implements Dao<Account, Long> {
@@ -101,19 +100,19 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
     }
 
     @Override
-    public Optional<Account> findById(Long id) {
+    public Account findById(Long id) {
         String sql = "SELECT id, account_number, balance, currency_id, issuing_bank_id FROM account WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Account account = accountMapper.mapResultSetToAccount(resultSet);
-                return Optional.of(account);
+                return account;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Account по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override
@@ -145,19 +144,19 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
         }
     }
 
-    public Optional<Account> findByAccountNumber(String accountNumber) {
+    public Account findByAccountNumber(String accountNumber) {
         String sql = "SELECT id, account_number, balance, currency_id, issuing_bank_id FROM account WHERE account_number = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, accountNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Account account = accountMapper.mapResultSetToAccount(resultSet);
-                return Optional.of(account);
+                return account;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Account по номеру счета: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     public List<Account> findByIssuingBankId(Long issuingBankId) {

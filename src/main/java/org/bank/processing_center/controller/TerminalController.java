@@ -5,7 +5,6 @@ import org.bank.processing_center.service.TerminalService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TerminalController implements Controller<Terminal, Long> {
 
@@ -65,11 +64,11 @@ public class TerminalController implements Controller<Terminal, Long> {
     }
 
     @Override
-    public Optional<Terminal> findById(Long id) {
+    public Terminal findById(Long id) {
         view.showMessage("Finding Terminal with ID: " + id);
-        Optional<Terminal> terminal = terminalService.findById(id);
-        if (terminal.isPresent()) {
-            view.showMessage("Found Terminal: " + terminal.get().toString());
+        Terminal terminal = terminalService.findById(id);
+        if (terminal != null) {
+            view.showMessage("Found Terminal: " + terminal.toString());
         } else {
             view.showMessage("Terminal with ID " + id + " not found.");
         }

@@ -5,7 +5,6 @@ import org.bank.processing_center.service.CardStatusService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for CardStatus-related operations
@@ -108,15 +107,15 @@ public class CardStatusController implements Controller<CardStatus, Long> {
      * Finds an entity by ID
      * 
      * @param id Entity ID
-     * @return Optional containing the entity if found
+     * @return entity if found
      */
     @Override
-    public Optional<CardStatus> findById(Long id) {
+    public CardStatus findById(Long id) {
         try {
             return cardStatusService.findById(id);
         } catch (Exception e) {
             view.showError("Ошибка при поиске card_status по ID " + id + ": " + e.getMessage());
-            return Optional.empty();
+            return null;
         }
     }
 

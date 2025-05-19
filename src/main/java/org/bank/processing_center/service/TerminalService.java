@@ -44,7 +44,7 @@ public class TerminalService implements Service<Terminal, Long> {
     }
 
     @Override
-    public java.util.Optional<Terminal> findById(Long id) {
+    public Terminal findById(Long id) {
         return terminalDao.findById(id);
     }
 

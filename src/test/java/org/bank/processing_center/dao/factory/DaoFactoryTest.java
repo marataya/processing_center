@@ -2,7 +2,10 @@ package org.bank.processing_center.dao.factory;
 
 import org.bank.processing_center.configuration.HibernateConfig;
 import org.bank.processing_center.dao.Dao;
-import org.bank.processing_center.model.*; // Import all your models
+import org.bank.processing_center.model.Account;
+import org.bank.processing_center.model.Card;
+import org.bank.processing_center.model.Currency;
+import org.bank.processing_center.model.SalesPoint;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 

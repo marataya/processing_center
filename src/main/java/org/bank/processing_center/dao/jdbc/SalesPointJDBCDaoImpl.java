@@ -9,7 +9,6 @@ import org.bank.processing_center.model.SalesPoint;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
 
@@ -122,7 +121,7 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
     }
 
     @Override
-    public Optional<SalesPoint> findById(Long id) {
+    public SalesPoint findById(Long id) {
         String sql = "SELECT id, pos_name, pos_address, pos_inn, acquiring_bank_id FROM sales_point WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -137,13 +136,13 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
                     ab.setId(acquiringBankId);
                     salesPoint.setAcquiringBank(ab);
                 }
-                return Optional.of(salesPoint);
+                return salesPoint;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении SalesPoint по id: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

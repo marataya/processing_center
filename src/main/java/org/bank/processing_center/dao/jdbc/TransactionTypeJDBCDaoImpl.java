@@ -7,7 +7,6 @@ import org.bank.processing_center.model.TransactionType;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionTypeJDBCDaoImpl implements Dao<TransactionType, Long> {
 
@@ -92,7 +91,7 @@ public class TransactionTypeJDBCDaoImpl implements Dao<TransactionType, Long> {
     }
 
     @Override
-    public Optional<TransactionType> findById(Long id) {
+    public TransactionType findById(Long id) {
         String sql = "SELECT id, type_name FROM transaction_type WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
@@ -101,12 +100,12 @@ public class TransactionTypeJDBCDaoImpl implements Dao<TransactionType, Long> {
                 TransactionType transactionType = new TransactionType();
                 transactionType.setId(resultSet.getLong("id"));
                 transactionType.setTypeName(resultSet.getString("type_name"));
-                return Optional.of(transactionType);
+                return transactionType;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении TransactionType по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

@@ -2,6 +2,12 @@ package org.bank.processing_center.mapper;
 
 import org.bank.processing_center.dao.jdbc.*;
 import org.bank.processing_center.model.Transaction;
+import org.bank.processing_center.model.Account;
+import org.bank.processing_center.model.TransactionType;
+import org.bank.processing_center.model.Card;
+import org.bank.processing_center.model.Terminal;
+import org.bank.processing_center.model.ResponseCode;
+
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -33,31 +39,46 @@ public class TransactionMapper {
         // Fetch and set related Account
         Long accountId = resultSet.getLong("account_id");
         if (!resultSet.wasNull()) {
-            accountDao.findById(accountId).ifPresent(transaction::setAccount);
+            Account account = accountDao.findById(accountId);
+            if (account != null) {
+                transaction.setAccount(account);
+            }
         }
 
         // Fetch and set related TransactionType
         Long transactionTypeId = resultSet.getLong("transaction_type_id");
         if (!resultSet.wasNull()) {
-            transactionTypeDao.findById(transactionTypeId).ifPresent(transaction::setTransactionType);
+            TransactionType transactionType = transactionTypeDao.findById(transactionTypeId);
+            if (transactionType != null) {
+                transaction.setTransactionType(transactionType);
+            }
         }
 
         // Fetch and set related Card
         Long cardId = resultSet.getLong("card_id");
         if (!resultSet.wasNull()) {
-            cardDao.findById(cardId).ifPresent(transaction::setCard);
+            Card card = cardDao.findById(cardId);
+            if (card != null) {
+                transaction.setCard(card);
+            }
         }
 
         // Fetch and set related Terminal
         Long terminalId = resultSet.getLong("terminal_id");
         if (!resultSet.wasNull()) {
-            terminalDao.findById(terminalId).ifPresent(transaction::setTerminal);
+            Terminal terminal = terminalDao.findById(terminalId);
+            if (terminal != null) {
+                transaction.setTerminal(terminal);
+            }
         }
 
         // Fetch and set related ResponseCode
         Long responseCodeId = resultSet.getLong("response_code_id");
         if (!resultSet.wasNull()) {
-            responseCodeDao.findById(responseCodeId).ifPresent(transaction::setResponseCode);
+            ResponseCode responseCode = responseCodeDao.findById(responseCodeId);
+            if (responseCode != null) {
+                transaction.setResponseCode(responseCode);
+            }
         }
 
         transaction.setAuthorizationCode(resultSet.getString("authorization_code"));

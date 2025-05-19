@@ -21,6 +21,10 @@
         <junit.version>5.11.3</junit.version>
         <mockito.version>5.14.2</mockito.version>
         <slf4j.version>2.0.16</slf4j.version>
+        <validation.api.version>3.0.2</validation.api.version>
+        <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+        <jakarta.el.version>5.0.0-M1</jakarta.el.version>
+        <junit-jupiter-version>5.11.3</junit-jupiter-version>
 
     </properties>
 
@@ -50,18 +54,18 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version> <!-- Or the version you are using -->
+            <version>${validation.api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.1.Final</version> <!-- Use a recent compatible version -->
-            <scope>test</scope> <!-- If only for tests, otherwise remove scope or use 'compile' -->
+            <version>${hibernate.validator.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.el</artifactId>
-            <version>5.0.0-M1</version> <!-- Or a compatible version for Jakarta EE 10+ -->
+            <version>${jakarta.el.version}</version> <!-- Or a compatible version for Jakarta EE 10+ -->
             <scope>test</scope> <!-- If only for tests, otherwise remove scope or use 'compile' -->
         </dependency>
 
@@ -78,7 +82,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.3</version>
+            <version>${junit-jupiter-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -96,7 +100,7 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
+            <version>${validation.api.version}</version>
         </dependency>
 
 

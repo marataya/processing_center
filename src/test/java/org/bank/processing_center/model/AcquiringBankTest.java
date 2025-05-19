@@ -2,6 +2,7 @@
 package org.bank.processing_center.model;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AcquiringBankTest {

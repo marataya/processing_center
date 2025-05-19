@@ -44,7 +44,7 @@ public class SalesPointService implements Service<SalesPoint, Long> {
    }
 
    @Override
-   public java.util.Optional<SalesPoint> findById(Long id) {
+   public SalesPoint findById(Long id) {
       return salesPointDao.findById(id);
    }
 

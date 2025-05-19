@@ -8,7 +8,6 @@ import org.bank.processing_center.model.Transaction;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
 
@@ -171,18 +170,18 @@ public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
     }
 
     @Override
-    public Optional<Transaction> findById(Long id) {
+    public Transaction findById(Long id) {
         String sql = "SELECT id, transaction_date, sum, transaction_name, account_id, transaction_type_id, card_id, terminal_id, response_code_id, authorization_code, received_from_issuing_bank, sent_to_issuing_bank FROM transaction WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(transactionMapper.mapResultSetToTransaction(resultSet));
+                return transactionMapper.mapResultSetToTransaction(resultSet);
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Transaction по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

@@ -5,7 +5,6 @@ import org.bank.processing_center.service.CardService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for Card-related operations
@@ -85,10 +84,10 @@ public class CardController implements Controller<Card, Long> {
      * @return The found card or null
      */
     @Override
-    public Optional<Card> findById(Long id) {
+    public Card findById(Long id) {
         try {
-            Optional<Card> card = cardService.findById(id);
-            if (card.isPresent()) {
+            Card card = cardService.findById(id);
+            if (card != null) {
                 view.showMessage(card.toString());
                 return card;
             } else {

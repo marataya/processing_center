@@ -7,7 +7,6 @@ import org.bank.processing_center.model.PaymentSystem;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
 
@@ -93,7 +92,7 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     }
 
     @Override
-    public Optional<PaymentSystem> findById(Long id) {
+    public PaymentSystem findById(Long id) {
         String sql = "SELECT id, payment_system_name FROM payment_system WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
@@ -103,12 +102,12 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
                         resultSet.getLong("id"),
                         resultSet.getString("payment_system_name")
                 );
-                return Optional.of(paymentSystem);
+                return paymentSystem;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении PaymentSystem по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

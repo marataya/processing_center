@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.ResponseCode;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ResponseCodeService implements Service<ResponseCode, Long> {
 
@@ -15,42 +14,43 @@ public class ResponseCodeService implements Service<ResponseCode, Long> {
     }
 
     // Implement methods from Service interface here
- @Override
+    @Override
     public void createTable() {
- responseCodeDao.createTable();
+        responseCodeDao.createTable();
     }
 
- @Override
+    @Override
     public void dropTable() {
- responseCodeDao.dropTable();
+        responseCodeDao.dropTable();
     }
 
- @Override
+    @Override
     public void clearTable() {
- responseCodeDao.clearTable();
+        responseCodeDao.clearTable();
     }
 
- @Override
+    @Override
     public void save(ResponseCode entity) {
- responseCodeDao.save(entity);
+        responseCodeDao.save(entity);
     }
 
- @Override
+    @Override
     public void delete(Long id) {
- responseCodeDao.delete(id);
+        responseCodeDao.delete(id);
     }
 
- @Override
+    @Override
     public List<ResponseCode> findAll() {
- return responseCodeDao.findAll();
+        return responseCodeDao.findAll();
     }
 
- @Override
-    public Optional<ResponseCode> findById(Long id) {
- return responseCodeDao.findById(id);
+    @Override
+    public ResponseCode findById(Long id) {
+        return responseCodeDao.findById(id);
     }
- @Override
+
+    @Override
     public void update(ResponseCode entity) {
- responseCodeDao.update(entity);
+        responseCodeDao.update(entity);
     }
 }

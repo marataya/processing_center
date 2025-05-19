@@ -7,7 +7,6 @@ import org.bank.processing_center.model.MerchantCategoryCode;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode, Long> {
 
@@ -113,7 +112,7 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
     }
 
     @Override
-    public Optional<MerchantCategoryCode> findById(Long id) {
+    public MerchantCategoryCode findById(Long id) {
         String sql = String.format("SELECT %s, %s, %s FROM %s WHERE %s = ?",
                 COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION, TABLE_NAME, COLUMN_ID);
         try (Connection connection = JDBCConfig.getConnection();
@@ -121,13 +120,13 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(mapResultSetToMcc(resultSet));
+                return mapResultSetToMcc(resultSet);
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении MerchantCategoryCode по id: " + e.getMessage());
             e.printStackTrace();
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

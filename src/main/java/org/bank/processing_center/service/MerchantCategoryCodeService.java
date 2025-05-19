@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.MerchantCategoryCode;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MerchantCategoryCodeService implements Service<MerchantCategoryCode, Long> {
 
@@ -40,7 +39,7 @@ public class MerchantCategoryCodeService implements Service<MerchantCategoryCode
     }
 
     @Override
-    public Optional<MerchantCategoryCode> findById(Long id) {
+    public MerchantCategoryCode findById(Long id) {
         return merchantCategoryCodeDao.findById(id);
     }
 

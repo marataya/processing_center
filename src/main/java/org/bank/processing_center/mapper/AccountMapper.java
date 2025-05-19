@@ -9,7 +9,6 @@ import org.bank.processing_center.model.IssuingBank;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
 public class AccountMapper {
 
@@ -25,12 +24,8 @@ public class AccountMapper {
         Long issuingBankId = resultSet.getLong("issuing_bank_id");
 
         // Fetch Currency and IssuingBank objects using placeholder DAOs
-        Optional<Currency> currencyOptional = currencyDao.findById(currencyId);
-        Optional<IssuingBank> issuingBankOptional = issuingBankDao.findById(issuingBankId);
-
-        // Handle cases where Currency or IssuingBank might not be found
-        Currency currency = currencyOptional.orElse(null); // Or throw an exception
-        IssuingBank issuingBank = issuingBankOptional.orElse(null); // Or throw an exception
+        Currency currency = currencyDao.findById(currencyId);
+        IssuingBank issuingBank = issuingBankDao.findById(issuingBankId);
 
         // Create and return Account object using the fetched objects
         return new Account(id, accountNumber, balance, currency, issuingBank);

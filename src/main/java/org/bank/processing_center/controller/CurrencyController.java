@@ -5,7 +5,6 @@ import org.bank.processing_center.service.CurrencyService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CurrencyController implements Controller<Currency, Long> {
 
@@ -62,10 +61,10 @@ public class CurrencyController implements Controller<Currency, Long> {
    }
 
    @Override
-   public Optional<Currency> findById(Long id) {
-      Optional<Currency> currency = currencyService.findById(id);
-      if (currency.isPresent()) {
-         view.showMessage("Found Currency: " + currency.get().toString());
+   public Currency findById(Long id) {
+      Currency currency = currencyService.findById(id);
+      if (currency != null) {
+         view.showMessage("Found Currency: " + currency.toString());
       } else {
          view.showMessage("Currency with ID " + id + " not found.");
       }

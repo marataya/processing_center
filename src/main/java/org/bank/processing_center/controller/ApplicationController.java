@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -288,12 +287,12 @@ public class ApplicationController implements AutoCloseable {
 
             // Update second card
             Card cardToUpdate2 = cards.get(1); // Use a different variable name
-            // Fetch the persisted blockedStatus to ensure it's a managed entity
-            Optional<CardStatus> persistedBlockedStatus = cardStatusController.findById(2L);
-            persistedBlockedStatus.ifPresentOrElse(cardToUpdate2::setCardStatus, () -> {
-                view.showError("Blocked status (ID 2L) not found for update. Using new instance.");
-                cardToUpdate2.setCardStatus(new CardStatus(2L, "Blocked")); // Fallback, less ideal
-            });
+            // Use the sampleBlockedStatus instance variable which holds the persisted "Blocked" status
+            if (this.sampleBlockedStatus != null) {
+                cardToUpdate2.setCardStatus(this.sampleBlockedStatus);
+            } else {
+                view.showError("Sample 'Blocked' CardStatus not available for update. Card status not changed.");
+            }
 
             cardToUpdate2.setSentToIssuingBank(Timestamp.valueOf(LocalDateTime.now()));
             cardController.updateEntity(cardToUpdate2);

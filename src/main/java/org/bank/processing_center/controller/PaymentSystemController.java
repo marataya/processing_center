@@ -5,7 +5,6 @@ import org.bank.processing_center.service.PaymentSystemService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for PaymentSystem-related operations
@@ -99,11 +98,11 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
     /**
      * Finds an entity by ID
      * @param id Entity ID
-     * @return Optional containing the entity if found
+     * @return entity if found
      * @Override
      */
     @Override
-    public Optional<PaymentSystem> findById(Long id) {
+    public PaymentSystem findById(Long id) {
         return paymentSystemService.findById(id);
     }
 

@@ -4,7 +4,6 @@ import org.bank.processing_center.dao.Dao;
 import org.bank.processing_center.model.IssuingBank;
 
 import java.util.List;
-import java.util.Optional;
 
 public class IssuingBankService implements Service<IssuingBank, Long> {
 
@@ -45,7 +44,7 @@ public class IssuingBankService implements Service<IssuingBank, Long> {
     }
 
     @Override
-    public Optional<IssuingBank> findById(Long id) {
+    public IssuingBank findById(Long id) {
         return issuingBankDao.findById(id);
     }
 

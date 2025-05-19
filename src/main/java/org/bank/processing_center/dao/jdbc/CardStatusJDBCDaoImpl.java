@@ -7,7 +7,6 @@ import org.bank.processing_center.model.CardStatus;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
 
@@ -93,7 +92,7 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     }
 
     @Override
-    public Optional<CardStatus> findById(Long id) {
+    public CardStatus findById(Long id) {
         String sql = "SELECT id, card_status_name FROM card_status WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
@@ -103,12 +102,12 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
                         resultSet.getLong("id"),
                         resultSet.getString("card_status_name")
                 );
-                return Optional.of(cardStatus);
+                return cardStatus;
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении CardStatus по id: " + e.getMessage());
         }
-        return Optional.empty();
+        return null;
     }
 
     @Override

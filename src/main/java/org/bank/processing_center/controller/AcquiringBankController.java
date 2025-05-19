@@ -5,7 +5,6 @@ import org.bank.processing_center.service.AcquiringBankService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AcquiringBankController implements Controller<AcquiringBank, Long> {
 
@@ -53,7 +52,7 @@ public class AcquiringBankController implements Controller<AcquiringBank, Long> 
     }
 
     @Override
-    public Optional<AcquiringBank> findById(Long id) {
+    public AcquiringBank findById(Long id) {
         return acquiringBankService.findById(id);
     }
 

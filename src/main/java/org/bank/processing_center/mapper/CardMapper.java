@@ -31,9 +31,22 @@ public class CardMapper {
         Timestamp sentToIssuingBank = resultSet.getTimestamp("sent_to_issuing_bank");
 
         // Fetch related objects using placeholder DAOs
-        CardStatus cardStatus = cardStatusDao.findById(cardStatusId).orElse(null); // Handle null appropriately
-        PaymentSystem paymentSystem = paymentSystemDao.findById(paymentSystemId).orElse(null); // Handle null appropriately
-        Account account = accountDao.findById(accountId).orElse(null); // Handle null appropriately
+        // Assuming findById methods in DAOs return the object or null if not found
+        CardStatus cardStatus = null;
+        if (!resultSet.wasNull() && cardStatusId != 0) {
+            cardStatus = cardStatusDao.findById(cardStatusId);
+        }
+
+        PaymentSystem paymentSystem = null;
+        if (!resultSet.wasNull() && paymentSystemId != 0) {
+            paymentSystem = paymentSystemDao.findById(paymentSystemId);
+        }
+
+        Account account = null;
+        if (!resultSet.wasNull() && accountId != 0) {
+            account = accountDao.findById(accountId);
+        }
+
 
         // Construct and return Card object
         return new Card(

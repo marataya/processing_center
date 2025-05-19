@@ -5,7 +5,6 @@ import org.bank.processing_center.service.AccountService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Controller for Account-related operations
@@ -114,10 +113,10 @@ public class AccountController implements Controller<Account, Long> {
     }
 
     @Override
-    public Optional<Account> findById(Long id) {
+    public Account findById(Long id) {
         try {
-            Optional<Account> account = accountService.findById(id);
-            if (account.isPresent()) {
+            Account account = accountService.findById(id);
+            if (account != null) {
                 view.showMessage(account.toString());
                 return account;
             } else {

@@ -5,7 +5,6 @@ import org.bank.processing_center.service.TransactionTypeService;
 import org.bank.processing_center.view.ConsoleView;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TransactionTypeController implements Controller<TransactionType, Long> {
 
@@ -31,9 +30,9 @@ public class TransactionTypeController implements Controller<TransactionType, Lo
     }
 
     @Override
-    public Optional<TransactionType> findById(Long id) {
-        Optional<TransactionType> transactionType = transactionTypeService.findById(id);
-        view.showMessage("Transaction type found: " + transactionType.isPresent());
+    public TransactionType findById(Long id) {
+        TransactionType transactionType = transactionTypeService.findById(id);
+        view.showMessage("Transaction type found: " + transactionType.toString());
         return transactionType;
     }
 

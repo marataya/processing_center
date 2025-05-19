@@ -6,7 +6,6 @@ import org.bank.processing_center.model.SalesPoint;
 import org.hibernate.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements Dao<SalesPoint, Long> {
 
@@ -66,10 +65,10 @@ public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements 
     }
 
     @Override
-    public Optional<SalesPoint> findById(Long id) {
+    public SalesPoint findById(Long id) {
         return executeInsideTransaction(session -> {
             SalesPoint salesPoint = session.get(SalesPoint.class, id);
-            return Optional.ofNullable(salesPoint);
+            return salesPoint;
         });
     }
 
