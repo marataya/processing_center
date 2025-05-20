@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.Currency;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class CurrencyService implements Service<Currency, Long> {
 
     @Override
     public Currency findById(Long id) {
-        return currencyDao.findById(id);
+        return currencyDao.findById(id).orElseThrow(() -> new DaoException("Currency " + id + " not found"));
     }
 
     @Override

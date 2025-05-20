@@ -1,6 +1,8 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -20,6 +22,8 @@ public class PaymentSystem {
     private Long id;
 
     @Column(name = "payment_system_name", nullable = false, length = 50)
+    @NotBlank
+    @Size(max = 50, message = "name must be max 50 characters")
     private String paymentSystemName;
 
     @Override

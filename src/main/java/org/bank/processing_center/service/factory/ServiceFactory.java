@@ -67,17 +67,55 @@ public class ServiceFactory {
     }
 
     // Getters for all your services
-    public AccountService getAccountService() { return accountService; }
-    public CardService getCardService() { return cardService; }
-    public CardStatusService getCardStatusService() { return cardStatusService; }
-    public CurrencyService getCurrencyService() { return currencyService; }
-    public IssuingBankService getIssuingBankService() { return issuingBankService; }
-    public PaymentSystemService getPaymentSystemService() { return paymentSystemService; }
-    public AcquiringBankService getAcquiringBankService() { return acquiringBankService; }
-    public MerchantCategoryCodeService getMerchantCategoryCodeService() { return merchantCategoryCodeService; }
-    public SalesPointService getSalesPointService() { return salesPointService; }
-    public TerminalService getTerminalService() { return terminalService; }
-    public TransactionService getTransactionService() { return transactionService; }
-    public TransactionTypeService getTransactionTypeService() { return transactionTypeService; }
-    public ResponseCodeService getResponseCodeService() { return responseCodeService; }
+    public AccountService getAccountService() {
+        return accountService;
+    }
+
+    public CardService getCardService() {
+        return cardService;
+    }
+
+    public CardStatusService getCardStatusService() {
+        return cardStatusService;
+    }
+
+    public CurrencyService getCurrencyService() {
+        return currencyService;
+    }
+
+    public IssuingBankService getIssuingBankService() {
+        return issuingBankService;
+    }
+
+    public PaymentSystemService getPaymentSystemService() {
+        return paymentSystemService;
+    }
+
+    public AcquiringBankService getAcquiringBankService() {
+        return acquiringBankService;
+    }
+
+    public MerchantCategoryCodeService getMerchantCategoryCodeService() {
+        return merchantCategoryCodeService;
+    }
+
+    public SalesPointService getSalesPointService() {
+        return salesPointService;
+    }
+
+    public TerminalService getTerminalService() {
+        return terminalService;
+    }
+
+    public TransactionService getTransactionService() {
+        return transactionService;
+    }
+
+    public TransactionTypeService getTransactionTypeService() {
+        return transactionTypeService;
+    }
+
+    public ResponseCodeService getResponseCodeService() {
+        return responseCodeService;
+    }
 }

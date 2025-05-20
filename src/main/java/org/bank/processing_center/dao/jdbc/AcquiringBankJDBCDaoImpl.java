@@ -7,6 +7,7 @@ import org.bank.processing_center.model.AcquiringBank;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
 
@@ -98,7 +99,7 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
     }
 
     @Override
-    public AcquiringBank findById(Long id) {
+    public Optional<AcquiringBank> findById(Long id) {
         String sql = "SELECT id, bic, abbreviated_name FROM acquiring_bank WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
@@ -108,12 +109,12 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
                 acquiringBank.setId(resultSet.getLong("id"));
                 acquiringBank.setBic(resultSet.getString("bic"));
                 acquiringBank.setAbbreviatedName(resultSet.getString("abbreviated_name"));
-                return acquiringBank;
+                return Optional.of(acquiringBank);
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении AcquiringBank по id: " + e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

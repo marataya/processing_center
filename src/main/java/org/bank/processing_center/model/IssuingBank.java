@@ -1,6 +1,8 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +25,13 @@ public class IssuingBank {
     private Long id;              // Уникальный идентификатор банка-эмитента.
 
     @Column(name = "bic", nullable = false, length = 9)
+    @NotBlank
+    @Size(min = 9, max = 9, message = "bic must be exactly 5 characters long")
     private String bic;                 //Банковский идентификатор (BIC).
 
     @Column(name = "bin", nullable = false, length = 5)
+    @NotBlank
+    @Size(min = 5, max = 5, message = "bin must be exactly 5 characters long")
     private String bin;                 //Идентификатор банка-эмитента для карт (BIN).
 
     @Column(name = "abbreviated_name", nullable = false)

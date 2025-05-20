@@ -37,9 +37,14 @@ public class TransactionTypeController implements Controller<TransactionType, Lo
 
     @Override
     public TransactionType findById(Long id) {
-        TransactionType transactionType = transactionTypeService.findById(id);
-        view.showMessage("Transaction type found: " + transactionType.toString());
-        return transactionType;
+        try {
+            TransactionType transactionType = transactionTypeService.findById(id);
+            view.showMessage("Transaction type found: " + transactionType.toString());
+            return transactionType;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

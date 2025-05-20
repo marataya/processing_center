@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.Account;
 
 import java.math.BigDecimal;
@@ -46,7 +47,7 @@ public class AccountService implements Service<Account, Long> {
 
     @Override
     public Account findById(Long id) {
-        return accountDao.findById(id);
+        return accountDao.findById(id).orElseThrow(() -> new DaoException("Account with ID " + id + " not found"));
     }
 
     @Override
@@ -56,15 +57,14 @@ public class AccountService implements Service<Account, Long> {
 
     /**
      * Updates the balance of an account
-     * 
+     *
      * @param accountId Account ID
      * @param amount    Amount to add (positive) or subtract (negative)
      * @return true if the operation was successful, false otherwise
      */
     public boolean updateBalance(Long accountId, double amount) {
-        Account account = accountDao.findById(accountId);
-
-        if (account != null) {
+        try {
+            Account account = accountDao.findById(accountId).orElseThrow(() -> new DaoException("Account not found"));
             BigDecimal amountBigDecimal = BigDecimal.valueOf(amount);
             BigDecimal newBalanceBigDecimal = account.getBalance().add(amountBigDecimal);
 
@@ -76,14 +76,11 @@ public class AccountService implements Service<Account, Long> {
 
             account.setBalance(newBalanceBigDecimal);
             accountDao.update(account);
-            System.out.println(
-                    "Баланс счета " + account.getAccountNumber() + " обновлен. Новый баланс: " + newBalanceBigDecimal);
+            System.out.println("Баланс счета " + account.getAccountNumber() + " обновлен. Новый баланс: " + newBalanceBigDecimal);
             return true;
-        } else {
+        } catch (Exception e) {
             System.out.println("Счет с ID " + accountId + " не найден");
             return false;
         }
     }
-
-
 }

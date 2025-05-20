@@ -5,6 +5,7 @@ import org.bank.processing_center.model.*;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements Dao<Transaction, Long>
  {
@@ -86,10 +87,10 @@ public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements
     }
 
     @Override
-    public Transaction findById(Long id) {
+    public Optional<Transaction> findById(Long id) {
         return executeInsideTransaction(session -> {
             Transaction transaction = session.get(Transaction.class, id);
-            return transaction;
+            return Optional.ofNullable(transaction);
         });
     }
 

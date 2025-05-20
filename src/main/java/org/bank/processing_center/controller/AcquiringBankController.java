@@ -63,7 +63,14 @@ public class AcquiringBankController implements Controller<AcquiringBank, Long> 
 
     @Override
     public AcquiringBank findById(Long id) {
-        return acquiringBankService.findById(id);
+        try {
+            AcquiringBank acquiringBank = acquiringBankService.findById(id);
+            view.showMessage(acquiringBank.toString());
+            return acquiringBank;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

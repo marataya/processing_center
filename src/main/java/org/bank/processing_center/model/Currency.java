@@ -1,6 +1,8 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -20,12 +22,17 @@ public class Currency {
     private Long id;              //Уникальный идентификатор валюты.
 
     @Column(name = "currency_digital_code", nullable = false, length = 3)
+    @Size(min = 3, max = 3, message = "Digital code must be exactly 3 characters long")
+    @NotBlank
     private String currencyDigitalCode; //Цифровой код валюты (например, 840 для USD).
 
-    @Column(name = "currency_letter_code", nullable = false, length = 3)
+    @Column(name = "currency_letter_code", nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 3, message = "Letter code must be exactly 3 characters long")
     private String currencyLetterCode;  //Буквенный код валюты (например, USD).
 
     @Column(name = "currency_name", nullable = false)
+    @NotBlank
     private String currencyName;        //Название валюты.
 
     @Override

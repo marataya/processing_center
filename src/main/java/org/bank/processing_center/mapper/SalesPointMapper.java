@@ -2,7 +2,6 @@ package org.bank.processing_center.mapper;
 
 import org.bank.processing_center.dao.jdbc.AcquiringBankJDBCDaoImpl;
 import org.bank.processing_center.dao.jdbc.TerminalJDBCDaoImpl;
-import org.bank.processing_center.model.AcquiringBank; // Added import
 import org.bank.processing_center.model.SalesPoint;
 
 import java.sql.ResultSet;
@@ -22,14 +21,9 @@ public class SalesPointMapper {
         salesPoint.setPosInn(resultSet.getString("pos_inn"));
 
         Long acquiringBankId = resultSet.getLong("acquiring_bank_id");
-        // Check if the last column read (acquiring_bank_id) was SQL NULL
         if (!resultSet.wasNull()) {
-            // Fetch AcquiringBank using its DAO
-            // Assuming AcquiringBankJDBCDaoImpl.findById returns AcquiringBank or null
-            AcquiringBank acquiringBank = acquiringBankDao.findById(acquiringBankId);
-            if (acquiringBank != null) {
-                salesPoint.setAcquiringBank(acquiringBank);
-            }
+            // Fetch AcquiringBank using its DAO (assuming AcquiringBankJDBCDaoImpl has findById)
+            acquiringBankDao.findById(acquiringBankId).ifPresent(salesPoint::setAcquiringBank);
         }
 
         return salesPoint;

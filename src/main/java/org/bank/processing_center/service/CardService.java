@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.Card;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class CardService implements Service<Card, Long> {
 
     @Override
     public Card findById(Long id) {
-        return cardDao.findById(id);
+        return cardDao.findById(id).orElseThrow(() -> new DaoException("Card with ID" + id + " not found"));
     }
 
     @Override

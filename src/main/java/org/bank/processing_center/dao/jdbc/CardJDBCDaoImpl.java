@@ -8,6 +8,7 @@ import org.bank.processing_center.model.Card;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 // JDBC implementation for Card entity DAO
 public class CardJDBCDaoImpl implements Dao<Card, Long> {
@@ -140,18 +141,18 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
     }
 
     @Override
-    public Card findById(Long id) {
+    public Optional<Card> findById(Long id) {
         String sql = "SELECT id, card_number, expiration_date, holder_name, card_status_id, payment_system_id, account_id, received_from_issuing_bank, sent_to_issuing_bank FROM card WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return cardMapper.mapResultSetToCard(resultSet);
+                return Optional.of(cardMapper.mapResultSetToCard(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Card по id: " + e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

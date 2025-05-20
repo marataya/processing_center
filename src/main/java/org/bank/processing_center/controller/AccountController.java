@@ -128,15 +128,10 @@ public class AccountController implements Controller<Account, Long> {
     public Account findById(Long id) {
         try {
             Account account = accountService.findById(id);
-            if (account != null) {
-                view.showMessage(account.toString());
-                return account;
-            } else {
-                view.showMessage("Счет с ID " + id + " не найден.");
-                return null;
-            }
+            view.showMessage(account.toString());
+            return account;
         } catch (Exception e) {
-            view.showError("Ошибка при поиске счета в Account: " + e.getMessage());
+            view.showError("ERROR: " + e.getMessage());
             return null;
         }
     }

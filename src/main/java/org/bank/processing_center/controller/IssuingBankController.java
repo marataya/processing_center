@@ -50,10 +50,15 @@ public class IssuingBankController implements Controller<IssuingBank, Long> {
     }
 
     public IssuingBank findById(Long id) {
-        view.showMessage("Finding IssuingBank with ID: " + id);
-        IssuingBank issuingBank = issuingBankService.findById(id);
-        view.showMessage("Find IssuingBank operation completed.");
-        return issuingBank;
+        try {
+            view.showMessage("Finding IssuingBank with ID: " + id);
+            IssuingBank issuingBank = issuingBankService.findById(id);
+            view.showMessage("Find IssuingBank operation completed.");
+            return issuingBank;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

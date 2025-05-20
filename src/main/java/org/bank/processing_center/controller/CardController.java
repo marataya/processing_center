@@ -109,15 +109,10 @@ public class CardController implements Controller<Card, Long> {
     public Card findById(Long id) {
         try {
             Card card = cardService.findById(id);
-            if (card != null) {
-                view.showMessage(card.toString());
-                return card;
-            } else {
-                view.showMessage("Карта с ID " + id + " не найдена.");
-                return null;
-            }
+            view.showMessage(card.toString());
+            return card;
         } catch (Exception e) {
-            view.showError("Ошибка при поиске карты в card: " + e.getMessage());
+            view.showError("ERROR: " + e.getMessage());
             return null;
         }
     }

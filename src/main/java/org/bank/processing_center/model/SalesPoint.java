@@ -1,6 +1,7 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +23,15 @@ public class SalesPoint {
     private Long id;
 
     @Column(name = "pos_name")
+    @NotBlank
     private String posName;
 
     @Column(name = "pos_address")
+    @NotBlank
     private String posAddress;
 
     @Column(name = "pos_inn")
+    @NotBlank
     private String posInn;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -1,6 +1,8 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -20,9 +22,12 @@ public class MerchantCategoryCode {
     private Long id;
 
     @Column(name = "mcc", length = 4)
+    @Size(min = 4, max = 4, message = "MCC must be exactly 4 characters long") // Add Size annotation for validation
+    @NotBlank
     private String mcc;
 
-    @Column(name = "mcc_name", nullable = false)
+    @Column(name = "mcc_name")
+    @NotBlank
     private String mccName;
 
     @Override

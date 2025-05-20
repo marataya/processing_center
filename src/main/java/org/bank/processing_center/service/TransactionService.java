@@ -45,7 +45,7 @@ public class TransactionService implements Service<Transaction, Long> {
 
     @Override
     public Transaction findById(Long id) {
-        return transactionDao.findById(id);
+        return transactionDao.findById(id).orElseThrow(() -> new RuntimeException("Transaction with ID=" + id + " not found"));
     }
 
     @Override

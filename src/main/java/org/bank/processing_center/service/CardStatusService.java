@@ -1,9 +1,11 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.CardStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CardStatusService implements Service<CardStatus, Long> {
 
@@ -45,7 +47,7 @@ public class CardStatusService implements Service<CardStatus, Long> {
 
     @Override
     public CardStatus findById(Long id) {
-        return cardStatusDao.findById(id);
+        return cardStatusDao.findById(id).orElseThrow(() -> new DaoException("Card status " + id + " not found"));
     }
 
     @Override
@@ -56,12 +58,12 @@ public class CardStatusService implements Service<CardStatus, Long> {
     /**
      * Finds a card status by name
      * @param statusName Status name to search for
-     * @return card status if found
+     * @return Optional containing the card status if found
      */
-    public CardStatus findByName(String statusName) {
-        return cardStatusDao.findAll().stream().
-                filter(status -> status.getStatusName().equalsIgnoreCase(statusName)).
-                findFirst().orElse(null);
+    public Optional<CardStatus> findByName(String statusName) {
+        return cardStatusDao.findAll().stream()
+                .filter(status -> status.getStatusName().equalsIgnoreCase(statusName))
+                .findFirst();
     }
 
     /**
@@ -70,8 +72,9 @@ public class CardStatusService implements Service<CardStatus, Long> {
      * @return The card status name if found, null otherwise
      */
     public String getStatusNameById(Long id) {
-        CardStatus cardStatus = cardStatusDao.findById(id);
-        if (cardStatus != null) {
+        Optional<CardStatus> cardStatusOpt = cardStatusDao.findById(id);
+        if (cardStatusOpt.isPresent()) {
+            CardStatus cardStatus = cardStatusOpt.get();
             return cardStatus.getStatusName();
         }
         return null;

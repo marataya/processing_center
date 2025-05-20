@@ -71,14 +71,15 @@ public class TerminalController implements Controller<Terminal, Long> {
 
     @Override
     public Terminal findById(Long id) {
-        view.showMessage("Finding Terminal with ID: " + id);
-        Terminal terminal = terminalService.findById(id);
-        if (terminal != null) {
+        try {
+            view.showMessage("Finding Terminal with ID: " + id);
+            Terminal terminal = terminalService.findById(id);
             view.showMessage("Found Terminal: " + terminal.toString());
-        } else {
-            view.showMessage("Terminal with ID " + id + " not found.");
+            return terminal;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
         }
-        return terminal;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class AcquiringBank {
     private Long id;
 
     @Column(name = "bic")
+    @NotBlank
     private String bic;
 
     @Column(name = "abbreviated_name")
+    @NotBlank
     private String abbreviatedName;
 
     public final boolean equals(Object o) {

@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.PaymentSystem;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
 
     @Override
     public PaymentSystem findById(Long id) {
-        return paymentSystemDao.findById(id);
+        return paymentSystemDao.findById(id).orElseThrow(() -> new DaoException("Payment system with ID=" + id + " not found"));
     }
 
     @Override

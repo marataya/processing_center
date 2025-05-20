@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.Terminal;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class TerminalService implements Service<Terminal, Long> {
 
     @Override
     public Terminal findById(Long id) {
-        return terminalDao.findById(id);
+        return terminalDao.findById(id).orElseThrow(() -> new DaoException("Terminal with ID " + id + " not found"));
     }
 
     @Override

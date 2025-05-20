@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.MerchantCategoryCode;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class MerchantCategoryCodeService implements Service<MerchantCategoryCode
 
     @Override
     public MerchantCategoryCode findById(Long id) {
-        return merchantCategoryCodeDao.findById(id);
+        return merchantCategoryCodeDao.findById(id).orElseThrow(() -> new DaoException("Merchant Category Code with ID " + id + " not found"));
     }
 
     @Override

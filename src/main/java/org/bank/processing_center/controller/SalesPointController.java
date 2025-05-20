@@ -60,13 +60,14 @@ public class SalesPointController implements Controller<SalesPoint, Long> {
    }
 
    public SalesPoint findById(Long id) {
-      SalesPoint salesPoint = salesPointService.findById(id);
-      if (salesPoint != null) {
-         view.showMessage("SalesPoint found: " + salesPoint.toString());
-      } else {
-         view.showMessage("SalesPoint with ID " + id + " not found.");
-      }
-      return salesPoint;
+       try {
+           SalesPoint salesPoint = salesPointService.findById(id);
+           view.showMessage("SalesPoint found: " + salesPoint.toString());
+           return salesPoint;
+       } catch (Exception e) {
+           view.showError("ERROR: " + e.getMessage());
+           return null;
+       }
    }
 
    // Removed methods from Controller interface as they are not part of the

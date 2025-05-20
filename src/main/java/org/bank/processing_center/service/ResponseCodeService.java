@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.ResponseCode;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class ResponseCodeService implements Service<ResponseCode, Long> {
 
     @Override
     public ResponseCode findById(Long id) {
-        return responseCodeDao.findById(id);
+        return responseCodeDao.findById(id).orElseThrow(() -> new DaoException("Error finding ResponseCode by ID=" + id));
     }
 
     @Override

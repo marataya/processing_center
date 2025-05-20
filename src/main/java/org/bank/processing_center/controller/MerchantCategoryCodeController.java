@@ -62,13 +62,14 @@ public class MerchantCategoryCodeController implements Controller<MerchantCatego
 
     @Override
     public MerchantCategoryCode findById(Long id) {
-        MerchantCategoryCode mcc = merchantCategoryCodeService.findById(id);
-        if (mcc != null) {
+        try {
+            MerchantCategoryCode mcc = merchantCategoryCodeService.findById(id);
             view.showMessage("Merchant Category Code found: " + mcc.toString());
-        } else {
-            view.showMessage("Merchant Category Code with ID " + id + " not found.");
+            return mcc;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
         }
-        return mcc;
     }
 
     @Override

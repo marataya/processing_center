@@ -5,6 +5,7 @@ import org.bank.processing_center.model.Currency;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CurrencyHibernateDaoImpl extends AbstractHibernateDao implements Dao<Currency, Long> {
 
@@ -43,10 +44,10 @@ public class CurrencyHibernateDaoImpl extends AbstractHibernateDao implements Da
     }
 
     @Override
-    public Currency findById(Long id) {
+    public Optional<Currency> findById(Long id) {
         return executeInsideTransaction(session -> {
             Currency currency = session.get(Currency.class, id);
-            return currency;
+            return Optional.ofNullable(currency);
         });
     }
 

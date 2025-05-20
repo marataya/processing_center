@@ -1,4 +1,4 @@
-package org.bank.processing_center.dao.exception;
+package org.bank.processing_center.helper.exception;
 
 public class DaoException extends RuntimeException {
     public DaoException(String message) {

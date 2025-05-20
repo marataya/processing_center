@@ -74,13 +74,14 @@ public class CurrencyController implements Controller<Currency, Long> {
 
    @Override
    public Currency findById(Long id) {
-      Currency currency = currencyService.findById(id);
-      if (currency != null) {
-         view.showMessage("Found Currency: " + currency.toString());
-      } else {
-         view.showMessage("Currency with ID " + id + " not found.");
-      }
-      return currency;
+       try {
+           Currency currency = currencyService.findById(id);
+           view.showMessage("Found Currency: " + currency.toString());
+           return currency;
+       } catch (Exception e) {
+           view.showError("ERROR: " + e.getMessage());
+           return null;
+       }
    }
 
    // Method to retrieve all currencies

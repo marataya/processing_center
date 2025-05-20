@@ -1,7 +1,7 @@
 package org.bank.processing_center.dao.hibernate;
 
 import org.bank.processing_center.configuration.HibernateConfig;
-import org.bank.processing_center.dao.exception.DaoException;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

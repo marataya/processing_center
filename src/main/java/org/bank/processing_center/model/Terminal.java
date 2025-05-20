@@ -1,6 +1,7 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Terminal {
     private Long id;
 
     @Column(name = "terminal_id")
+    @NotBlank
     private String terminalId;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

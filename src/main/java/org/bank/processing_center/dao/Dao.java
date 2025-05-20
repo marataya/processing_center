@@ -1,6 +1,7 @@
 package org.bank.processing_center.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Dao<T, ID> {
     // Создание таблицы для сущности.  Не должно приводить к исключению, если такая таблица уже существует.
@@ -22,7 +23,7 @@ public interface Dao<T, ID> {
     List<T> findAll();
 
     // Получение объекта по id.
-    T findById(ID id);
+    Optional<T> findById(ID id);
 
     // Обновление существующей записи
     T update(T t);

@@ -66,9 +66,12 @@ public class ResponseCodeController implements Controller<ResponseCode, Long> {
 
     public ResponseCode findById(Long id) {
         try {
-            return responseCodeService.findById(id);
+            ResponseCode rc = responseCodeService.findById(id);
+            view.showMessage("Response Code found: " + rc);
+            return rc;
         } catch (Exception e) {
-            throw new RuntimeException("Error finding ResponseCode by ID", e);
+            view.showError("ERROR: " + e.getMessage());
+            return null;
         }
     }
 

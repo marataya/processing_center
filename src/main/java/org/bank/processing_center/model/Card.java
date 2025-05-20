@@ -1,11 +1,10 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Timestamp;
@@ -24,7 +23,7 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id; //id (bigint): Уникальный идентификатор карты.
+    private Long id;
 
     @Column(name = "card_number", nullable = false, length = 16)
     @Size(min = 16, max = 16, message = "Card number must be 16 digits")
@@ -34,6 +33,7 @@ public class Card {
     private LocalDate expirationDate;
 
     @Column(name = "holder_name", nullable = false, length = 50)
+    @NotBlank
     private String holderName;
 
     @ManyToOne

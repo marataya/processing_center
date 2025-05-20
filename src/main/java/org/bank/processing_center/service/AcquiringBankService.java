@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.AcquiringBank;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class AcquiringBankService implements Service<AcquiringBank, Long> {
 
     @Override
     public AcquiringBank findById(Long id) {
-        return acquiringBankDao.findById(id);
+        return acquiringBankDao.findById(id).orElseThrow(() -> new DaoException("AcquiringBank with ID=" + id + " not found"));
     }
 
     @Override

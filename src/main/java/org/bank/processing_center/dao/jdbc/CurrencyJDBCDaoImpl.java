@@ -7,6 +7,7 @@ import org.bank.processing_center.model.Currency;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
 
@@ -121,7 +122,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     }
 
     @Override
-    public Currency findById(Long id) {
+    public Optional<Currency> findById(Long id) {
         String sql = String.format("SELECT %s, %s, %s, %s FROM %s WHERE %s = ?",
                 COLUMN_ID, COLUMN_DIGITAL_CODE, COLUMN_LETTER_CODE, COLUMN_NAME, TABLE_NAME, COLUMN_ID);
         try (Connection connection = JDBCConfig.getConnection();
@@ -129,13 +130,13 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return mapResultSetToCurrency(resultSet);
+                return Optional.of(mapResultSetToCurrency(resultSet));
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при получении Currency по id: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override

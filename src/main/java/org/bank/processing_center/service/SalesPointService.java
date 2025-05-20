@@ -1,6 +1,7 @@
 package org.bank.processing_center.service;
 
 import org.bank.processing_center.dao.Dao;
+import org.bank.processing_center.helper.exception.DaoException;
 import org.bank.processing_center.model.SalesPoint;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class SalesPointService implements Service<SalesPoint, Long> {
 
    @Override
    public SalesPoint findById(Long id) {
-      return salesPointDao.findById(id);
+      return salesPointDao.findById(id).orElseThrow(() -> new DaoException("SalesPoint with ID " + id + " not found"));
    }
 
    @Override

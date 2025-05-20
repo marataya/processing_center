@@ -62,7 +62,14 @@ public class TransactionController implements Controller<Transaction, Long> {
 
     @Override
     public Transaction findById(Long id) {
-        return transactionService.findById(id);
+        try {
+            Transaction tr = transactionService.findById(id);
+            view.showMessage(tr.toString());
+            return tr;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

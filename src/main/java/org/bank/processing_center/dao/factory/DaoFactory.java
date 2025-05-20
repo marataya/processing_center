@@ -128,19 +128,32 @@ public class DaoFactory {
     }
 
     // Getter methods remain the same
-    public Dao<Card, Long> getCardDao() { return cardDao; }
-    public Dao<CardStatus, Long> getCardStatusDao() { return cardStatusDao; }
-    public Dao<PaymentSystem, Long> getPaymentSystemDao() { return paymentSystemDao; }
-    public Dao<Account, Long> getAccountDao() { return accountDao; }
-    public Dao<AcquiringBank, Long> getAcquiringBankDao() { return acquiringBankDao; }
-    public Dao<MerchantCategoryCode, Long> getMerchantCategoryCodeDao() { return merchantCategoryCodeDao; }
-    public Dao<TransactionType, Long> getTransactionTypeDao() { return transactionTypeDao; }
-    public Dao<ResponseCode, Long> getResponseCodeDao() { return responseCodeDao; }
-    public Dao<Terminal, Long> getTerminalDao() { return terminalDao; }
-    public Dao<Transaction, Long> getTransactionDao() { return transactionDao; }
-    public Dao<SalesPoint, Long> getSalesPointDao() { return salesPointDao; }
-    public Dao<Currency, Long> getCurrencyDao() { return currencyDao; }
-    public Dao<IssuingBank, Long> getIssuingBankDao() { return issuingBankDao; }
+    public Dao<Card, Long> getCardDao() {
+return cardDao; }
+    public Dao<CardStatus, Long> getCardStatusDao() {
+return cardStatusDao; }
+    public Dao<PaymentSystem, Long> getPaymentSystemDao() {
+return paymentSystemDao; }
+    public Dao<Account, Long> getAccountDao() {
+return accountDao; }
+    public Dao<AcquiringBank, Long> getAcquiringBankDao() {
+return acquiringBankDao; }
+    public Dao<MerchantCategoryCode, Long> getMerchantCategoryCodeDao() {
+return merchantCategoryCodeDao; }
+    public Dao<TransactionType, Long> getTransactionTypeDao() {
+return transactionTypeDao; }
+    public Dao<ResponseCode, Long> getResponseCodeDao() {
+return responseCodeDao; }
+    public Dao<Terminal, Long> getTerminalDao() {
+return terminalDao; }
+    public Dao<Transaction, Long> getTransactionDao() {
+return transactionDao; }
+    public Dao<SalesPoint, Long> getSalesPointDao() {
+return salesPointDao; }
+    public Dao<Currency, Long> getCurrencyDao() {
+return currencyDao; }
+    public Dao<IssuingBank, Long> getIssuingBankDao() {
+return issuingBankDao; }
 
 
     /**

@@ -5,6 +5,7 @@ import org.bank.processing_center.model.ResponseCode;
 import org.hibernate.query.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ResponseCodeHibernateDaoImpl extends AbstractHibernateDao implements Dao<ResponseCode, Long>
  {
@@ -45,10 +46,10 @@ public class ResponseCodeHibernateDaoImpl extends AbstractHibernateDao implement
     }
 
     @Override
-    public ResponseCode findById(Long id) {
+    public Optional<ResponseCode> findById(Long id) {
         return executeInsideTransaction(session -> {
             ResponseCode responseCode = session.get(ResponseCode.class, id);
-            return responseCode;
+            return Optional.ofNullable(responseCode);
         });
     }
 

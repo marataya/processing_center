@@ -104,11 +104,17 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
      *
      * @param id Entity ID
      * @return entity if found
-     * @Override
      */
     @Override
     public PaymentSystem findById(Long id) {
-        return paymentSystemService.findById(id);
+        try {
+            PaymentSystem ps = paymentSystemService.findById(id);
+            view.showMessage(ps.toString());
+            return ps;
+        } catch (Exception e) {
+            view.showError("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override

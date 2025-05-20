@@ -1,6 +1,8 @@
 package org.bank.processing_center.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +28,15 @@ public class Transaction {
     private Long id;
 
     @Column(name = "transaction_date")
+    @NotNull
     private LocalDate transactionDate;
 
     @Column(name = "sum")
+    @NotNull
     private BigDecimal sum;
 
     @Column(name = "transaction_name")
+    @NotBlank
     private String transactionName;
 
     // Consider adding fetch = FetchType.LAZY for performance
@@ -55,17 +60,21 @@ public class Transaction {
     private Terminal terminal;
 
     // Consider adding fetch = FetchType.LAZY for performance
+    // Default fetch types
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinColumn(name = "response_code_id")
     private ResponseCode responseCode;
 
     @Column(name = "authorization_code", length=6)
+    @NotNull
     private String authorizationCode;
 
     @Column(name = "received_from_issuing_bank")
+    @NotNull
     private LocalDateTime receivedFromIssuingBank;
 
     @Column(name = "sent_to_issuing_bank")
+    @NotNull
     private LocalDateTime sentToIssuingBank;
 
     // Add other fields as necessary

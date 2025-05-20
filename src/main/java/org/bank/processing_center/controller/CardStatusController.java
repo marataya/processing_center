@@ -114,7 +114,9 @@ public class CardStatusController implements Controller<CardStatus, Long> {
     @Override
     public CardStatus findById(Long id) {
         try {
-            return cardStatusService.findById(id);
+            CardStatus cardStatus = cardStatusService.findById(id);
+            view.showMessage(cardStatus.toString());
+            return cardStatus;
         } catch (Exception e) {
             view.showError("Ошибка при поиске card_status по ID " + id + ": " + e.getMessage());
             return null;
