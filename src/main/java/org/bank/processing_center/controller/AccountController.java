@@ -38,12 +38,18 @@ public class AccountController implements Controller<Account, Long> {
      * @param account Account to add
      */
     @Override
-    public void addEntity(Account account) {
+    public Account addEntity(Account account) {
         try {
-            accountService.save(account);
-            view.showMessage("Счет добавлен: " + account);
+            Account savedAccount = accountService.save(account);
+            if (savedAccount != null) {
+                view.showMessage("Счет добавлен: " + savedAccount);
+            } else {
+                view.showMessage("Счет не был добавлен.");
+            }
+            return savedAccount;
         } catch (Exception e) {
             view.showError("Ошибка при добавлении счета: " + e.getMessage());
+            return null;
         }
     }
 
@@ -67,12 +73,18 @@ public class AccountController implements Controller<Account, Long> {
      * @param account Account with updated information
      */
     @Override
-    public void updateEntity(Account account) {
+    public Account updateEntity(Account account) {
         try {
-            accountService.update(account);
-            view.showMessage("Счет обновлен: " + account);
+            Account updatedAccount = accountService.update(account);
+            if (updatedAccount != null) {
+                view.showMessage("Счет обновлен: " + updatedAccount);
+            } else {
+                view.showMessage("Счет не был обновлен.");
+            }
+            return updatedAccount;
         } catch (Exception e) {
             view.showError("Error updating account: " + e.getMessage());
+            return null;
         }
     }
 

@@ -30,8 +30,8 @@ public class AccountService implements Service<Account, Long> {
     }
 
     @Override
-    public void save(Account account) {
-        accountDao.save(account);
+    public Account save(Account account) {
+        return accountDao.save(account);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class AccountService implements Service<Account, Long> {
     }
 
     @Override
-    public void update(Account account) {
-        accountDao.update(account);
+    public Account update(Account account) {
+        return accountDao.update(account);
     }
 
     /**

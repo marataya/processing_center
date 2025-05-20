@@ -50,18 +50,22 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     }
 
     @Override
-    public void save(IssuingBank issuingBank) {
+    public IssuingBank save(IssuingBank issuingBank) {
         String sql = "INSERT INTO issuing_bank (id, bic, bin, abbreviated_name) VALUES (?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, issuingBank.getId());
             preparedStatement.setString(2, issuingBank.getBic());
             preparedStatement.setString(3, issuingBank.getBin());
             preparedStatement.setString(4, issuingBank.getAbbreviatedName());
-            preparedStatement.executeUpdate();
-            System.out.println("IssuingBank добавлен: " + issuingBank);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("IssuingBank добавлен: " + issuingBank);
+                return issuingBank;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении IssuingBank: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -119,17 +123,21 @@ public class IssuingBankJDBCDaoImpl implements Dao<IssuingBank, Long> {
     }
 
     @Override
-    public void update(IssuingBank issuingBank) {
+    public IssuingBank update(IssuingBank issuingBank) {
         String sql = "UPDATE issuing_bank SET bic = ?, bin = ?, abbreviated_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, issuingBank.getBic());
             preparedStatement.setString(2, issuingBank.getBin());
             preparedStatement.setString(3, issuingBank.getAbbreviatedName());
             preparedStatement.setLong(4, issuingBank.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("IssuingBank обновлен: " + issuingBank);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("IssuingBank обновлен: " + issuingBank);
+                return issuingBank;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении IssuingBank: " + e.getMessage());
         }
+        return null;
     }
 }

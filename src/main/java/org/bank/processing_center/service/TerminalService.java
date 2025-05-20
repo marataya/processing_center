@@ -29,8 +29,8 @@ public class TerminalService implements Service<Terminal, Long> {
     }
 
     @Override
-    public void save(Terminal entity) {
-        terminalDao.save(entity);
+    public Terminal save(Terminal entity) {
+        return terminalDao.save(entity);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TerminalService implements Service<Terminal, Long> {
     }
 
     @Override
-    public void update(Terminal terminal) {
-        terminalDao.update(terminal);
+    public Terminal update(Terminal terminal) {
+        return terminalDao.update(terminal);
     }
 }

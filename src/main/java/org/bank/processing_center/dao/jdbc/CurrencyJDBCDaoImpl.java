@@ -61,7 +61,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     }
 
     @Override
-    public void save(Currency currency) {
+    public Currency save(Currency currency) {
         String sql = String.format("INSERT INTO %s (%s, %s, %s, %s) VALUES (?, ?, ?, ?)",
                 TABLE_NAME, COLUMN_ID, COLUMN_DIGITAL_CODE, COLUMN_LETTER_CODE, COLUMN_NAME);
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -69,12 +69,16 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
             preparedStatement.setString(2, currency.getCurrencyDigitalCode());
             preparedStatement.setString(3, currency.getCurrencyLetterCode());
             preparedStatement.setString(4, currency.getCurrencyName());
-            preparedStatement.executeUpdate();
-            System.out.println("Currency добавлен: " + currency);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Currency добавлен: " + currency);
+                return currency;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Currency: " + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -135,7 +139,7 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
     }
 
     @Override
-    public void update(Currency currency) {
+    public Currency update(Currency currency) {
         String sql = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ? WHERE %s = ?",
                 TABLE_NAME, COLUMN_DIGITAL_CODE, COLUMN_LETTER_CODE, COLUMN_NAME, COLUMN_ID);
         try (Connection connection = JDBCConfig.getConnection();
@@ -144,11 +148,15 @@ public class CurrencyJDBCDaoImpl implements Dao<Currency, Long> {
             preparedStatement.setString(2, currency.getCurrencyLetterCode());
             preparedStatement.setString(3, currency.getCurrencyName());
             preparedStatement.setLong(4, currency.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Currency обновлен: " + currency);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Currency обновлен: " + currency);
+                return currency;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Currency: " + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 }

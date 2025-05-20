@@ -48,12 +48,14 @@ public class ResponseCodeController implements Controller<ResponseCode, Long> {
         }
     }
 
-    public void updateEntity(ResponseCode responseCode) { // Method to update a response code
+    public ResponseCode updateEntity(ResponseCode responseCode) { // Method to update a response code
         try {
-            responseCodeService.update(responseCode);
+            ResponseCode updatedResponseCode = responseCodeService.update(responseCode);
             view.showMessage("Response Code updated: " + responseCode);
+            return updatedResponseCode;
         } catch (Exception e) {
             view.showError("Error updating response code: " + e.getMessage());
+            return null;
         }
     }
 
@@ -71,12 +73,14 @@ public class ResponseCodeController implements Controller<ResponseCode, Long> {
     }
 
     @Override
-    public void addEntity(ResponseCode entity) {
+    public ResponseCode addEntity(ResponseCode entity) {
         try {
-            responseCodeService.save(entity);
+            ResponseCode savedEntity = responseCodeService.save(entity);
             view.showMessage("Response code added: " + entity);
+            return savedEntity;
         } catch (Exception e) {
             view.showError("Error adding response code: " + e.getMessage());
+            return null;
         }
     }
 

@@ -56,7 +56,7 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
     }
 
     @Override
-    public void save(MerchantCategoryCode mcc) {
+    public MerchantCategoryCode save(MerchantCategoryCode mcc) {
         // Corrected INSERT statement to use COLUMN_MCC_DESCRIPTION instead of a non-existent "mcc_name"
         String sql = String.format("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)",
                 TABLE_NAME, COLUMN_ID, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION);
@@ -64,13 +64,17 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
             preparedStatement.setLong(1, mcc.getId());
             preparedStatement.setString(2, mcc.getMcc()); // Assuming model field is 'code'
             preparedStatement.setString(3, mcc.getMccName()); // Assuming model field is 'description'
-            preparedStatement.executeUpdate();
-            System.out.println("MerchantCategoryCode добавлен: " + mcc);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("MerchantCategoryCode добавлен: " + mcc);
+                return mcc;
+            }
         } catch (SQLException e) {
             // This is where your error "ERROR: column "mcc_name" of relation "merchant_category_code" does not exist" originates
             System.err.println("Ошибка при добавлении MerchantCategoryCode: " + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -130,7 +134,7 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
     }
 
     @Override
-    public void update(MerchantCategoryCode mcc) {
+    public MerchantCategoryCode update(MerchantCategoryCode mcc) {
         // Corrected UPDATE statement
         String sql = String.format("UPDATE %s SET %s = ?, %s = ? WHERE %s = ?",
                 TABLE_NAME, COLUMN_MCC_CODE, COLUMN_MCC_DESCRIPTION, COLUMN_ID);
@@ -139,11 +143,15 @@ public class MerchantCategoryCodeJDBCDaoImpl implements Dao<MerchantCategoryCode
             preparedStatement.setString(1, mcc.getMcc());
             preparedStatement.setString(2, mcc.getMccName());
             preparedStatement.setLong(3, mcc.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("MerchantCategoryCode обновлен: " + mcc);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("MerchantCategoryCode обновлен: " + mcc);
+                return mcc;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении MerchantCategoryCode: " + e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 }

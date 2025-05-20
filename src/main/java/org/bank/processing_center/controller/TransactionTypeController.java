@@ -24,9 +24,15 @@ public class TransactionTypeController implements Controller<TransactionType, Lo
     }
 
     @Override
-    public void addEntity(TransactionType transactionType) {
-        transactionTypeService.save(transactionType);
-        view.showMessage("Transaction type added.");
+    public TransactionType addEntity(TransactionType transactionType) {
+        try {
+            TransactionType savedTransactionType = transactionTypeService.save(transactionType);
+            view.showMessage("Transaction type added.");
+            return savedTransactionType;
+        } catch (Exception e) {
+            view.showError("Error adding transaction type: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -37,13 +43,14 @@ public class TransactionTypeController implements Controller<TransactionType, Lo
     }
 
     @Override
-    public void updateEntity(TransactionType transactionType) {
+    public TransactionType updateEntity(TransactionType transactionType) {
         try {
+            TransactionType updatedTransactionType = transactionTypeService.update(transactionType);
             view.showMessage("Updating transaction type: " + transactionType);
-            transactionTypeService.update(transactionType);
-            view.showMessage("Transaction Type updated: " + transactionType);
+            return updatedTransactionType;
         } catch (Exception e) {
             view.showError("Error updating transaction type: " + e.getMessage());
+            return null;
         }
     }
 

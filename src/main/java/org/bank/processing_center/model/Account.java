@@ -21,7 +21,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     @NotNull
     private Long id;             //Уникальный идентификатор счёта.
 

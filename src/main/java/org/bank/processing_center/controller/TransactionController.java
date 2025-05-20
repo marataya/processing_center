@@ -22,8 +22,15 @@ public class TransactionController implements Controller<Transaction, Long> {
     }
 
     @Override
-    public void addEntity(Transaction transaction) {
-        transactionService.save(transaction);
+    public Transaction addEntity(Transaction transaction) {
+        try {
+            Transaction savedTransaction = transactionService.save(transaction);
+            view.showMessage("Транзакция добавлена: " + transaction);
+            return savedTransaction;
+        } catch (Exception e) {
+            view.showError("Ошибка при добавлении транзакции: " + e.getMessage());
+            return null;
+        }
     }
 
     public List<Transaction> getAllTransactions() {
@@ -37,9 +44,15 @@ public class TransactionController implements Controller<Transaction, Long> {
     }
 
     @Override
-    public void updateEntity(Transaction transaction) {
-        transactionService.update(transaction);
-        view.showMessage("Транзакция обновлена: " + transaction);
+    public Transaction updateEntity(Transaction transaction) {
+        try {
+            Transaction updatedTransaction = transactionService.update(transaction);
+            view.showMessage("Транзакция обновлена: " + transaction);
+            return updatedTransaction;
+        } catch (Exception e) {
+            view.showError("Ошибка при обновлении транзакции: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -73,8 +86,7 @@ public class TransactionController implements Controller<Transaction, Long> {
             List<Transaction> transactions = transactionService.findAll();
             view.showList(transactions, "Transactions List:");
             return transactions;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             view.showError("Ошибка при получении списка транзакций: " + e.getMessage());
             return List.of();
         }

@@ -16,7 +16,7 @@ import java.util.Objects;
 public class CardStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "card_status_name", nullable = false)

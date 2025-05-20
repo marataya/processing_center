@@ -22,10 +22,17 @@ public class IssuingBankController implements Controller<IssuingBank, Long> {
         view.showMessage("IssuingBank table created.");
     }
 
-    public void addEntity(IssuingBank issuingBank) {
-        view.showMessage("Adding Issuing bank: " + issuingBank);
-        issuingBankService.save(issuingBank);
-        view.showMessage("Issuing bank added successfully.");
+    public IssuingBank addEntity(IssuingBank issuingBank) {
+
+        try {
+            IssuingBank savedIssuingBank = issuingBankService.save(issuingBank);
+            view.showMessage("Adding Issuing bank: " + issuingBank);
+            view.showMessage("Issuing bank added successfully.");
+            return savedIssuingBank;
+        } catch (Exception e) {
+            view.showError("Error adding Issuing bank: " + e.getMessage());
+            return null;
+        }
     }
 
     public List<IssuingBank> getAllEntities() {
@@ -34,12 +41,6 @@ public class IssuingBankController implements Controller<IssuingBank, Long> {
         view.showList(issuingBanks, "Issuing Banks List:");
         view.showMessage("Found " + issuingBanks.size() + " IssuingBanks.");
         return issuingBanks;
-    }
-
-    public void updateIssuingBank(IssuingBank issuingBank) {
-        view.showMessage("Updating IssuingBank: " + issuingBank);
-        issuingBankService.update(issuingBank);
-        view.showMessage("IssuingBank updated successfully.");
     }
 
     public void deleteEntity(Long id) {
@@ -68,13 +69,14 @@ public class IssuingBankController implements Controller<IssuingBank, Long> {
     }
 
     @Override
-    public void updateEntity(IssuingBank entity) {
+    public IssuingBank updateEntity(IssuingBank entity) {
         try {
+            IssuingBank updatedIssuingBank = issuingBankService.update(entity);
             view.showMessage("Updating issuing bank: " + entity);
-            issuingBankService.update(entity);
-            view.showMessage("Issuing bank updated: " + entity);
+            return updatedIssuingBank;
         } catch (Exception e) {
             view.showError("Error updating issuing bank: " + e.getMessage());
+            return null;
         }
     }
 }

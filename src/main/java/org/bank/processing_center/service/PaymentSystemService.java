@@ -29,8 +29,8 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
     }
 
     @Override
-    public void save(PaymentSystem paymentSystem) {
-        paymentSystemDao.save(paymentSystem);
+    public PaymentSystem save(PaymentSystem paymentSystem) {
+        return paymentSystemDao.save(paymentSystem);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class PaymentSystemService implements Service<PaymentSystem, Long> {
     }
 
     @Override
-    public void update(PaymentSystem paymentSystem) {
-        paymentSystemDao.update(paymentSystem);
+    public PaymentSystem update(PaymentSystem paymentSystem) {
+        return paymentSystemDao.update(paymentSystem);
     }
 
     /**

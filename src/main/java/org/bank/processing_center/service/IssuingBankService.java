@@ -29,8 +29,8 @@ public class IssuingBankService implements Service<IssuingBank, Long> {
     }
 
     @Override
-    public void save(IssuingBank entity) {
-        issuingBankDao.save(entity);
+    public IssuingBank save(IssuingBank entity) {
+        return issuingBankDao.save(entity);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class IssuingBankService implements Service<IssuingBank, Long> {
     }
 
     @Override
-    public void update(IssuingBank entity) {
-        issuingBankDao.update(entity);
+    public IssuingBank update(IssuingBank entity) {
+        return issuingBankDao.update(entity);
     }
 
 

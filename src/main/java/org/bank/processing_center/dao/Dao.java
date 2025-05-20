@@ -13,7 +13,7 @@ public interface Dao<T, ID> {
     void clearTable();
 
     // Добавление объекта соответствующей модели в таблицу
-    void save(T t);
+    T save(T t);
 
     // Удаление объекта из таблицы (по id)
     void delete(ID id);
@@ -25,5 +25,5 @@ public interface Dao<T, ID> {
     T findById(ID id);
 
     // Обновление существующей записи
-    void update(T t);
+    T update(T t);
 }

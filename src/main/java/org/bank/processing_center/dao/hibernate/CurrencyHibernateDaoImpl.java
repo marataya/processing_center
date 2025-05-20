@@ -18,16 +18,17 @@ public class CurrencyHibernateDaoImpl extends AbstractHibernateDao implements Da
     }
 
     @Override
-    public void save(Currency currency) {
-        executeInsideTransaction(session -> {
+    public Currency save(Currency currency) {
+        return executeInsideTransaction(session -> {
             session.persist(currency);
+            return currency;
         });
     }
 
     @Override
-    public void update(Currency currency) {
-        executeInsideTransaction(session -> {
-            session.merge(currency);
+    public Currency update(Currency currency) {
+        return executeInsideTransaction(session -> {
+            return session.merge(currency);
         });
     }
 

@@ -19,17 +19,18 @@ public class ResponseCodeHibernateDaoImpl extends AbstractHibernateDao implement
     }
 
     @Override
-    public void save(ResponseCode responseCode) {
-        executeInsideTransaction(session -> {
+    public ResponseCode save(ResponseCode responseCode) {
+        return executeInsideTransaction(session -> {
             session.persist(responseCode);
+            return responseCode;
         });
 
     }
 
     @Override
-    public void update(ResponseCode responseCode) {
-        executeInsideTransaction(session -> {
-            session.merge(responseCode);
+    public ResponseCode update(ResponseCode responseCode) {
+        return executeInsideTransaction(session -> {
+            return session.merge(responseCode);
         });
     }
 

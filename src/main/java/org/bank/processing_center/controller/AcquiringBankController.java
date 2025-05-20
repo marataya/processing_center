@@ -32,17 +32,27 @@ public class AcquiringBankController implements Controller<AcquiringBank, Long> 
     }
 
     @Override
-    public void addEntity(AcquiringBank acquiringBank) {
-        acquiringBankService.save(acquiringBank);
+    public AcquiringBank addEntity(AcquiringBank acquiringBank) {
+        try {
+            AcquiringBank savedAcquiringBank = acquiringBankService.save(acquiringBank);
+            view.showMessage("Acquiring Bank added: " + acquiringBank);
+            return savedAcquiringBank;
+        } catch (Exception e) {
+            view.showError("Error adding acquiring bank: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
-    public void updateEntity(AcquiringBank acquiringBank) {
+    public AcquiringBank updateEntity(AcquiringBank acquiringBank) {
         try {
-            acquiringBankService.update(acquiringBank);
-            view.showMessage("Acquiring Bank updated: " + acquiringBank);
+            AcquiringBank updatedAcquiringBank = acquiringBankService.update(acquiringBank);
+            acquiringBankService.update(updatedAcquiringBank);
+            view.showMessage("Acquiring Bank updated: " + updatedAcquiringBank);
+            return updatedAcquiringBank;
         } catch (Exception e) {
             view.showError("Error updating acquiring bank: " + e.getMessage());
+            return null;
         }
     }
 

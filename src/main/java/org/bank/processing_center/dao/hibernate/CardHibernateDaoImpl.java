@@ -18,16 +18,17 @@ public class CardHibernateDaoImpl extends AbstractHibernateDao implements Dao<Ca
     }
 
     @Override
-    public void save(Card card) {
-        executeInsideTransaction(session -> {
+    public Card save(Card card) {
+        return executeInsideTransaction(session -> {
             session.persist(card);
+            return card;
         });
     }
 
     @Override
-    public void update(Card card) {
-        executeInsideTransaction(session -> {
-            session.merge(card);
+    public Card update(Card card) {
+        return executeInsideTransaction(session -> {
+            return session.merge(card);
         });
     }
 

@@ -16,7 +16,7 @@ import java.util.Objects;
 public class PaymentSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "payment_system_name", nullable = false, length = 50)

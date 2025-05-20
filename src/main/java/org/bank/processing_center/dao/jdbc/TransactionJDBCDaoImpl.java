@@ -67,7 +67,7 @@ public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
     }
 
     @Override
-    public void save(Transaction transaction) {
+    public Transaction save(Transaction transaction) {
         String sql = "INSERT INTO transaction (id, transaction_date, sum, transaction_name, account_id, transaction_type_id, card_id, terminal_id, response_code_id, authorization_code, received_from_issuing_bank, sent_to_issuing_bank) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, transaction.getId());
@@ -135,11 +135,15 @@ public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
                 preparedStatement.setNull(12, Types.TIMESTAMP);
             }
 
-            preparedStatement.executeUpdate();
-            System.out.println("Transaction добавлен: " + transaction);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Transaction добавлен: " + transaction);
+                return transaction;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Transaction: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -185,7 +189,7 @@ public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
     }
 
     @Override
-    public void update(Transaction transaction) {
+    public Transaction update(Transaction transaction) {
         String sql = "UPDATE transaction SET transaction_date = ?, sum = ?, transaction_name = ?, account_id = ?, transaction_type_id = ?, card_id = ?, terminal_id = ?, response_code_id = ?, authorization_code = ?, received_from_issuing_bank = ?, sent_to_issuing_bank = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             // Handle LocalDate transactionDate
@@ -252,10 +256,14 @@ public class TransactionJDBCDaoImpl implements Dao<Transaction, Long> {
             }
 
             preparedStatement.setLong(12, transaction.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Transaction обновлен: " + transaction);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Transaction обновлен: " + transaction);
+                return transaction;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Transaction: " + e.getMessage());
         }
+        return null;
     }
 }

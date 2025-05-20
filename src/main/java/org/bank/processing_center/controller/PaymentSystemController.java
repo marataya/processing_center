@@ -14,7 +14,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
     private final PaymentSystemService paymentSystemService;
 
     private final ConsoleView view;
-    
+
     public PaymentSystemController(PaymentSystemService paymentSystemService, ConsoleView view) {
         this.paymentSystemService = paymentSystemService;
         this.view = view;
@@ -22,7 +22,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
 
     /**
      * Creates the payment system table
-     */    
+     */
     public void createTable() {
         try {
             paymentSystemService.createTable();
@@ -34,22 +34,25 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
 
     /**
      * Adds a new payment system
+     *
      * @param entity PaymentSystem to add
-     */    
+     */
     @Override
-    public void addEntity(PaymentSystem entity) {
+    public PaymentSystem addEntity(PaymentSystem entity) {
         try {
-            paymentSystemService.save(entity);
+            PaymentSystem savedEntity = paymentSystemService.save(entity);
             view.showMessage("Платежная система добавлена: " + entity);
+            return savedEntity;
         } catch (Exception e) {
             view.showError("Ошибка при добавлении payment_system: " + e.getMessage());
+            return null;
         }
     }
 
     /**
      * Retrieves and displays all payment systems
-     */    
-    @Override    
+     */
+    @Override
     public List<PaymentSystem> getAllEntities() {
         try {
             List<PaymentSystem> systems = paymentSystemService.findAll();
@@ -63,7 +66,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
 
     /**
      * Clears the payment system table
-     */    
+     */
     public void clearTable() {
         try {
             paymentSystemService.clearTable();
@@ -74,7 +77,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
     }
 
     /**
-     * Drops the payment system table 
+     * Drops the payment system table
      */
     @Override
     public void dropTable() {
@@ -88,6 +91,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
 
     /**
      * Deletes an entity by ID
+     *
      * @param id PaymentSystem ID
      */
     @Override
@@ -97,6 +101,7 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
 
     /**
      * Finds an entity by ID
+     *
      * @param id Entity ID
      * @return entity if found
      * @Override
@@ -107,12 +112,14 @@ public class PaymentSystemController implements Controller<PaymentSystem, Long> 
     }
 
     @Override
-    public void updateEntity(PaymentSystem entity) {
+    public PaymentSystem updateEntity(PaymentSystem entity) {
         try {
- paymentSystemService.update(entity);
+            PaymentSystem updatedPaymentSystem = paymentSystemService.update(entity);
             view.showMessage("Payment System updated: " + entity);
+            return updatedPaymentSystem;
         } catch (Exception e) {
             view.showError("Error updating payment system: " + e.getMessage());
+            return null;
         }
     }
 }

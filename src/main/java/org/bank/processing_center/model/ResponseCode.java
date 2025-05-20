@@ -16,7 +16,7 @@ import java.util.Objects;
 public class ResponseCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "error_code", unique = true, nullable = false)

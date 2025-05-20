@@ -29,8 +29,8 @@ public class TransactionTypeService implements Service<TransactionType, Long> {
     }
 
     @Override
-    public void save(TransactionType entity) {
-        transactionTypeDao.save(entity);
+    public TransactionType save(TransactionType entity) {
+        return transactionTypeDao.save(entity);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TransactionTypeService implements Service<TransactionType, Long> {
     }
 
     @Override
-    public void update(TransactionType entity) {
-        transactionTypeDao.update(entity);
+    public TransactionType update(TransactionType entity) {
+        return transactionTypeDao.update(entity);
     }
 }

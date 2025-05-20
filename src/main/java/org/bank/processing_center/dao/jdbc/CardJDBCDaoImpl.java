@@ -62,7 +62,7 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
     private CardMapper cardMapper = new CardMapper();
 
     @Override
-    public void save(Card card) {
+    public Card save(Card card) {
         String sql = "INSERT INTO card (id, card_number, expiration_date, holder_name, card_status_id, payment_system_id, account_id, received_from_issuing_bank, sent_to_issuing_bank) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -101,11 +101,15 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
                 preparedStatement.setNull(9, Types.TIMESTAMP); // Corrected type
             }
 
-            preparedStatement.executeUpdate();
-            System.out.println("Card добавлена: " + card);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Card добавлена: " + card);
+                return card;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Card: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -151,7 +155,7 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
     }
 
     @Override
-    public void update(Card card) {
+    public Card update(Card card) {
         String sql = "UPDATE card SET card_number = ?, expiration_date = ?, holder_name = ?, card_status_id = ?, payment_system_id = ?, account_id = ?, received_from_issuing_bank = ?, sent_to_issuing_bank = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, card.getCardNumber());
@@ -189,10 +193,14 @@ public class CardJDBCDaoImpl implements Dao<Card, Long> {
             }
 
             preparedStatement.setLong(9, card.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Card обновлена: " + card);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Card обновлена: " + card);
+                return card;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Card: " + e.getMessage());
         }
+        return null;
     }
 }

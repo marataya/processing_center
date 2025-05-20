@@ -29,8 +29,8 @@ public class MerchantCategoryCodeService implements Service<MerchantCategoryCode
     }
 
     @Override
-    public void save(MerchantCategoryCode entity) {
-        merchantCategoryCodeDao.save(entity);
+    public MerchantCategoryCode save(MerchantCategoryCode entity) {
+        return merchantCategoryCodeDao.save(entity);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class MerchantCategoryCodeService implements Service<MerchantCategoryCode
     }
 
     @Override
-    public void update(MerchantCategoryCode entity) {
-        merchantCategoryCodeDao.update(entity);
+    public MerchantCategoryCode update(MerchantCategoryCode entity) {
+        return merchantCategoryCodeDao.update(entity);
     }
 
 }

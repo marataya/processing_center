@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Terminal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "terminal_id")

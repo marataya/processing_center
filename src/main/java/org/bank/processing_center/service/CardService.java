@@ -29,16 +29,16 @@ public class CardService implements Service<Card, Long> {
     }
 
     @Override
-    public void save(Card card) {
+    public Card save(Card card) {
         // Validate card before saving using the method in the Card entity
         if (card != null && card.validateCard(card)) { // Assuming Card entity has a validate() method now
-            cardDao.save(card);
+            return cardDao.save(card);
         } else {
             // Optional: Log or handle the validation failure if card is null or validation fails
             if (card == null) {
                 System.err.println("Ошибка: Карта для сохранения не может быть null.");
             }
-            // The Card.validate() method is expected to print specific errors
+            return null;
         }
     }
 
@@ -58,16 +58,16 @@ public class CardService implements Service<Card, Long> {
     }
 
     @Override
-    public void update(Card card) {
+    public Card update(Card card) {
         // Validate card before updating using the method in the Card entity
         if (card != null && card.validateCard(card)) { // Assuming Card entity has a validate() method now
-            cardDao.update(card);
+            return cardDao.update(card);
         } else {
             // Optional: Log or handle the validation failure if card is null or validation fails
             if (card == null) {
                 System.err.println("Ошибка: Карта для обновления не может быть null.");
             }
-            // The Card.validate() method is expected to print specific errors
+            return null;
         }
     }
 

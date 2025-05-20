@@ -24,13 +24,13 @@ public class AcquiringBankService implements Service<AcquiringBank, Long> {
     }
 
     @Override
-    public void save(AcquiringBank entity) {
-        acquiringBankDao.save(entity);
+    public AcquiringBank save(AcquiringBank entity) {
+        return acquiringBankDao.save(entity);
     }
 
     @Override
-    public void update(AcquiringBank entity) {
-        acquiringBankDao.update(entity);
+    public AcquiringBank update(AcquiringBank entity) {
+        return acquiringBankDao.update(entity);
     }
 
     @Override

@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;              //Уникальный идентификатор валюты.
 
     @Column(name = "currency_digital_code", nullable = false, length = 3)

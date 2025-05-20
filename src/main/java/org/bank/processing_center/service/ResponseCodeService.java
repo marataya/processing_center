@@ -30,8 +30,8 @@ public class ResponseCodeService implements Service<ResponseCode, Long> {
     }
 
     @Override
-    public void save(ResponseCode entity) {
-        responseCodeDao.save(entity);
+    public ResponseCode save(ResponseCode entity) {
+        return responseCodeDao.save(entity);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ResponseCodeService implements Service<ResponseCode, Long> {
     }
 
     @Override
-    public void update(ResponseCode entity) {
-        responseCodeDao.update(entity);
+    public ResponseCode update(ResponseCode entity) {
+        return responseCodeDao.update(entity);
     }
 }

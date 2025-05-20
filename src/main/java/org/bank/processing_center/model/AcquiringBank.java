@@ -19,10 +19,10 @@ public class AcquiringBank {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "bic", nullable = false, unique = true)
+    @Column(name = "bic")
     private String bic;
 
     @Column(name = "abbreviated_name")

@@ -38,9 +38,29 @@ public class CardController implements Controller<Card, Long> {
      * @param card Card to add
      */
     @Override
-    public void addEntity(Card card) {
+    public Card addEntity(Card card) {
+        try {
+            Card savedCard = cardService.save(card);
+            view.showMessage("Карта добавлена: " + savedCard);
+            return savedCard;
+        } catch (IllegalArgumentException e) {
+            view.showError("Ошибка валидации карты: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            view.showError("Ошибка при добавлении карты: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Saves a card and displays a success message
+     *
+     * @param card The card to be saved
+     */
+    public void saveCard(Card card) {
         try {
             cardService.save(card);
+
             view.showMessage("Карта добавлена: " + card);
         } catch (Exception e) {
             view.showError("Ошибка при добавлении карты в card: " + e.getMessage());
@@ -68,12 +88,14 @@ public class CardController implements Controller<Card, Long> {
      * @param card Card with updated information
      */
     @Override
-    public void updateEntity(Card card) {
+    public Card updateEntity(Card card) {
         try {
-            cardService.update(card);
-            view.showMessage("Card updated: " + card);
+            Card updatedCard = cardService.update(card);
+            view.showMessage("Карта обновлена: " + updatedCard);
+            return updatedCard;
         } catch (Exception e) {
             view.showError("Error updating card: " + e.getMessage());
+            return null;
         }
     }
 

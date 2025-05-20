@@ -16,10 +16,10 @@ import java.util.Objects;
 public class MerchantCategoryCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "mcc", length = 4, nullable = false, unique = true)
+    @Column(name = "mcc", length = 4)
     private String mcc;
 
     @Column(name = "mcc_name", nullable = false)

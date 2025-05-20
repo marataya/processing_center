@@ -29,7 +29,7 @@ public interface Service<T, ID> {
      * @param entity Entity to save
      */
     // return value
-    void save(T entity);
+    T save(T entity);
 
     /**
      * Deletes an entity by ID
@@ -55,5 +55,5 @@ public interface Service<T, ID> {
      * @param entity Entity to update
      */
     // return value
-    void update(T entity);
+    T update(T entity);
 }

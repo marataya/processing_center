@@ -48,16 +48,21 @@ public class TransactionTypeJDBCDaoImpl implements Dao<TransactionType, Long> {
     }
 
     @Override
-    public void save(TransactionType transactionType) {
+    public TransactionType save(TransactionType transactionType) {
         String sql = "INSERT INTO transaction_type (id, type_name) VALUES (?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, transactionType.getId());
             preparedStatement.setString(2, transactionType.getTypeName());
-            preparedStatement.executeUpdate();
-            System.out.println("TransactionType добавлен: " + transactionType);
+
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("TransactionType добавлен: " + transactionType);
+                return transactionType;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении TransactionType: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -109,15 +114,19 @@ public class TransactionTypeJDBCDaoImpl implements Dao<TransactionType, Long> {
     }
 
     @Override
-    public void update(TransactionType transactionType) {
+    public TransactionType update(TransactionType transactionType) {
         String sql = "UPDATE transaction_type SET type_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, transactionType.getTypeName());
             preparedStatement.setLong(2, transactionType.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("TransactionType обновлен: " + transactionType);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("TransactionType обновлен: " + transactionType);
+                return transactionType;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении TransactionType: " + e.getMessage());
         }
+        return null;
     }
 }

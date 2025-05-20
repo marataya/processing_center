@@ -21,9 +21,15 @@ public class SalesPointController implements Controller<SalesPoint, Long> {
       view.showMessage("SalesPoint table created.");
    }
 
-   public void addEntity(SalesPoint salesPoint) {
-      salesPointService.save(salesPoint);
-      view.showMessage("SalesPoint added: " + salesPoint);
+   public SalesPoint addEntity(SalesPoint salesPoint) {
+      try {
+         SalesPoint savedSalesPoint = salesPointService.save(salesPoint);
+         view.showMessage("SalesPoint added: " + salesPoint);
+         return savedSalesPoint;
+      } catch (Exception e) {
+         view.showError("Ошибка при добавлении sales_point: " + e.getMessage());
+         return null;
+      }
    }
 
    public List<SalesPoint> getAllEntities() {
@@ -37,12 +43,14 @@ public class SalesPointController implements Controller<SalesPoint, Long> {
       }
    }
 
-   public void updateEntity(SalesPoint salesPoint) {
+   public SalesPoint updateEntity(SalesPoint salesPoint) {
       try {
-         salesPointService.update(salesPoint);
-         view.showMessage("Sales Point updated: " + salesPoint);
+         SalesPoint updatedSalesPoint = salesPointService.update(salesPoint);
+         view.showMessage("SalesPoint updated: " + salesPoint);
+         return updatedSalesPoint;
       } catch (Exception e) {
          view.showError("Error updating sales point: " + e.getMessage());
+         return null;
       }
    }
 

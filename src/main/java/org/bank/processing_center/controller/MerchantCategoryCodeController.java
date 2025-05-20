@@ -35,21 +35,21 @@ public class MerchantCategoryCodeController implements Controller<MerchantCatego
     }
 
     @Override
-    public void addEntity(MerchantCategoryCode merchantCategoryCode) {
-        merchantCategoryCodeService.save(merchantCategoryCode);
-        view.showMessage("MerchantCategoryCode added: " + merchantCategoryCode);
+    public MerchantCategoryCode addEntity(MerchantCategoryCode merchantCategoryCode) {
+        try {
+            MerchantCategoryCode savedMerchantCategoryCode = merchantCategoryCodeService.save(merchantCategoryCode);
+            view.showMessage("MerchantCategoryCode added: " + merchantCategoryCode);
+            return savedMerchantCategoryCode;
+        } catch (Exception e) {
+            view.showError("Ошибка при получении списка mcc: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void deleteEntity(Long id) {
         merchantCategoryCodeService.delete(id);
         view.showMessage("MerchantCategoryCode with ID " + id + " deleted.");
-    }
-
-    public void updateMerchantCategoryCode(MerchantCategoryCode merchantCategoryCode) {
-        // This method seems redundant given updateEntity, might be a remnant.
-        // Assuming updateEntity is the intended method to refactor.
-        updateEntity(merchantCategoryCode);
     }
 
 
@@ -72,12 +72,14 @@ public class MerchantCategoryCodeController implements Controller<MerchantCatego
     }
 
     @Override
-    public void updateEntity(MerchantCategoryCode entity) {
+    public MerchantCategoryCode updateEntity(MerchantCategoryCode entity) {
         try {
-            merchantCategoryCodeService.update(entity);
+            MerchantCategoryCode updatedMerchantCategoryCode = merchantCategoryCodeService.update(entity);
             view.showMessage("Merchant Category Code updated: " + entity);
+            return updatedMerchantCategoryCode;
         } catch (Exception e) {
             view.showError("Ошибка при получении списка mcc: " + e.getMessage());
+            return null;
         }
     }
 

@@ -43,16 +43,28 @@ public class CurrencyController implements Controller<Currency, Long> {
 
    // Method to add a new currency
    @Override
-   public void addEntity(Currency entity) {
-      currencyService.save(entity);
-      view.showMessage("Currency added successfully.");
+   public Currency addEntity(Currency entity) {
+      try {
+         currencyService.save(entity);
+         view.showMessage("Currency added successfully.");
+         return entity;
+      } catch (Exception e) {
+         view.showError("Error adding currency: " + e.getMessage());
+         return null;
+      }
    }
 
    // Method to update an existing currency
    @Override
-   public void updateEntity(Currency entity) {
-      currencyService.update(entity);
-      view.showMessage("Currency updated successfully.");
+   public Currency updateEntity(Currency entity) {
+      try {
+         currencyService.update(entity);
+         view.showMessage("Currency updated successfully.");
+         return entity;
+      } catch (Exception e) {
+         view.showError("Error updating currency: " + e.getMessage());
+         return null;
+      }
    }
 
    @Override

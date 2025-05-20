@@ -57,7 +57,7 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
     }
 
     @Override
-    public void save(SalesPoint salesPoint) {
+    public SalesPoint save(SalesPoint salesPoint) {
         String sql = "INSERT INTO sales_point (id, pos_name, pos_address, pos_inn, acquiring_bank_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -71,12 +71,16 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
             } else {
                 preparedStatement.setNull(5, Types.BIGINT);
             }
-            preparedStatement.executeUpdate();
-            System.out.println("SalesPoint добавлен: " + salesPoint);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("SalesPoint добавлен: " + salesPoint);
+                return salesPoint;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении SalesPoint: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
+        return null;
     }
 
     @Override
@@ -146,7 +150,7 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
     }
 
     @Override
-    public void update(SalesPoint salesPoint) {
+    public SalesPoint update(SalesPoint salesPoint) {
         String sql = "UPDATE sales_point SET pos_name = ?, pos_address = ?, pos_inn = ?, acquiring_bank_id = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -159,11 +163,15 @@ public class SalesPointJDBCDaoImpl implements Dao<SalesPoint, Long> {
                 preparedStatement.setNull(4, Types.BIGINT);
             }
             preparedStatement.setLong(5, salesPoint.getId()); // Corrected parameter index for id
-            preparedStatement.executeUpdate();
-            System.out.println("SalesPoint обновлен: " + salesPoint);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("SalesPoint обновлен: " + salesPoint);
+                return salesPoint;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении SalesPoint: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
+        return null;
     }
 }

@@ -19,7 +19,7 @@ public class IssuingBank {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;              // Уникальный идентификатор банка-эмитента.
 
     @Column(name = "bic", nullable = false, length = 9)

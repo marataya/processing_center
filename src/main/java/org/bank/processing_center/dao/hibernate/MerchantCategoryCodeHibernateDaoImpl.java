@@ -18,16 +18,17 @@ public class MerchantCategoryCodeHibernateDaoImpl extends AbstractHibernateDao i
     }
 
     @Override
-    public void save(MerchantCategoryCode mcc) {
-        executeInsideTransaction(session -> {
+    public MerchantCategoryCode save(MerchantCategoryCode mcc) {
+        return executeInsideTransaction(session -> {
             session.persist(mcc);
+            return mcc;
         });
     }
 
     @Override
-    public void update(MerchantCategoryCode mcc) {
-        executeInsideTransaction(session -> {
-            session.merge(mcc);
+    public MerchantCategoryCode update(MerchantCategoryCode mcc) {
+        return executeInsideTransaction(session -> {
+            return session.merge(mcc);
         });
     }
 

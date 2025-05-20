@@ -18,16 +18,17 @@ public class CardStatusHibernateDaoImpl extends AbstractHibernateDao implements 
     }
 
     @Override
-    public void save(CardStatus cardStatus) {
-        executeInsideTransaction(session -> {
+    public CardStatus save(CardStatus cardStatus) {
+        return executeInsideTransaction(session -> {
             session.persist(cardStatus);
+            return cardStatus;
         });
     }
 
     @Override
-    public void update(CardStatus cardStatus) {
-        executeInsideTransaction(session -> {
-            session.merge(cardStatus);
+    public CardStatus update(CardStatus cardStatus) {
+        return executeInsideTransaction(session -> {
+            return session.merge(cardStatus);
         });
     }
 

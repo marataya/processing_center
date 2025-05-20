@@ -18,16 +18,17 @@ public class AcquiringBankHibernateDaoImpl extends AbstractHibernateDao implemen
     }
 
     @Override
-    public void save(AcquiringBank acquiringBank) {
-        executeInsideTransaction(session -> {
+    public AcquiringBank save(AcquiringBank acquiringBank) {
+        return executeInsideTransaction(session -> {
             session.persist(acquiringBank);
+            return acquiringBank;
         });
     }
 
     @Override
-    public void update(AcquiringBank acquiringBank) {
-        executeInsideTransaction(session -> {
-            session.merge(acquiringBank);
+    public AcquiringBank update(AcquiringBank acquiringBank) {
+        return executeInsideTransaction(session -> {
+            return session.merge(acquiringBank);
         });
     }
 

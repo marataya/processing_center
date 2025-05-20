@@ -19,8 +19,8 @@ public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements
     }
 
     @Override
-    public void save(Transaction transaction) {
-        executeInsideTransaction(session -> {
+    public Transaction save(Transaction transaction) {
+        return executeInsideTransaction(session -> {
             if (transaction.getAccount() != null) {
                 Account managedAccount = session.merge(transaction.getAccount());
                 transaction.setAccount(managedAccount);
@@ -43,12 +43,13 @@ public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements
             }
 
             session.persist(transaction);
+            return transaction;
         });
     }
 
     @Override
-    public void update(Transaction transaction) {
-        executeInsideTransaction(session -> {
+    public Transaction update(Transaction transaction) {
+        return executeInsideTransaction(session -> {
             if (transaction.getAccount() != null) {
                 Account managedAccount = session.merge(transaction.getAccount());
                 transaction.setAccount(managedAccount);
@@ -70,7 +71,7 @@ public class TransactionHibernateDaoImpl extends AbstractHibernateDao implements
                 transaction.setResponseCode(managedResponseCode);
             }
 
-            session.merge(transaction);
+            return session.merge(transaction);
         });
     }
 

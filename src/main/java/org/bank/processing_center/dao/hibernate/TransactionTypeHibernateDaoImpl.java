@@ -19,16 +19,17 @@ public class TransactionTypeHibernateDaoImpl extends AbstractHibernateDao implem
     }
 
     @Override
-    public void save(TransactionType transactionType) {
-        executeInsideTransaction(session -> {
+    public TransactionType save(TransactionType transactionType) {
+        return executeInsideTransaction(session -> {
             session.persist(transactionType);
+            return transactionType;
         });
     }
 
     @Override
-    public void update(TransactionType transactionType) {
-        executeInsideTransaction(session -> {
-            session.merge(transactionType);
+    public TransactionType update(TransactionType transactionType) {
+        return executeInsideTransaction(session -> {
+            return session.merge(transactionType);
         });
     }
 

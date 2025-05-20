@@ -18,16 +18,17 @@ public class PaymentSystemHibernateDaoImpl extends AbstractHibernateDao implemen
     }
 
     @Override
-    public void save(PaymentSystem paymentSystem) {
-        executeInsideTransaction(session -> {
+    public PaymentSystem save(PaymentSystem paymentSystem) {
+        return executeInsideTransaction(session -> {
             session.persist(paymentSystem);
+            return paymentSystem;
         });
     }
 
     @Override
-    public void update(PaymentSystem paymentSystem) {
-        executeInsideTransaction(session -> {
-            session.merge(paymentSystem);
+    public PaymentSystem update(PaymentSystem paymentSystem) {
+        return executeInsideTransaction(session -> {
+            return session.merge(paymentSystem);
         });
     }
 

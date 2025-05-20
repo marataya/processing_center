@@ -48,16 +48,20 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     }
 
     @Override
-    public void save(CardStatus cardStatus) {
+    public CardStatus save(CardStatus cardStatus) {
         String sql = "INSERT INTO card_status (id, card_status_name) VALUES (?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, cardStatus.getId());
             preparedStatement.setString(2, cardStatus.getStatusName());
-            preparedStatement.executeUpdate();
-            System.out.println("CardStatus добавлен: " + cardStatus);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("CardStatus добавлен: " + cardStatus);
+                return cardStatus;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении CardStatus: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -111,15 +115,19 @@ public class CardStatusJDBCDaoImpl implements Dao<CardStatus, Long> {
     }
 
     @Override
-    public void update(CardStatus cardStatus) {
+    public CardStatus update(CardStatus cardStatus) {
         String sql = "UPDATE card_status SET card_status_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, cardStatus.getStatusName());
             preparedStatement.setLong(2, cardStatus.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("CardStatus обновлен: " + cardStatus);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("CardStatus обновлен: " + cardStatus);
+                return cardStatus;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении CardStatus: " + e.getMessage());
         }
+        return null;
     }
 }

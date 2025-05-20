@@ -34,16 +34,18 @@ public class CardStatusController implements Controller<CardStatus, Long> {
 
     /**
      * Adds a new entity
-     * 
+     *
      * @param cardStatus Entity to add
      */
     @Override
-    public void addEntity(CardStatus cardStatus) {
+    public CardStatus addEntity(CardStatus cardStatus) {
         try {
-            cardStatusService.save(cardStatus);
+            CardStatus savedCardStatus = cardStatusService.save(cardStatus);
             view.showMessage("Статус карты добавлен: " + cardStatus);
+            return cardStatus;
         } catch (Exception e) {
             view.showError("Ошибка при добавлении card_status: " + e.getMessage());
+            return null;
         }
     }
 
@@ -90,7 +92,7 @@ public class CardStatusController implements Controller<CardStatus, Long> {
 
     /**
      * Deletes an entity by ID
-     * 
+     *
      * @param id Entity ID
      */
     @Override
@@ -105,7 +107,7 @@ public class CardStatusController implements Controller<CardStatus, Long> {
 
     /**
      * Finds an entity by ID
-     * 
+     *
      * @param id Entity ID
      * @return entity if found
      */
@@ -121,13 +123,19 @@ public class CardStatusController implements Controller<CardStatus, Long> {
 
     /**
      * Updates an existing entity
-     * 
+     *
      * @param cardStatus Entity to update
      */
     @Override
-    public void updateEntity(CardStatus cardStatus) {
-        cardStatusService.update(cardStatus);
-        view.showMessage("Card Status updated: " + cardStatus);
+    public CardStatus updateEntity(CardStatus cardStatus) {
+        try {
+            CardStatus updatedCardStatus = cardStatusService.update(cardStatus);
+            view.showMessage("Статус карты обновлен: " + cardStatus);
+            return updatedCardStatus;
+        } catch (Exception e) {
+            view.showError("Ошибка при обновлении card_status: " + e.getMessage());
+            return null;
+        }
     }
 
 }

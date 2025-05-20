@@ -12,9 +12,10 @@ public abstract class AbstractHibernateDao {
 
     protected <R> R executeInsideTransaction(Function<Session, R> function) {
         Transaction transaction = null;
+        R result = null;
         try (Session session = HibernateConfig.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            R result = function.apply(session);
+            result = function.apply(session);
             transaction.commit();
             return result;
         } catch (Exception e) {

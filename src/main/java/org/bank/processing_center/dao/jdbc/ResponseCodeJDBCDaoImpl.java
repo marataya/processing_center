@@ -50,18 +50,22 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
     }
 
     @Override
-    public void save(ResponseCode responseCode) {
+    public ResponseCode save(ResponseCode responseCode) {
         String sql = "INSERT INTO response_code (id, error_code, error_description, error_level) VALUES (?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, responseCode.getId());
             preparedStatement.setString(2, responseCode.getErrorCode());
             preparedStatement.setString(3, responseCode.getErrorDescription());
             preparedStatement.setString(4, responseCode.getErrorLevel());
-            preparedStatement.executeUpdate();
-            System.out.println("ResponseCode добавлен: " + responseCode);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("ResponseCode добавлен: " + responseCode);
+                return responseCode;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении ResponseCode: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -116,16 +120,20 @@ public class ResponseCodeJDBCDaoImpl implements Dao<ResponseCode, Long> {
     }
 
     @Override
-    public void update(ResponseCode responseCode) {
+    public ResponseCode update(ResponseCode responseCode) {
         String sql = "UPDATE response_code SET error_code = ?, error_description = ?, error_level = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, responseCode.getErrorCode());
             preparedStatement.setString(2, responseCode.getErrorDescription());
             preparedStatement.setLong(3, responseCode.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("ResponseCode обновлен: " + responseCode);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("ResponseCode обновлен: " + responseCode);
+                return responseCode;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении ResponseCode: " + e.getMessage());
         }
+        return null;
     }
 }

@@ -38,10 +38,16 @@ public class TerminalController implements Controller<Terminal, Long> {
     }
 
     @Override
-    public void addEntity(Terminal terminal) {
-        view.showMessage("Adding Terminal: " + terminal);
-        terminalService.save(terminal);
-        view.showMessage("Terminal added successfully.");
+    public Terminal addEntity(Terminal terminal) {
+
+        try {
+            Terminal savedTerminal = terminalService.save(terminal);
+            view.showMessage("Adding Terminal: " + terminal);
+            return savedTerminal;
+        } catch (Exception e) {
+            view.showError("Error adding terminal: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -76,12 +82,14 @@ public class TerminalController implements Controller<Terminal, Long> {
     }
 
     @Override
-    public void updateEntity(Terminal terminal) {
+    public Terminal updateEntity(Terminal terminal) {
         try {
-            terminalService.update(terminal);
+            Terminal updatedTerminal = terminalService.update(terminal);
             view.showMessage("Terminal updated: " + terminal);
+            return updatedTerminal;
         } catch (Exception e) {
             view.showError("Error updating terminal: " + e.getMessage());
+            return null;
         }
     }
 

@@ -28,7 +28,7 @@ public interface Controller<T, ID> {
      * Adds an entity
      * @param entity Entity to add
      */
-    void addEntity(T entity);
+    T addEntity(T entity);
 
     /**
      * Deletes an entity by ID
@@ -53,5 +53,5 @@ public interface Controller<T, ID> {
      * Updates an existing entity
      * @param entity Entity to update
      */
-    void updateEntity(T entity);
+    T updateEntity(T entity);
 }

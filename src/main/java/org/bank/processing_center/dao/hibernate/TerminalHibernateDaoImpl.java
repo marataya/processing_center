@@ -23,8 +23,8 @@ public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Da
     }
 
     @Override
-    public void save(Terminal terminal) {
-        executeInsideTransaction(session -> {
+    public Terminal save(Terminal terminal) {
+        return executeInsideTransaction(session -> {
             if (terminal.getMcc() != null) {
                 MerchantCategoryCode managedMcc = session.merge(terminal.getMcc());
                 terminal.setMcc(managedMcc);
@@ -34,12 +34,13 @@ public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Da
                 terminal.setPos(managedPos);
             }
             session.persist(terminal);
+            return terminal;
         });
     }
 
     @Override
-    public void update(Terminal terminal) {
-        executeInsideTransaction(session -> {
+    public Terminal update(Terminal terminal) {
+        return executeInsideTransaction(session -> {
             if (terminal.getMcc() != null) {
                 MerchantCategoryCode managedMcc = session.merge(terminal.getMcc());
                 terminal.setMcc(managedMcc);
@@ -48,7 +49,7 @@ public class TerminalHibernateDaoImpl extends AbstractHibernateDao implements Da
                 SalesPoint managedPos = session.merge(terminal.getPos());
                 terminal.setPos(managedPos);
             }
-            session.merge(terminal); // Use merge for updates
+            return session.merge(terminal); // Use merge for updates
         });
     }
 

@@ -19,8 +19,8 @@ public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements 
     }
 
     @Override
-    public void save(SalesPoint salesPoint) {
-        executeInsideTransaction(session -> {
+    public SalesPoint save(SalesPoint salesPoint) {
+        return executeInsideTransaction(session -> {
             // Option 2: Explicitly merge the associated AcquiringBank if it's detached
             // This brings it into the current session's managed state.
             if (salesPoint.getAcquiringBank() != null) {
@@ -31,14 +31,13 @@ public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements 
                 salesPoint.setAcquiringBank(managedAcquiringBank); // Ensure SalesPoint references the managed instance
             }
             session.persist(salesPoint); // Now persist SalesPoint.
-            // CascadeType.PERSIST on acquiringBank will be a no-op if it was merged.
-            // CascadeType.MERGE would also be fine.
+            return salesPoint;
         });
     }
 
     @Override
-    public void update(SalesPoint salesPoint) {
-        executeInsideTransaction(session -> {
+    public SalesPoint update(SalesPoint salesPoint) {
+        return executeInsideTransaction(session -> {
             // Option 2: Explicitly merge the associated AcquiringBank if it's detached
             // This brings it into the current session's managed state.
             if (salesPoint.getAcquiringBank() != null) {
@@ -48,7 +47,7 @@ public class SalesPointHibernateDaoImpl extends AbstractHibernateDao implements 
                 AcquiringBank managedAcquiringBank = session.merge(salesPoint.getAcquiringBank());
                 salesPoint.setAcquiringBank(managedAcquiringBank); // Ensure SalesPoint references the managed instance
             }
-            session.persist(salesPoint); // Now persist SalesPoint.
+            return session.merge(salesPoint); // Now persist SalesPoint.
             // CascadeType.PERSIST on acquiringBank will be a no-op if it was merged.
             // CascadeType.MERGE would also be fine.
         });

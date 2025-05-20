@@ -29,8 +29,8 @@ public class SalesPointService implements Service<SalesPoint, Long> {
    }
 
    @Override
-   public void save(SalesPoint entity) {
-      salesPointDao.save(entity);
+   public SalesPoint save(SalesPoint entity) {
+      return salesPointDao.save(entity);
    }
 
    @Override
@@ -49,8 +49,8 @@ public class SalesPointService implements Service<SalesPoint, Long> {
    }
 
    @Override
-   public void update(SalesPoint entity) {
-      salesPointDao.update(entity);
+   public SalesPoint update(SalesPoint entity) {
+      return salesPointDao.update(entity);
    }
 
 }

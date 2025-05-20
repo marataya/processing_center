@@ -18,16 +18,17 @@ public class AccountHibernateDaoImpl extends AbstractHibernateDao implements Dao
     }
 
     @Override
-    public void save(Account account) {
-        executeInsideTransaction(session -> {
+    public Account save(Account account) {
+        return executeInsideTransaction(session -> {
             session.persist(account);
+            return account;
         });
     }
 
     @Override
-    public void update(Account account) {
-        executeInsideTransaction(session -> {
-            session.merge(account);
+    public Account update(Account account) {
+        return executeInsideTransaction(session -> {
+            return session.merge(account);
         });
     }
 

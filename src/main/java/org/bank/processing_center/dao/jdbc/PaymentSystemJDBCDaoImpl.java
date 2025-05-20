@@ -48,16 +48,20 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     }
 
     @Override
-    public void save(PaymentSystem paymentSystem) {
+    public PaymentSystem save(PaymentSystem paymentSystem) {
         String sql = "INSERT INTO payment_system (id, payment_system_name) VALUES (?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, paymentSystem.getId());
             preparedStatement.setString(2, paymentSystem.getPaymentSystemName());
-            preparedStatement.executeUpdate();
-            System.out.println("PaymentSystem добавлена: " + paymentSystem);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("PaymentSystem добавлена: " + paymentSystem);
+                return paymentSystem;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении PaymentSystem: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -111,15 +115,19 @@ public class PaymentSystemJDBCDaoImpl implements Dao<PaymentSystem, Long> {
     }
 
     @Override
-    public void update(PaymentSystem paymentSystem) {
+    public PaymentSystem update(PaymentSystem paymentSystem) {
         String sql = "UPDATE payment_system SET payment_system_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, paymentSystem.getPaymentSystemName());
             preparedStatement.setLong(2, paymentSystem.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("PaymentSystem обновлена: " + paymentSystem);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("PaymentSystem обновлена: " + paymentSystem);
+                return paymentSystem;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении PaymentSystem: " + e.getMessage());
         }
+        return null;
     }
 }

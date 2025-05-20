@@ -57,18 +57,22 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
     }
 
     @Override
-    public void save(Account account) {
+    public Account save(Account account) {
         String sql = "INSERT INTO account (id, account_number, balance, currency_id, issuing_bank_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, account.getId());
             preparedStatement.setString(2, account.getAccountNumber());
             preparedStatement.setBigDecimal(3, account.getBalance());
             preparedStatement.setLong(4, account.getCurrency().getId());            preparedStatement.setLong(5, account.getIssuingBank().getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Account добавлен: " + account);
+            int affectedRows= preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Account добавлен: " + account);
+                return account;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Account: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -116,18 +120,22 @@ public class AccountJDBCDaoImpl implements Dao<Account, Long> {
     }
 
     @Override
-    public void update(Account account) {
+    public Account update(Account account) {
         String sql = "UPDATE account SET account_number = ?, balance = ?, currency_id = ?, issuing_bank_id = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, account.getAccountNumber());
             preparedStatement.setBigDecimal(2, account.getBalance());
             preparedStatement.setLong(3, account.getCurrency().getId());            preparedStatement.setLong(4, account.getIssuingBank().getId());
             preparedStatement.setLong(5, account.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Account обновлен: " + account);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Account обновлен: " + account);
+                return account;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Account: " + e.getMessage());
         }
+        return null;
     }
 
     // Дополнительные методы для работы со счетами

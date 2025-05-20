@@ -55,7 +55,7 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
     }
 
     @Override
-    public void save(Terminal terminal) {
+    public Terminal save(Terminal terminal) {
         String sql = "INSERT INTO terminal (id, terminal_id, mcc_id, pos_id) VALUES (?, ?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, terminal.getId());
@@ -72,12 +72,16 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
             } else {
                 preparedStatement.setNull(4, Types.BIGINT);
             }
-            preparedStatement.executeUpdate();
-            System.out.println("Terminal добавлен: " + terminal);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Terminal добавлен: " + terminal);
+                return terminal;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении Terminal: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
+        return null;
     }
 
     @Override
@@ -164,7 +168,7 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
     }
 
     @Override
-    public void update(Terminal terminal) {
+    public Terminal update(Terminal terminal) {
         // Corrected SQL to include mcc_id and use pos_id
         String sql = "UPDATE terminal SET terminal_id = ?, mcc_id = ?, pos_id = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -182,11 +186,15 @@ public class TerminalJDBCDaoImpl implements Dao<Terminal, Long> {
                 preparedStatement.setNull(3, Types.BIGINT);
             }
             preparedStatement.setLong(4, terminal.getId()); // WHERE id = ?
-            preparedStatement.executeUpdate();
-            System.out.println("Terminal обновлен: " + terminal);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Terminal обновлен: " + terminal);
+                return terminal;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении Terminal: " + e.getMessage());
             e.printStackTrace(); // For better debugging
         }
+        return null;
     }
 }

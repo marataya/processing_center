@@ -29,8 +29,8 @@ public class CurrencyService implements Service<Currency, Long> {
     }
 
     @Override
-    public void save(Currency entity) {
-        currencyDao.save(entity);
+    public Currency save(Currency entity) {
+        return currencyDao.save(entity);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CurrencyService implements Service<Currency, Long> {
     }
 
     @Override
-    public void update(Currency entity) {
-        currencyDao.update(entity);
+    public Currency update(Currency entity) {
+        return currencyDao.update(entity);
     }
 }

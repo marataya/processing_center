@@ -29,8 +29,8 @@ public class CardStatusService implements Service<CardStatus, Long> {
     }
 
     @Override
-    public void save(CardStatus cardStatus) {
-        cardStatusDao.save(cardStatus);
+    public CardStatus save(CardStatus cardStatus) {
+        return cardStatusDao.save(cardStatus);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class CardStatusService implements Service<CardStatus, Long> {
     }
 
     @Override
-    public void update(CardStatus cardStatus) {
-        cardStatusDao.update(cardStatus);
+    public CardStatus update(CardStatus cardStatus) {
+        return cardStatusDao.update(cardStatus);
     }
 
     /**

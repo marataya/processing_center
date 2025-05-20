@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id; //id (bigint): Уникальный идентификатор карты.
 
     @Column(name = "card_number", nullable = false, length = 16)

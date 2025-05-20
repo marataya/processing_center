@@ -49,17 +49,21 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
     }
 
     @Override
-    public void save(AcquiringBank acquiringBank) {
+    public AcquiringBank save(AcquiringBank acquiringBank) {
         String sql = "INSERT INTO acquiring_bank (id, bic, abbreviated_name) VALUES (?, ?, ?)";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, acquiringBank.getId());
             preparedStatement.setString(2, acquiringBank.getBic());
             preparedStatement.setString(3, acquiringBank.getAbbreviatedName());
-            preparedStatement.executeUpdate();
-            System.out.println("AcquiringBank добавлен: " + acquiringBank);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("AcquiringBank добавлен: " + acquiringBank);
+                return acquiringBank;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при добавлении AcquiringBank: " + e.getMessage());
         }
+        return null;
     }
 
     @Override
@@ -113,16 +117,20 @@ public class AcquiringBankJDBCDaoImpl implements Dao<AcquiringBank, Long> {
     }
 
     @Override
-    public void update(AcquiringBank acquiringBank) {
+    public AcquiringBank update(AcquiringBank acquiringBank) {
         String sql = "UPDATE acquiring_bank SET bic = ?, abbreviated_name = ? WHERE id = ?";
         try (Connection connection = JDBCConfig.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, acquiringBank.getBic());
             preparedStatement.setString(2, acquiringBank.getAbbreviatedName());
             preparedStatement.setLong(3, acquiringBank.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("AcquiringBank обновлен: " + acquiringBank);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("AcquiringBank добавлен: " + acquiringBank);
+                return acquiringBank;
+            }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении AcquiringBank: " + e.getMessage());
         }
+        return null;
     }
 }
